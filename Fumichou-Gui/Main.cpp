@@ -1,16 +1,18 @@
 ﻿# include <Siv3D.hpp> // Siv3D v0.6.12
 
-#include "Test.h"
+#include "HwFrame.h"
 
 void Main()
 {
+	Window::SetTitle(U"Fumichou");
 	Scene::SetBackground(ColorF{0.7});
 
-	Fumichou_Nes::Test t{};
+	Nes::HwFrame m_frame{};
+
+	Print(m_frame.GetEnv().GetMemory().GetInternalRam()[0]);
 
 	while (System::Update())
 	{
-		t.Draw();
 	}
 }
 

@@ -149,7 +149,6 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/s
     <Image Include="App\example\texture\uv.png" />
     <Image Include="App\example\texture\wood.jpg" />
     <Image Include="App\example\windmill.png" />
-    <Image Include="App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc" />
@@ -405,6 +404,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/s
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\.gitignore" />
+    <Content Include="App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fumichou-Nes\Fumichou-Nes.vcxproj">

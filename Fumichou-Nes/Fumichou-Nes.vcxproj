@@ -118,92 +118,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
-    <ClCompile Include="include\Test.cpp" />
+    <ClCompile Include="src\Logger.cpp" />
+    <ClCompile Include="src\Memory.cpp" />
+    <ClCompile Include="src\Mmu.cpp" />
+    <ClCompile Include="src\Mos6502.cpp" />
+    <ClCompile Include="src\HwFrame.cpp" />
+    <ClCompile Include="src\Ppu.cpp" />
     <ClCompile Include="src\stdafx.cpp">
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <Optimization>Disabled</Optimization>
-      <SupportJustMyCode>true</SupportJustMyCode>
-      <AssemblerOutput>NoListing</AssemblerOutput>
-      <AssemblerListingLocation>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</AssemblerListingLocation>
-      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
-      <BrowseInformation>false</BrowseInformation>
-      <BrowseInformationFile>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</BrowseInformationFile>
-      <CompileAs>Default</CompileAs>
-      <ConformanceMode>true</ConformanceMode>
-      <DiagnosticsFormat>Column</DiagnosticsFormat>
-      <DisableLanguageExtensions>false</DisableLanguageExtensions>
-      <ErrorReporting>Prompt</ErrorReporting>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <EnableASAN>false</EnableASAN>
-      <EnableFuzzer>false</EnableFuzzer>
-      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
-      <FloatingPointModel>Precise</FloatingPointModel>
-      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
-      <ForcedIncludeFiles>stdafx.h;</ForcedIncludeFiles>
-      <GenerateModuleDependencies>false</GenerateModuleDependencies>
-      <GenerateSourceDependencies>false</GenerateSourceDependencies>
-      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ModuleDependenciesFile>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</ModuleDependenciesFile>
-      <ModuleOutputFile>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</ModuleOutputFile>
-      <OmitDefaultLibName>false</OmitDefaultLibName>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <ObjectFileName>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</ObjectFileName>
-      <CallingConvention>Cdecl</CallingConvention>
-      <ProgramDataBaseFileName>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Fumichou-Nes(debug).pdb</ProgramDataBaseFileName>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\Fumichou-Nes(debug).pch</PrecompiledHeaderOutputFile>
-      <PreprocessToFile>false</PreprocessToFile>
-      <PreprocessKeepComments>false</PreprocessKeepComments>
-      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
-      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
-      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
-      <ShowIncludes>false</ShowIncludes>
-      <SourceDependenciesFile>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</SourceDependenciesFile>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
-      <SmallerTypeCheck>false</SmallerTypeCheck>
-      <SpectreMitigation>false</SpectreMitigation>
-      <StructMemberAlignment>Default</StructMemberAlignment>
-      <TrackerLogDirectory>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\Fumichou-Nes.tlog\</TrackerLogDirectory>
-      <TranslateIncludes>false</TranslateIncludes>
-      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
-      <TreatWarningAsError>false</TreatWarningAsError>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <UseFullPaths>true</UseFullPaths>
-      <WarningLevel>Level4</WarningLevel>
-      <XMLDocumentationFileName>C:\dev\VisualStudioRepos\Fumichou\Intermediate\Fumichou-Nes\Debug\Intermediate\</XMLDocumentationFileName>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <IntelJCCErratum>false</IntelJCCErratum>
-      <BuildStlModules>false</BuildStlModules>
-      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
-      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
-      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
-      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_ENABLE_EXTENDED_ALIGNED_STORAGE;_SILENCE_CXX20_CISO646_REMOVED_WARNING;_SILENCE_ALL_CXX23_DEPRECATION_WARNINGS;_UNICODE;UNICODE;</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DisableSpecificWarnings>26451;26812;</DisableSpecificWarnings>
-      <AdditionalOptions>/Zc:__cplusplus </AdditionalOptions>
-      <AdditionalIncludeDirectories>./include;./src;</AdditionalIncludeDirectories>
-      <LibCompiled>true</LibCompiled>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Test.h" />
+    <ClInclude Include="include\Forward.h" />
+    <ClInclude Include="include\Hardware.h" />
+    <ClInclude Include="include\Memory.h" />
+    <ClInclude Include="include\Mmu.h" />
+    <ClInclude Include="include\Mos6502.h" />
+    <ClInclude Include="include\HwFrame.h" />
+    <ClInclude Include="include\Ppu.h" />
+    <ClInclude Include="include\Util.h" />
+    <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
