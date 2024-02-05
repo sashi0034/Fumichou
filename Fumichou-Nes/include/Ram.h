@@ -14,7 +14,7 @@ namespace Nes
 	{
 	};
 
-	class Memory
+	class Ram
 	{
 	public:
 		InternalRam& GetInternalRam() { return m_internal; }

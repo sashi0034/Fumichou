@@ -1,7 +1,11 @@
 ﻿#pragma once
+#include <iso646.h>
+#include "Util.h"
 
 namespace Nes
 {
+	using namespace Util;
+
 	using sint8 = int8;
 	using sint16 = int16;
 	using sint32 = int32;

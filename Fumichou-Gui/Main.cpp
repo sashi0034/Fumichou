@@ -7,9 +7,14 @@ void Main()
 	Window::SetTitle(U"Fumichou");
 	Scene::SetBackground(ColorF{0.7});
 
-	Nes::HwFrame m_frame{};
+	auto args = System::GetCommandLineArgs();
 
-	Print(m_frame.GetEnv().GetMemory().GetInternalRam()[0]);
+	FilePath romPath = args.size() >= 2 ? args[1] : U"";
+	if (not FileSystem::Exists(romPath)) romPath = Dialog::OpenFile().value_or(U"");
+
+	Console.open();
+	Nes::HwFrame frame{};
+	frame.LoadRomFile(romPath);
 
 	while (System::Update())
 	{

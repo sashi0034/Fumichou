@@ -42,9 +42,9 @@ namespace Nes::Util
 
 	public:
 		explicit BitAccessor(T& ref) : m_ref(ref) { return; };
-		T Get() const { return Utils::GetBits<x1, x2>(m_ref); }
+		T Get() const { return GetBits<x1, x2>(m_ref); }
 		operator T() const { return Get(); }
-		void Set(T value) { m_ref = Utils::SetBits<x1, x2>(m_ref, value); }
+		void Set(T value) { m_ref = SetBits<x1, x2>(m_ref, value); }
 
 	private:
 		T& m_ref;
@@ -139,9 +139,12 @@ namespace Nes::Util
 		static_assert(std::is_integral<T>::value);
 
 	public:
-		const T value;
+		explicit constexpr EnumValue() : value{0} { return; }
 		explicit constexpr EnumValue(T v) : value{v} { return; }
 		constexpr operator T() const { return value; }
+
+	private:
+		T value;
 	};
 
 	template <typename T>
