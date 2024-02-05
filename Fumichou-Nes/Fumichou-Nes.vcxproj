@@ -120,6 +120,7 @@
     <ClCompile Include="App\shader-nes\empty.hlsl" />
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
+    <ClCompile Include="src\Mappers\MapperNrom.cpp" />
     <ClCompile Include="src\RomData_In.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Ram.cpp" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Cartridge.h" />
+    <ClInclude Include="include\IMapper.h" />
     <ClInclude Include="include\RomData.h" />
     <ClInclude Include="include\Forward.h" />
     <ClInclude Include="include\Hardware.h" />
@@ -145,6 +147,8 @@
     <ClInclude Include="include\Ppu.h" />
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="src\Cartridge_In.h" />
+    <ClInclude Include="src\Mappers\MapperEmpty.h" />
+    <ClInclude Include="src\Mappers\MapperNrom.h" />
     <ClInclude Include="src\RomData_In.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\stdafx.h" />

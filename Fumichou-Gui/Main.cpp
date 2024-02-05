@@ -10,11 +10,17 @@ void Main()
 	auto args = System::GetCommandLineArgs();
 
 	FilePath romPath = args.size() >= 2 ? args[1] : U"";
-	if (not FileSystem::Exists(romPath)) romPath = Dialog::OpenFile().value_or(U"");
+	if (not FileSystem::Exists(romPath))
+	{
+		romPath = Dialog::OpenFile({}, FileSystem::CurrentDirectory() + U"rom").
+			value_or(U"");
+	}
 
 	Console.open();
 	Nes::HwFrame frame{};
 	frame.LoadRomFile(romPath);
+
+	Console.writeln(U"Process started.");
 
 	while (System::Update())
 	{

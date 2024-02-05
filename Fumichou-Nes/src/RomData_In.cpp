@@ -36,7 +36,7 @@ namespace Nes
 		if (GetBits<3>(header[6])) self.m_nameTableMirror = NameTableMirror::FourScreen;
 		else self.m_nameTableMirror = GetBits<0>(header[6]) ? NameTableMirror::Horizontal : NameTableMirror::Vertical;
 
-		self.m_mapperNumber = MapperNumber(GetBits<4, 7>(header[6]) | (GetBits<4, 7>(header[7]) << 4));
+		self.m_mapperNumber = MapperNumber8(GetBits<4, 7>(header[6]) | (GetBits<4, 7>(header[7]) << 4));
 
 		self.m_extendedRam = GetBits<1>(header[6]);
 

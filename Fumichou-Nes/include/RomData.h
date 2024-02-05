@@ -13,7 +13,7 @@ namespace Nes
 		FourScreen,
 	};
 
-	class MapperNumber : public EnumValue<uint8>
+	class MapperNumber8 : public EnumValue<uint8>
 	{
 		using EnumValue::EnumValue;
 	};
@@ -31,7 +31,7 @@ namespace Nes
 	public:
 		const PrgRom& GetPrg() const { return m_prgRom; }
 		const ChrRom& GetChr() const { return m_chrRom; }
-		MapperNumber GetMapperNumber() const { return m_mapperNumber; }
+		MapperNumber8 GetMapperNumber() const { return m_mapperNumber; }
 		NameTableMirror GetNameTableMirror() const { return m_nameTableMirror; }
 
 		class In;
@@ -40,7 +40,7 @@ namespace Nes
 		PrgRom m_prgRom{};
 		ChrRom m_chrRom{};
 		NameTableMirror m_nameTableMirror{};
-		MapperNumber m_mapperNumber{};
+		MapperNumber8 m_mapperNumber{};
 		bool m_extendedRam{};
 	};
 }

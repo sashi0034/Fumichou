@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "IMapper.h"
 #include "RomData.h"
 
 namespace Nes
@@ -10,5 +11,6 @@ namespace Nes
 
 	private:
 		RomData m_romData{};
+		std::unique_ptr<IMapper> m_mapper{};
 	};
 }
