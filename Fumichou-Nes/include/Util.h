@@ -153,14 +153,18 @@ namespace Nes::Util
 		static_assert(std::is_integral<T>::value);
 
 	public:
-		const T base;
-		const T end;
-
-		explicit consteval AddrRange(T baseAddr, T endAddr) : base{baseAddr}, end{endAddr}
+		explicit consteval AddrRange(T baseAddr, T endAddr) : m_base{baseAddr}, m_end{endAddr}
 		{
 			if (baseAddr >= endAddr) throw std::logic_error("Base should be less than end.");
 		}
 
-		bool IsBetween(T addr) const { return base <= addr && addr <= end; }
+		bool IsBetween(T addr) const { return m_base <= addr && addr <= m_end; }
+
+		constexpr T base() const { return m_base; }
+		constexpr T end() const { return m_end; }
+
+	private:
+		T m_base;
+		T m_end;
 	};
 }
