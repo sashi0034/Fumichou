@@ -3,34 +3,36 @@
 
 #include "Logger.h"
 #include "RomData_In.h"
-#include "Mappers/MapperEmpty.h"
-#include "Mappers/MapperNrom.h"
+#include "Boards/BoardNrom.h"
 
 struct Nes::Cartridge::In::Impl
 {
 	static bool LoadRomFile(Cartridge& self, FilePathView romPath)
 	{
-		if (not RomData::In::LoadRomFile(self.m_romData, romPath)) return false;
+		auto rom = RomData();
+		if (not RomData::In::LoadRomFile(rom, romPath)) return false;
 
-		self.m_mapper = createMapper(self);
-		self.m_mapper->Initialize(self.m_romData);
+		self.m_mapper = createBoard(rom);
+		self.m_mapper->Initialize();
+
+		if (not self.m_mapper) return false;
 
 		return true;
 	}
 
 private:
 	[[nodiscard]]
-	static std::unique_ptr<IMapper> createMapper(const Cartridge& self)
+	static std::unique_ptr<BoardBase> createBoard(const RomData& rom)
 	{
 		// https://www.nesdev.org/wiki/Mapper
-		switch (const auto mapper = self.m_romData.GetMapperNumber())
+		switch (const auto mapper = rom.GetMapperNumber())
 		{
 		case 0:
-			return std::make_unique<MapperNrom>();
+			return CreateBoardNrom(rom);
 
 		default:
 			Logger::Error(fmt::format("Unsupported mapper: {}", mapper));
-			return std::make_unique<MapperEmpty>();
+			return CreateBoardNrom(rom);
 		}
 	}
 };

@@ -1,6 +1,5 @@
 ﻿#pragma once
-#include "IMapper.h"
-#include "RomData.h"
+#include "BoardBase.h"
 
 namespace Nes
 {
@@ -10,7 +9,6 @@ namespace Nes
 		class In;
 
 	private:
-		RomData m_romData{};
-		std::unique_ptr<IMapper> m_mapper{};
+		std::unique_ptr<BoardBase> m_mapper{};
 	};
 }

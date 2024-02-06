@@ -24,7 +24,7 @@ namespace Nes
 		return {
 			.desc = "Invalid write access",
 			.ctx = nullptr,
-			.func = [](void* hw, addr16 addr, uint8 value)
+			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
 				Logger::Abort();
 			},
@@ -46,7 +46,7 @@ namespace Nes
 		m_writeMap.fill({
 			.desc = "(Unmapped)",
 			.ctx = nullptr,
-			.func = [](void* hw, addr16 addr, uint8 value)
+			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
 				Logger::Abort();
 			},
