@@ -13,6 +13,7 @@ struct Nes::Cartridge::In::Impl
 		if (not RomData::In::LoadRomFile(self.m_romData, romPath)) return false;
 
 		self.m_mapper = createMapper(self);
+		self.m_mapper->Initialize(self.m_romData);
 
 		return true;
 	}

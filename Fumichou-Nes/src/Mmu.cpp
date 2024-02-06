@@ -1,15 +1,42 @@
 #include "stdafx.h"
 #include "Mmu.h"
 
+#include "Hardware.h"
 #include "Logger.h"
 
 namespace Nes
 {
+	MappedRead MappedRead::Invalid()
+	{
+		return {
+			.desc = "Invalid read access",
+			.ctx = nullptr,
+			.func = [](const void* ctx, addr16 addr)
+			{
+				Logger::Abort();
+				return uint8();
+			},
+		};
+	}
+
+	MappedWrite MappedWrite::Invalid()
+	{
+		return {
+			.desc = "Invalid write access",
+			.ctx = nullptr,
+			.func = [](void* hw, addr16 addr, uint8 value)
+			{
+				Logger::Abort();
+			},
+		};
+	}
+
 	Mmu::Mmu()
 	{
 		m_readMap.fill({
 			.desc = "(Unmapped)",
-			.func = [](const Hardware& hw, addr16 addr)
+			.ctx = nullptr,
+			.func = [](const void* ctx, addr16 addr)
 			{
 				Logger::Abort();
 				return uint8();
@@ -18,7 +45,8 @@ namespace Nes
 
 		m_writeMap.fill({
 			.desc = "(Unmapped)",
-			.func = [](Hardware& hw, addr16 addr, uint8 value)
+			.ctx = nullptr,
+			.func = [](void* hw, addr16 addr, uint8 value)
 			{
 				Logger::Abort();
 			},

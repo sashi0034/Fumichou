@@ -6,18 +6,24 @@ namespace Nes
 {
 	struct MappedRead
 	{
-		using func_type = uint8(*)(const Hardware& hw, addr16 addr);
+		using func_type = uint8(*)(const void* ctx, addr16 addr);
 
 		std::string_view desc;
+		const void* ctx;
 		func_type func;
+
+		static MappedRead Invalid();
 	};
 
 	struct MappedWrite
 	{
-		using func_type = void (*)(Hardware& hw, addr16 addr, uint8 value);
+		using func_type = void (*)(void* ctx, addr16 addr, uint8 value);
 
 		std::string_view desc;
+		void* ctx;
 		func_type func;
+
+		static MappedWrite Invalid();
 	};
 
 	class Mmu

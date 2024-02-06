@@ -6,9 +6,14 @@ namespace Nes
 	class MapperNrom final : public IMapper
 	{
 	public:
-		MappedRead MapReadPrg(addr16 addr) override;
-		MappedWrite MapWritePrg(addr16 addr) override;
-		MappedRead MapReadChr(addr16 addr) override;
-		MappedWrite MapPrgWriteChr(addr16 addr) override;
+		void Initialize(const RomData& rom) override;
+		MappedRead MapReadPrg(const RomData& rom, addr16 addr) override;
+		MappedWrite MapWritePrg(RomData& rom, addr16 addr) override;
+		MappedRead MapReadChr(const RomData& rom, addr16 addr) override;
+		MappedWrite MapPrgWriteChr(RomData& rom, addr16 addr) override;
+
+	private:
+		bool m_oneBank{};
+		Array<uint8> m_chrRam{};
 	};
 }

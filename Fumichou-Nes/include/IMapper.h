@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Mmu.h"
+#include "RomData.h"
 
 namespace Nes
 {
@@ -9,10 +10,12 @@ namespace Nes
 	public:
 		virtual ~IMapper() = default;
 
-		virtual MappedRead MapReadPrg(addr16 addr) = 0;
-		virtual MappedWrite MapWritePrg(addr16 addr) = 0;
+		virtual void Initialize(const RomData& rom) = 0;
 
-		virtual MappedRead MapReadChr(addr16 addr) = 0;
-		virtual MappedWrite MapPrgWriteChr(addr16 addr) = 0;
+		virtual MappedRead MapReadPrg(const RomData& rom, addr16 addr) = 0;
+		virtual MappedWrite MapWritePrg(RomData& rom, addr16 addr) = 0;
+
+		virtual MappedRead MapReadChr(const RomData& rom, addr16 addr) = 0;
+		virtual MappedWrite MapPrgWriteChr(RomData& rom, addr16 addr) = 0;
 	};
 }

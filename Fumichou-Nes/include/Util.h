@@ -147,8 +147,8 @@ namespace Nes::Util
 		T value;
 	};
 
-	template <typename T>
-	class AddressRange
+	template <typename T = uint32>
+	class AddrRange
 	{
 		static_assert(std::is_integral<T>::value);
 
@@ -156,7 +156,7 @@ namespace Nes::Util
 		const T base;
 		const T end;
 
-		explicit consteval AddressRange(T baseAddr, T endAddr) : base{baseAddr}, end{endAddr}
+		explicit consteval AddrRange(T baseAddr, T endAddr) : base{baseAddr}, end{endAddr}
 		{
 			if (baseAddr >= endAddr) throw std::logic_error("Base should be less than end.");
 		}
