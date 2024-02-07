@@ -7,6 +7,19 @@
 #include "Dui/DuiScene.h"
 #include "Utils\Utils.h"
 
+namespace
+{
+	void setupWindow()
+	{
+		Window::SetTitle(U"Fumichou");
+		Window::SetStyle(WindowStyle::Sizable);
+		Window::Resize(1280, 720);
+		Scene::SetResizeMode(ResizeMode::Actual);
+		Scene::SetBackground(ColorF{0.3});
+		System::SetTerminationTriggers(UserAction::CloseButtonClicked);
+	}
+}
+
 void Main()
 {
 	Addon::Register<ImGuiSivAddon>(U"ImGui");
@@ -17,12 +30,7 @@ void Main()
 		Utils::WaitAnyKeyOnConsole();
 	}
 
-	Window::SetTitle(U"Fumichou");
-	Window::SetStyle(WindowStyle::Sizable);
-	Window::Resize(1280, 720);
-	Scene::SetResizeMode(ResizeMode::Actual);
-	Scene::SetBackground(ColorF{U"#343541"});
-	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
+	setupWindow();
 
 	auto args = System::GetCommandLineArgs();
 

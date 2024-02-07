@@ -9,7 +9,7 @@ struct ImGuiSivAddon::Impl
 	bool m_firstFrame{true};
 };
 
-ImGuiSivAddon::ImGuiSivAddon() :
+ImGuiSivAddon::ImGuiSivAddon():
 	p_impl(std::make_shared<Impl>())
 {
 }
@@ -59,7 +59,7 @@ ImGuiSivAddon::~ImGuiSivAddon()
 
 struct ImS3dTexture::Impl
 {
-	explicit Impl(const s3d::Texture& texture): m_texture(texture)
+	explicit Impl(const Texture& texture): m_texture(texture)
 	{
 		m_id = ImGui_ImplS3d_RegisterTexture(texture);
 	}
@@ -69,21 +69,21 @@ struct ImS3dTexture::Impl
 		ImGui_ImplS3d_UnregisterTexture(m_texture);
 	}
 
-	s3d::Texture m_texture;
+	Texture m_texture;
 	ImTextureID m_id;
 };
 
-ImS3dTexture::ImS3dTexture(const s3d::Texture& texture) : m_impl(std::make_shared<Impl>(texture))
+ImS3dTexture::ImS3dTexture(const Texture& texture) : m_impl(std::make_shared<Impl>(texture))
 {
 }
 
-s3d::Texture& ImS3dTexture::GetTexture() const
+Texture& ImS3dTexture::GetTexture() const
 {
 	return m_impl->m_texture;
 }
 
-s3d::Optional<ImTextureID> ImS3dTexture::GetId() const
+Optional<ImTextureID> ImS3dTexture::GetId() const
 {
-	if (m_impl->m_id == nullptr) return s3d::none;
+	if (m_impl->m_id == nullptr) return none;
 	return m_impl->m_id;
 }

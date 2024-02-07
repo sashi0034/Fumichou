@@ -276,10 +276,6 @@ bool ImGui_ImplS3d_Init()
 	io.SetClipboardTextFn = &SetClipboardTextCallback;
 	io.SetPlatformImeDataFn = &SetImeDataCallback;
 
-	constexpr int defaultFontSize = 24;
-	const auto fontScale = 1.25 / Window::GetState().scaling;
-	io.Fonts->AddFontFromFileTTF("asset/font/DotGothic16/DotGothic16-Regular.ttf", defaultFontSize * fontScale);
-
 	return true;
 }
 
