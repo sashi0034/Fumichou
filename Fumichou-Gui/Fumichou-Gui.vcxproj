@@ -75,7 +75,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <BuildStlModules>false</BuildStlModules>
-      <AdditionalIncludeDirectories>../Fumichou-Nes/include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../ExternalLibraries;../Fumichou-Nes/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -104,7 +104,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/s
       <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <BuildStlModules>false</BuildStlModules>
-      <AdditionalIncludeDirectories>../Fumichou-Nes/include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../ExternalLibraries;../Fumichou-Nes/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -407,6 +407,9 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/s
     <Content Include="App\icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ExternalLibraries\ExternalLibraries.vcxproj">
+      <Project>{1a845e97-8695-4bb1-81a1-88178480968c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Fumichou-Nes\Fumichou-Nes.vcxproj">
       <Project>{3fdaad63-00fc-4ada-be87-cb94f26d6c08}</Project>
     </ProjectReference>
