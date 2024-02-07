@@ -3,6 +3,7 @@
 
 #include "Cartridge.h"
 #include "Cartridge_In.h"
+#include "Mmu_In.h"
 
 struct Nes::HwFrame::Impl
 {
@@ -19,6 +20,7 @@ namespace Nes
 	void HwFrame::LoadRomFile(FilePathView romPath)
 	{
 		Cartridge::In::LoadRomFile(p_impl->m_hardware.GetCartridge(), romPath);
+		Mmu::In::MapWholeAddr(p_impl->m_hardware);
 	}
 
 	const Hardware& HwFrame::GetEnv()

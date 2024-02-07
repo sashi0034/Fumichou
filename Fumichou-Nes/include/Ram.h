@@ -9,7 +9,7 @@ namespace Nes
 	{
 	};
 
-	// カートリッジの外部RAM [0x8000, 0xFFFF] (ミラーあり?)
+	// カートリッジの外部RAM [0x6000, 0x7FFF]
 	class ExtraRam : public std::array<uint8, 0x2000>
 	{
 	};

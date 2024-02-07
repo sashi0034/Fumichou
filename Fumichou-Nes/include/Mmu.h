@@ -12,7 +12,9 @@ namespace Nes
 		const void* ctx;
 		func_type func;
 
+		static MappedRead Unmapped();
 		static MappedRead Invalid();
+		static MappedRead Unsupported(std::string_view desc);
 	};
 
 	struct MappedWrite
@@ -23,16 +25,22 @@ namespace Nes
 		void* ctx;
 		func_type func;
 
+		static MappedWrite Unmapped();
 		static MappedWrite Invalid();
+		static MappedWrite Unsupported(std::string_view desc);
 	};
 
 	class Mmu
 	{
 	public:
+		class In;
 		Mmu();
 
 	private:
-		std::array<MappedRead, AddrSize_0x10000> m_readMap{};
-		std::array<MappedWrite, AddrSize_0x10000> m_writeMap{};
+		std::array<MappedRead, AddrSize_0x10000> m_cpuRead{};
+		std::array<MappedWrite, AddrSize_0x10000> m_cpuWrite{};
+
+		std::array<MappedRead, AddrSize_0x10000> m_ppuRead{};
+		std::array<MappedWrite, AddrSize_0x10000> m_ppuWrite{};
 	};
 }
