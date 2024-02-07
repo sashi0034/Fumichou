@@ -119,6 +119,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dui\DuiMemoryViewer.cpp" />
     <ClCompile Include="Dui\DuiScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -319,6 +320,8 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dui\DuiForward.h" />
+    <ClInclude Include="Dui\DuiMemoryViewer.h" />
     <ClInclude Include="Dui\DuiScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Utils\Utils.h" />

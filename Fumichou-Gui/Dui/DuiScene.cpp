@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "DuiScene.h"
 
+#include "DuiMemoryViewer.h"
 #include "Utils/Utils.h"
 
 using namespace Utils;
@@ -8,11 +9,17 @@ using namespace Utils;
 struct Dui::DuiScene::Impl
 {
 	ImS3dTexture m_display{Texture(U"🤖"_emoji)};
+	DuiMemoryViewer m_internalRamViewer{};
+	DuiMemoryViewer m_prgRomViewer{};
+	DuiMemoryViewer m_chrRomViewer{};
 
 	void Update(Nes::HwFrame& nes)
 	{
 		updateDocking();
 		updateMainDisplay(nes);
+		m_internalRamViewer.Update("Internal RAM", nes.GetEnv().GetRam().GetInternalRam());
+		m_prgRomViewer.Update("PRG-ROM", nes.GetEnv().GetCartridge().GetRomData().GetPrg());
+		m_chrRomViewer.Update("CHR-ROM", nes.GetEnv().GetCartridge().GetRomData().GetChr());
 	}
 
 private:
