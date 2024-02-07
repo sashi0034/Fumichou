@@ -122,6 +122,7 @@
     <ClCompile Include="src\Cartridge_In.cpp" />
     <ClCompile Include="src\Boards\BoardNrom.cpp" />
     <ClCompile Include="src\Mmu_In.cpp" />
+    <ClCompile Include="src\Mos6502_In.cpp" />
     <ClCompile Include="src\RomData_In.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Ram.cpp" />
@@ -150,6 +151,8 @@
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />
     <ClInclude Include="src\Mmu_In.h" />
+    <ClInclude Include="src\Mos6502Forward.h" />
+    <ClInclude Include="src\Mos6502_In.h" />
     <ClInclude Include="src\RomData_In.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\stdafx.h" />

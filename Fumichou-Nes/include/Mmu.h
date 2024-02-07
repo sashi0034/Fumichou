@@ -45,6 +45,9 @@ namespace Nes
 		const MappedReaderArray& GetPpuRead() const { return m_ppuRead; }
 		const MappedWriterArray& GetPpuWrite() const { return m_ppuWrite; }
 
+		uint8 ReadPrg8(addr16 addr) const;
+		uint16 ReadPrg16(addr16 addr) const;
+
 	private:
 		MappedReaderArray m_cpuRead{};
 		MappedWriterArray m_cpuWrite{};

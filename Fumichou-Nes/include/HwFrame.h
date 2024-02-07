@@ -8,7 +8,8 @@ namespace Nes
 	public:
 		HwFrame();
 
-		void LoadRomFile(FilePathView romPath);
+		[[nodiscard]]
+		bool StartRomFile(FilePathView romPath);
 
 		const Hardware& GetEnv();
 

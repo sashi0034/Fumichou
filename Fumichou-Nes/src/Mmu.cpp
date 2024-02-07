@@ -89,4 +89,14 @@ namespace Nes
 		m_ppuRead.fill(MappedRead::Unmapped());
 		m_ppuWrite.fill(MappedWrite::Unmapped());
 	}
+
+	uint8 Mmu::ReadPrg8(addr16 addr) const
+	{
+		return m_cpuRead[addr].func(m_cpuRead[addr].ctx, addr);
+	}
+
+	uint16 Mmu::ReadPrg16(addr16 addr) const
+	{
+		return ReadPrg8(addr) | (ReadPrg8(addr + 1) << 8);
+	}
 }

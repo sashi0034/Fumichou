@@ -43,7 +43,10 @@ void Main()
 
 	Console.open();
 	Nes::HwFrame frame{};
-	frame.LoadRomFile(romPath);
+	if (frame.StartRomFile(romPath) == false)
+	{
+		Utils::WaitAnyKeyOnConsole();
+	}
 
 	Console.writeln(U"Process started.");
 

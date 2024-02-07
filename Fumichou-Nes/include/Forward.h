@@ -13,6 +13,8 @@ namespace Nes
 
 	using addr16 = uint16;
 
+	using CycleCount = int;
+
 	class Hardware;
 
 	constexpr uint32 AddrSize_0x10000 = 0x10000;
