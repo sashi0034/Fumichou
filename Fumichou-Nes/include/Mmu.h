@@ -34,13 +34,22 @@ namespace Nes
 	{
 	public:
 		class In;
+
+		using read_array = std::array<MappedRead, AddrSize_0x10000>;
+		using write_array = std::array<MappedWrite, AddrSize_0x10000>;
+
 		Mmu();
 
-	private:
-		std::array<MappedRead, AddrSize_0x10000> m_cpuRead{};
-		std::array<MappedWrite, AddrSize_0x10000> m_cpuWrite{};
+		const read_array& GetCpuRead() const { return m_cpuRead; }
+		const write_array& GetCpuWrite() const { return m_cpuWrite; }
+		const read_array& GetPpuRead() const { return m_ppuRead; }
+		const write_array& GetPpuWrite() const { return m_ppuWrite; }
 
-		std::array<MappedRead, AddrSize_0x10000> m_ppuRead{};
-		std::array<MappedWrite, AddrSize_0x10000> m_ppuWrite{};
+	private:
+		read_array m_cpuRead{};
+		write_array m_cpuWrite{};
+
+		read_array m_ppuRead{};
+		write_array m_ppuWrite{};
 	};
 }

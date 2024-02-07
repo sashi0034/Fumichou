@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "DuiScene.h"
 
+#include "DuiMappingViewer.h"
 #include "DuiMemoryViewer.h"
 #include "Utils/Utils.h"
 
@@ -8,18 +9,30 @@ using namespace Utils;
 
 struct Dui::DuiScene::Impl
 {
-	ImS3dTexture m_display{Texture(U"🤖"_emoji)};
+	ImS3dTexture m_display{Texture(U"🫥"_emoji)};
+
 	DuiMemoryViewer m_internalRamViewer{};
 	DuiMemoryViewer m_prgRomViewer{};
 	DuiMemoryViewer m_chrRomViewer{};
+
+	DuiMappingViewer m_cpuReadBus{};
+	DuiMappingViewer m_cpuWriteBus{};
+	DuiMappingViewer m_ppuReadBus{};
+	DuiMappingViewer m_ppuWriteBus{};
 
 	void Update(Nes::HwFrame& nes)
 	{
 		updateDocking();
 		updateMainDisplay(nes);
+
 		m_internalRamViewer.Update("Internal RAM", nes.GetEnv().GetRam().GetInternalRam());
 		m_prgRomViewer.Update("PRG-ROM", nes.GetEnv().GetCartridge().GetRomData().GetPrg());
 		m_chrRomViewer.Update("CHR-ROM", nes.GetEnv().GetCartridge().GetRomData().GetChr());
+
+		m_cpuReadBus.Update("CPU R", &nes.GetEnv().GetMmu().GetCpuRead());
+		m_cpuWriteBus.Update("CPU W", &nes.GetEnv().GetMmu().GetCpuWrite());
+		m_ppuReadBus.Update("PPU R", &nes.GetEnv().GetMmu().GetPpuRead());
+		m_ppuWriteBus.Update("PPU W", &nes.GetEnv().GetMmu().GetPpuWrite());
 	}
 
 private:

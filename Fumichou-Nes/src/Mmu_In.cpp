@@ -17,7 +17,7 @@ private:
 	{
 		auto&& ram = hw.GetRam();
 
-		for (const auto addr : Range(0, 0x7FFF))
+		for (const auto addr : Range(0, 0x7FF))
 		{
 			cpuRead[addr] = {
 				.desc = "Internal RAM",
@@ -30,7 +30,7 @@ private:
 			};
 		}
 
-		for (const auto addr : Range(0x8000, 0x1FFF))
+		for (const auto addr : Range(0x800, 0x1FFF))
 		{
 			cpuRead[addr] = {
 				.desc = "Mirrors of internal RAM",
