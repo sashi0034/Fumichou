@@ -8,9 +8,12 @@ namespace Nes
 	public:
 		class In;
 
-		const RomData& GetRomData() const { return m_mapper->GetRom(); }
+		BoardBase& GetBoard() { return *m_board; }
+		const BoardBase& GetBoard() const { return *m_board; }
+
+		const RomData& GetRomData() const { return m_board->GetRom(); }
 
 	private:
-		std::unique_ptr<BoardBase> m_mapper{};
+		std::unique_ptr<BoardBase> m_board{};
 	};
 }

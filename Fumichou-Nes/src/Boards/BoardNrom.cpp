@@ -27,7 +27,7 @@ public:
 			if (AddrRange(0x8000, 0xBFFF).IsBetween(addr))
 			{
 				return MappedRead{
-					.desc = "First 16 KiB of m_rom",
+					.desc = "First 16 KiB of ROM",
 					.ctx = &m_rom,
 					.func = [](const void* ctx, addr16 addr)
 					{
@@ -39,7 +39,7 @@ public:
 			if (AddrRange(0xC000, 0xFFFF).IsBetween(addr))
 			{
 				return MappedRead{
-					.desc = "Mirrored first 16 KiB of m_rom",
+					.desc = "Mirrored first 16 KiB of ROM",
 					.ctx = &m_rom,
 					.func = [](const void* ctx, addr16 addr)
 					{
@@ -54,7 +54,7 @@ public:
 			if (AddrRange(0x8000, 0xFFFF).IsBetween(addr))
 			{
 				return MappedRead{
-					.desc = "PRG-m_rom",
+					.desc = "PRG-ROM",
 					.ctx = &m_rom,
 					.func = [](const void* ctx, addr16 addr)
 					{
@@ -79,7 +79,7 @@ public:
 		if (m_chrRam.empty())
 		{
 			return MappedRead{
-				.desc = "CHR-m_rom",
+				.desc = "CHR-ROM",
 				.ctx = &m_rom,
 				.func = [](const void* ctx, addr16 addr)
 				{

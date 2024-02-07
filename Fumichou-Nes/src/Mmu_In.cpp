@@ -13,7 +13,7 @@ struct Nes::Mmu::In::Impl
 	}
 
 private:
-	static void mapCpuRead(Hardware& hw, std::array<MappedRead, AddrSize_0x10000>& cpuRead)
+	static void mapCpuRead(Hardware& hw, MappedReaderArray& cpuRead)
 	{
 		auto&& ram = hw.GetRam();
 
@@ -55,6 +55,61 @@ private:
 					return ram.GetExternalRam()[addr - 0x6000];
 				},
 			};
+		}
+
+		for (const auto addr : Range(0x8000, 0xFFFF))
+		{
+			cpuRead[addr] = hw.GetCartridge().GetBoard().MapReadPrg(addr);
+		}
+	}
+
+	static void mapCpuWrite(Hardware& hw, MappedWriterArray& cpuWrite)
+	{
+		auto&& ram = hw.GetRam();
+
+		for (const auto addr : Range(0, 0x7FF))
+		{
+			cpuWrite[addr] = {
+				.desc = "Internal RAM",
+				.ctx = &ram,
+				.func = [](void* ctx, addr16 addr, uint8 value)
+				{
+					auto&& ram = *static_cast<Ram*>(ctx);
+					ram.GetInternalRam()[addr] = value;
+				},
+			};
+		}
+
+		for (const auto addr : Range(0x800, 0x1FFF))
+		{
+			cpuWrite[addr] = {
+				.desc = "Mirrors of internal RAM",
+				.ctx = &ram,
+				.func = [](void* ctx, addr16 addr, uint8 value)
+				{
+					auto&& ram = *static_cast<Ram*>(ctx);
+					ram.GetInternalRam()[addr & 0x7FF] = value;
+				},
+			};
+		}
+
+		for (const auto addr : Range(0x6000, 0x7FFF))
+		{
+			// FIXME: 外部RAMを持っていないカートリッジもある
+			cpuWrite[addr] = {
+				.desc = "Extra RAM on cartridge",
+				.ctx = &ram,
+				.func = [](void* ctx, addr16 addr, uint8 value)
+				{
+					auto&& ram = *static_cast<Ram*>(ctx);
+					ram.GetExternalRam()[addr - 0x6000] = value;
+				},
+			};
+		}
+
+		for (const auto addr : Range(0x8000, 0xFFFF))
+		{
+			cpuWrite[addr] = hw.GetCartridge().GetBoard().MapWritePrg(addr);
 		}
 	}
 };

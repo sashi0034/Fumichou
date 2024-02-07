@@ -13,13 +13,13 @@ namespace Nes
 
 		virtual ~BoardBase() = default;
 
-		virtual void Initialize() =0;
+		virtual void Initialize() = 0;
 
-		virtual MappedRead MapReadPrg(addr16 addr) =0;
-		virtual MappedWrite MapWritePrg(addr16 addr) =0;
+		[[nodiscard]] virtual MappedRead MapReadPrg(addr16 addr) = 0;
+		[[nodiscard]] virtual MappedWrite MapWritePrg(addr16 addr) = 0;
 
-		virtual MappedRead MapReadChr(addr16 addr) =0;
-		virtual MappedWrite MapPrgWriteChr(addr16 addr) =0;
+		[[nodiscard]] virtual MappedRead MapReadChr(addr16 addr) = 0;
+		[[nodiscard]] virtual MappedWrite MapPrgWriteChr(addr16 addr) = 0;
 
 	protected:
 		RomData m_rom{};

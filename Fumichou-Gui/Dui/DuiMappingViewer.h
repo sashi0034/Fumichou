@@ -3,7 +3,7 @@
 
 namespace Dui
 {
-	using MappedArrayView = std::variant<const Nes::Mmu::read_array*, const Nes::Mmu::write_array*>;
+	using MappedArrayView = std::variant<const Nes::MappedReaderArray*, const Nes::MappedWriterArray*>;
 
 	class DuiMappingViewer
 	{

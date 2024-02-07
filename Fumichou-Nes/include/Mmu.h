@@ -30,26 +30,26 @@ namespace Nes
 		static MappedWrite Unsupported(std::string_view desc);
 	};
 
+	using MappedReaderArray = std::array<MappedRead, AddrSize_0x10000>;
+	using MappedWriterArray = std::array<MappedWrite, AddrSize_0x10000>;
+
 	class Mmu
 	{
 	public:
 		class In;
 
-		using read_array = std::array<MappedRead, AddrSize_0x10000>;
-		using write_array = std::array<MappedWrite, AddrSize_0x10000>;
-
 		Mmu();
 
-		const read_array& GetCpuRead() const { return m_cpuRead; }
-		const write_array& GetCpuWrite() const { return m_cpuWrite; }
-		const read_array& GetPpuRead() const { return m_ppuRead; }
-		const write_array& GetPpuWrite() const { return m_ppuWrite; }
+		const MappedReaderArray& GetCpuRead() const { return m_cpuRead; }
+		const MappedWriterArray& GetCpuWrite() const { return m_cpuWrite; }
+		const MappedReaderArray& GetPpuRead() const { return m_ppuRead; }
+		const MappedWriterArray& GetPpuWrite() const { return m_ppuWrite; }
 
 	private:
-		read_array m_cpuRead{};
-		write_array m_cpuWrite{};
+		MappedReaderArray m_cpuRead{};
+		MappedWriterArray m_cpuWrite{};
 
-		read_array m_ppuRead{};
-		write_array m_ppuWrite{};
+		MappedReaderArray m_ppuRead{};
+		MappedWriterArray m_ppuWrite{};
 	};
 }

@@ -12,10 +12,10 @@ struct Nes::Cartridge::In::Impl
 		auto rom = RomData();
 		if (not RomData::In::LoadRomFile(rom, romPath)) return false;
 
-		self.m_mapper = createBoard(rom);
-		self.m_mapper->Initialize();
+		self.m_board = createBoard(rom);
+		self.m_board->Initialize();
 
-		if (not self.m_mapper) return false;
+		if (not self.m_board) return false;
 
 		return true;
 	}
