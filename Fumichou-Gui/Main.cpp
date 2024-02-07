@@ -1,9 +1,23 @@
-﻿# include <Siv3D.hpp> // Siv3D v0.6.12
+﻿#include "stdafx.h"
+
+#define CATCH_CONFIG_RUNNER
+#include <ThirdParty/Catch2/catch.hpp>
 
 #include "HwFrame.h"
+#include "Utils\Utils.h"
+
+using namespace Gui;
 
 void Main()
 {
+	Addon::Register<ImGuiSiv3DAddon>(U"ImGui");
+
+	const bool isPassedTests = Catch::Session().run() == 0;
+	if (!isPassedTests)
+	{
+		Utils::WaitAnyKeyOnConsole();
+	}
+
 	Window::SetTitle(U"Fumichou");
 	Scene::SetBackground(ColorF{0.7});
 

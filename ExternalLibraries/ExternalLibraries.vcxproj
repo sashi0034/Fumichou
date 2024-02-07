@@ -75,6 +75,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BuildStlModules>false</BuildStlModules>
       <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,6 +103,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <BuildStlModules>false</BuildStlModules>
       <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -118,7 +120,29 @@
     <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="App\.gitignore" />
+    <Content Include="ImGuiSiv3DAddon\credit.txt" />
+    <Content Include="imgui\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ImGuiSiv3DAddon\ImGuiSiv3DAddon.cpp" />
+    <ClCompile Include="ImGuiSiv3DAddon\imgui_impl_s3d.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ImGuiSiv3DAddon\ImGuiSiv3DAddon.hpp" />
+    <ClInclude Include="ImGuiSiv3DAddon\imgui_impl_s3d.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
