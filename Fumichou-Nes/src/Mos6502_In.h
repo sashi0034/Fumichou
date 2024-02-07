@@ -9,6 +9,8 @@ namespace Nes
 		static void Reset(Hardware& hw);
 		static CycleCount Step(Hardware& hw);
 
+		class Op;
+
 	private:
 		class Impl;
 	};
