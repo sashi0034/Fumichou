@@ -16,7 +16,7 @@ struct Dui::DuiMappingViewer::Impl
 		}
 
 		// 表示する開始と終了のアドレスを持つスライダーを作成
-		constexpr int32 showPageSize = 1024;
+		constexpr int32 showPageSize = 512;
 
 		if (ImGui::Button("Back"))
 		{
@@ -29,11 +29,12 @@ struct Dui::DuiMappingViewer::Impl
 		}
 
 		// ベースアドレスの16進数表示用の一時変数を定義
-		char baseAddressStr[10];
-		sprintf_s(baseAddressStr, "%08zx", m_baseAddr);
+		char baseAddressStr[8];
+		m_baseAddr = Clamp(m_baseAddr, 0, 0xFFFF);
+		sprintf_s(baseAddressStr, "%04zx", m_baseAddr);
 
 		// 16進数での入力を受け付けるテキストボックスを作成
-		ImGui::PushItemWidth(Size_120);
+		ImGui::PushItemWidth(Size_80);
 		if (ImGui::InputText(
 			"Base address",
 			baseAddressStr,
@@ -61,7 +62,7 @@ struct Dui::DuiMappingViewer::Impl
 			if (addr >= dataSize) break;
 
 			// アドレス表示
-			ImGui::TextColored(ImColorPurple, "%08zx:", addr);
+			ImGui::TextColored(ImColorPurple, "%04zx:", addr);
 			ImGui::SameLine();
 			const auto desc = std::visit([&](auto&& arg) { return (*arg)[addr].desc; }, mappedArray);
 			ImGui::TextColored(ImColorGreen, "%s", desc.data());

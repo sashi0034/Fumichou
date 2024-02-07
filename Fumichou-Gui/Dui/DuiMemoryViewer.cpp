@@ -2,6 +2,7 @@
 #include "DuiMemoryViewer.h"
 
 #include "DuiForward.h"
+#include "Forward.h"
 
 struct Dui::DuiMemoryViewer::Impl
 {
@@ -19,7 +20,7 @@ struct Dui::DuiMemoryViewer::Impl
 		}
 
 		// 表示する開始と終了のアドレスを持つスライダーを作成
-		constexpr int32 showPageSize = 1024;
+		const int32 showPageSize = memory.size() / 8;
 
 		if (ImGui::Button("Back"))
 		{
@@ -32,11 +33,12 @@ struct Dui::DuiMemoryViewer::Impl
 		}
 
 		// ベースアドレスの16進数表示用の一時変数を定義
-		char baseAddressStr[10];
-		sprintf_s(baseAddressStr, "%08zx", m_baseAddr);
+		char baseAddressStr[8];
+		m_baseAddr = Clamp(m_baseAddr, 0, 0xFFFF);
+		sprintf_s(baseAddressStr, "%04zx", m_baseAddr);
 
 		// 16進数での入力を受け付けるテキストボックスを作成
-		ImGui::PushItemWidth(Size_120);
+		ImGui::PushItemWidth(Size_80);
 		if (ImGui::InputText(
 			"Base address",
 			baseAddressStr,
@@ -60,7 +62,7 @@ struct Dui::DuiMemoryViewer::Impl
 		for (size_t addr = m_baseAddr; addr < m_baseAddr + showPageSize; addr += 16)
 		{
 			// アドレス表示
-			ImGui::TextColored(ImColorPurple, "%08zx:", addr);
+			ImGui::TextColored(ImColorPurple, "%04zx:", addr);
 
 			// 16進数データ表示
 			for (int i = 0; i < 16; i++)

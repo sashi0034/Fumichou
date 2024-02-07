@@ -17,5 +17,6 @@ namespace Dui
 	constexpr ImVec4 ImColorOrange = HexToImVec4(0xff7e01ff);
 
 	constexpr int Size_20 = 20;
+	constexpr int Size_80 = 80;
 	constexpr int Size_120 = 120;
 }
