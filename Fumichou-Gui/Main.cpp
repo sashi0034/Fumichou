@@ -4,13 +4,12 @@
 #include <ThirdParty/Catch2/catch.hpp>
 
 #include "HwFrame.h"
+#include "Dui/DuiScene.h"
 #include "Utils\Utils.h"
-
-using namespace Gui;
 
 void Main()
 {
-	Addon::Register<ImGuiSiv3DAddon>(U"ImGui");
+	Addon::Register<ImGuiSivAddon>(U"ImGui");
 
 	const bool isPassedTests = Catch::Session().run() == 0;
 	if (!isPassedTests)
@@ -19,7 +18,11 @@ void Main()
 	}
 
 	Window::SetTitle(U"Fumichou");
-	Scene::SetBackground(ColorF{0.7});
+	Window::SetStyle(WindowStyle::Sizable);
+	Window::Resize(1280, 720);
+	Scene::SetResizeMode(ResizeMode::Actual);
+	Scene::SetBackground(ColorF{U"#343541"});
+	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
 
 	auto args = System::GetCommandLineArgs();
 
@@ -36,8 +39,11 @@ void Main()
 
 	Console.writeln(U"Process started.");
 
+	Dui::DuiScene dui{};
+
 	while (System::Update())
 	{
+		dui.Update(frame);
 	}
 }
 

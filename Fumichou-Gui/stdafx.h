@@ -3,4 +3,4 @@
 #include <Siv3D.hpp>
 
 #include <imgui/imgui.h>
-#include <ImGuiSiv3DAddon/ImGuiSiv3DAddon.hpp>
+#include <ImGuiSivAddon/ImGuiSivAddon.hpp>

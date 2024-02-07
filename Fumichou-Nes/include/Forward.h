@@ -16,4 +16,8 @@ namespace Nes
 	class Hardware;
 
 	constexpr uint32 AddrSize_0x10000 = 0x10000;
+
+	constexpr uint32 DisplayWidth_256 = 256;
+	constexpr uint32 DisplayHeight_240 = 240;
+	constexpr Size Display_256x240{DisplayWidth_256, DisplayHeight_240};
 }

@@ -122,12 +122,12 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="App\.gitignore" />
-    <Content Include="ImGuiSiv3DAddon\credit.txt" />
+    <Content Include="ImGuiSivAddon\credit.txt" />
     <Content Include="imgui\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImGuiSiv3DAddon\ImGuiSiv3DAddon.cpp" />
-    <ClCompile Include="ImGuiSiv3DAddon\imgui_impl_s3d.cpp" />
+    <ClCompile Include="ImGuiSivAddon\ImGuiSivAddon.cpp" />
+    <ClCompile Include="ImGuiSivAddon\imgui_impl_s3d.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -135,8 +135,8 @@
     <ClCompile Include="imgui\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImGuiSiv3DAddon\ImGuiSiv3DAddon.hpp" />
-    <ClInclude Include="ImGuiSiv3DAddon\imgui_impl_s3d.h" />
+    <ClInclude Include="ImGuiSivAddon\ImGuiSivAddon.hpp" />
+    <ClInclude Include="ImGuiSivAddon\imgui_impl_s3d.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

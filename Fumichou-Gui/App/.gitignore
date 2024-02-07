@@ -2,4 +2,5 @@
 /*.lib
 /AS_DEBUG
 /example/*
-/shader-nes/*
+/asset/shader-nes/*
+/imgui.ini
