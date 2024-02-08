@@ -19,5 +19,5 @@ namespace Nes
 	const Mos6502Instruction& GetMos6502Instruction(uint8 opcode);
 
 	[[nodiscard]]
-	CycleCount GetMos6502OperationCycleCount(uint8 opcode);
+	CpuCycle GetMos6502OperationCycleCount(uint8 opcode);
 }

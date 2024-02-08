@@ -11,6 +11,8 @@ namespace Nes
 		[[nodiscard]]
 		bool StartRomFile(FilePathView romPath);
 
+		void ControlFrames();
+
 		const Hardware& GetEnv();
 
 	private:

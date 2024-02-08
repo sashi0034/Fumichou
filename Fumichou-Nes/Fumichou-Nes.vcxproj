@@ -152,6 +152,7 @@
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />
+    <ClInclude Include="src\HardwareConstants.h" />
     <ClInclude Include="src\Mmu_In.h" />
     <ClInclude Include="src\Mos6502Addressing.h" />
     <ClInclude Include="src\Mos6502Forward.h" />

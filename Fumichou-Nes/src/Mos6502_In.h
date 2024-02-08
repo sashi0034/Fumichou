@@ -7,7 +7,7 @@ namespace Nes
 	{
 	public:
 		static void Reset(Hardware& hw);
-		static CycleCount Step(Hardware& hw);
+		static CpuCycle Step(Hardware& hw);
 
 		class Op;
 

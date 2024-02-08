@@ -3,6 +3,7 @@
 
 #include "Cartridge.h"
 #include "Cartridge_In.h"
+#include "HardwareConstants.h"
 #include "Mmu_In.h"
 #include "Mos6502_In.h"
 
@@ -23,6 +24,22 @@ struct Nes::HwFrame::Impl
 
 		return true;
 	}
+
+	void ControlFrames()
+	{
+		// TODO
+		emulateFrame();
+	}
+
+private:
+	void emulateFrame()
+	{
+		CpuCycle cpuCycle{};
+		while (cpuCycle < CpuCyclesPerFrame)
+		{
+			cpuCycle += Mos6502::In::Step(m_hardware);
+		}
+	}
 };
 
 namespace Nes
@@ -35,6 +52,11 @@ namespace Nes
 	bool HwFrame::StartRomFile(FilePathView romPath)
 	{
 		return p_impl->StartRomFile(romPath);
+	}
+
+	void HwFrame::ControlFrames()
+	{
+		p_impl->ControlFrames();
 	}
 
 	const Hardware& HwFrame::GetEnv()

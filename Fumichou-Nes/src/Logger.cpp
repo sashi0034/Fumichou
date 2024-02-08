@@ -10,8 +10,7 @@ namespace Nes
 
 	void Logger::Abort(const std::source_location& location)
 	{
-		String message = U"{}\n\tlocation: {} ({}) {}"_fmt(
-			message,
+		const String message = U"Aborted at {} ({}) {}"_fmt(
 			Unicode::Widen(location.file_name()),
 			location.line(),
 			Unicode::Widen(location.function_name()));

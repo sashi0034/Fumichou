@@ -42,8 +42,8 @@ void Main()
 	}
 
 	Console.open();
-	Nes::HwFrame frame{};
-	if (frame.StartRomFile(romPath) == false)
+	Nes::HwFrame nes{};
+	if (nes.StartRomFile(romPath) == false)
 	{
 		Utils::WaitAnyKeyOnConsole();
 	}
@@ -54,7 +54,8 @@ void Main()
 
 	while (System::Update())
 	{
-		dui.Update(frame);
+		dui.Update(nes);
+		nes.ControlFrames();
 	}
 }
 

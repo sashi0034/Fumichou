@@ -180,7 +180,7 @@ namespace Nes
 		return instructionSet[opcode];
 	}
 
-	CycleCount GetMos6502OperationCycleCount(uint8 opcode)
+	CpuCycle GetMos6502OperationCycleCount(uint8 opcode)
 	{
 		static constexpr std::array<uint8, 256> cycleCounts = {
 			7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,

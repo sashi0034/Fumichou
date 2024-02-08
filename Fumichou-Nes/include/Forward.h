@@ -13,7 +13,7 @@ namespace Nes
 
 	using addr16 = uint16;
 
-	using CycleCount = int;
+	using CpuCycle = int;
 
 	class Hardware;
 
