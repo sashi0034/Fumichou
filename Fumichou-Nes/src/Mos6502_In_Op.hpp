@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Logger.h"
+#include "Mmu.h"
 #include "Mos6502Forward.h"
 #include "Mos6502_In.h"
 
@@ -150,17 +151,23 @@ namespace Nes
 
 		static void LDA(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_regs.a = args.mmu.get().ReadPrg8(args.srcAddr);
+			setZN(args.mos6502, args.mos6502.get().m_regs.a);
+			args.consumedCycles += args.pageBoundary;
 		}
 
 		static void LDX(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_regs.x = args.mmu.get().ReadPrg8(args.srcAddr);
+			setZN(args.mos6502, args.mos6502.get().m_regs.x);
+			args.consumedCycles += args.pageBoundary;
 		}
 
 		static void LDY(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_regs.y = args.mmu.get().ReadPrg8(args.srcAddr);
+			setZN(args.mos6502, args.mos6502.get().m_regs.y);
+			args.consumedCycles += args.pageBoundary;
 		}
 
 		static void LSR(const Mos6502OpArgs& args)
@@ -286,6 +293,13 @@ namespace Nes
 		static void TYA(const Mos6502OpArgs& args)
 		{
 			Logger::Abort();
+		}
+
+	private:
+		static void setZN(Mos6502& mos6502, uint8 value)
+		{
+			mos6502.m_flags.z = value != 0;
+			mos6502.m_flags.n = value & 0x80;
 		}
 	};
 }

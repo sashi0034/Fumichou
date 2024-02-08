@@ -27,13 +27,14 @@ public:
 		// 命令フェッチ
 		const uint8 fetchedOpcode = mmu.ReadPrg8(mos6502.GetRegs().pc);
 		mos6502.m_regs.pc++;
-		const auto fetchedInstr = GetMos6502Instruction(fetchedOpcode);
+		auto&& fetchedInstr = GetMos6502Instruction(fetchedOpcode);
 		CpuCycle consumedCycles = GetMos6502OperationCycleCount(fetchedOpcode);
+		CpuCycle pageBoundary{};
 
 		// アドレッシング
-		fetchedInstr.addressing(Mos6502AddressingArgs{
+		const addr16 srcAddr = fetchedInstr.addressing(Mos6502AddressingArgs{
 			.pc = std::ref(mos6502.m_regs.pc),
-			.consumedCycles = std::ref(consumedCycles),
+			.pageBoundary = std::ref(pageBoundary),
 			.hw = hw
 		});
 
@@ -41,7 +42,9 @@ public:
 		fetchedInstr.operation(Mos6502OpArgs{
 			.mos6502 = mos6502,
 			.mmu = mmu,
-			.consumedCycles = std::ref(consumedCycles)
+			.consumedCycles = std::ref(consumedCycles),
+			.srcAddr = srcAddr,
+			.pageBoundary = pageBoundary,
 		});
 
 		return consumedCycles;

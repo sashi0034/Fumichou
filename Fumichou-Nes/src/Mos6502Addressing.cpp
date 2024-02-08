@@ -65,6 +65,11 @@ namespace Nes::Mos6502Addressing
 		const uint16 temp0 = hw.GetMmu().ReadPrg8(args.pc);
 		args.pc++;
 		const uint16 tempY = temp0 + hw.GetMos6502().GetRegs().y;
+
+		// https://www.nesdev.org/wiki/6502_cycle_times
+		// 多分 IND,Y は A と X と違ってサイクル遅れが発生する可能性あり
+		args.pageBoundary.get() = (tempY & 0xFF) == 0xFF;
+
 		return hw.GetMmu().ReadPrg8(tempY & 0xFF) | (hw.GetMmu().ReadPrg8((tempY + 1) & 0xFF) << 8);
 	}
 
@@ -87,7 +92,7 @@ namespace Nes::Mos6502Addressing
 		const addr16 addr0 = hw.GetMmu().ReadPrg16(args.pc);
 		args.pc += 2;
 		const addr16 addrX = addr0 + hw.GetMos6502().GetRegs().x;
-		if ((addr0 & 0xFF00) != (addrX & 0xFF00)) args.consumedCycles++;
+		args.pageBoundary.get() = (addr0 & 0xFF00) != (addrX & 0xFF00);
 		return addrX;
 	}
 
@@ -97,7 +102,7 @@ namespace Nes::Mos6502Addressing
 		const addr16 addr0 = hw.GetMmu().ReadPrg16(args.pc);
 		args.pc += 2;
 		const addr16 addrY = addr0 + hw.GetMos6502().GetRegs().y;
-		if ((addr0 & 0xFF00) != (addrY & 0xFF00)) args.consumedCycles++;
+		args.pageBoundary.get() = (addr0 & 0xFF00) != (addrY & 0xFF00);
 		return addrY;
 	}
 

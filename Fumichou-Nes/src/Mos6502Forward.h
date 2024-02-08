@@ -13,12 +13,14 @@ namespace Nes
 		std::reference_wrapper<Mos6502> mos6502;
 		std::reference_wrapper<const Mmu> mmu;
 		std::reference_wrapper<CpuCycle> consumedCycles;
+		addr16 srcAddr;
+		CpuCycle pageBoundary;
 	};
 
 	struct Mos6502AddressingArgs
 	{
 		std::reference_wrapper<addr16> pc;
-		std::reference_wrapper<CpuCycle> consumedCycles;
+		std::reference_wrapper<CpuCycle> pageBoundary;
 		std::reference_wrapper<const Hardware> hw;
 	};
 }
