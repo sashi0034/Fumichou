@@ -13,6 +13,7 @@ namespace Nes
 
 		operation_type operation{};
 		addressing_type addressing{};
+		StringView desc{};
 	};
 
 	[[nodiscard]]
