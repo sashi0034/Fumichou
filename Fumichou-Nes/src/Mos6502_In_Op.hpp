@@ -271,32 +271,43 @@ public:
 
 	static void TAX(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.x = mos6502.m_regs.a;
+		setZN(mos6502, mos6502.m_regs.x);
 	}
 
 	static void TAY(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.y = mos6502.m_regs.a;
+		setZN(mos6502, mos6502.m_regs.y);
 	}
 
 	static void TSX(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.x = mos6502.m_regs.sp;
+		setZN(mos6502, mos6502.m_regs.x);
 	}
 
 	static void TXA(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.a = mos6502.m_regs.x;
+		setZN(mos6502, mos6502.m_regs.a);
 	}
 
 	static void TXS(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.sp = mos6502.m_regs.x;
 	}
 
 	static void TYA(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		mos6502.m_regs.a = mos6502.m_regs.y;
+		setZN(mos6502, mos6502.m_regs.a);
 	}
 
 private:
