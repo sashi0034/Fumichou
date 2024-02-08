@@ -87,7 +87,7 @@ namespace Nes::Mos6502Addressing
 		const addr16 addr0 = hw.GetMmu().ReadPrg16(args.pc);
 		args.pc += 2;
 		const addr16 addrX = addr0 + hw.GetMos6502().GetRegs().x;
-		if ((addr0 & 0xFF00) != (addrX & 0xFF00)) args.consumedCycles++;
+		if ((addr0 & 0xFF00) != (addrX & 0xFF00)) args.additionalCycles++;
 		return addrX;
 	}
 
@@ -97,7 +97,7 @@ namespace Nes::Mos6502Addressing
 		const addr16 addr0 = hw.GetMmu().ReadPrg16(args.pc);
 		args.pc += 2;
 		const addr16 addrY = addr0 + hw.GetMos6502().GetRegs().y;
-		if ((addr0 & 0xFF00) != (addrY & 0xFF00)) args.consumedCycles++;
+		if ((addr0 & 0xFF00) != (addrY & 0xFF00)) args.additionalCycles++;
 		return addrY;
 	}
 

@@ -8,7 +8,7 @@ namespace Nes
 
 	struct Mos6502Instruction
 	{
-		using operation_type = uint8(*)(Hardware& hw);
+		using operation_type = void(*)(const Mos6502OpArgs& args);
 		using addressing_type = addr16(*)(const Mos6502AddressingArgs& args);
 
 		operation_type operation{};
@@ -19,5 +19,5 @@ namespace Nes
 	const Mos6502Instruction& GetMos6502Instruction(uint8 opcode);
 
 	[[nodiscard]]
-	int GetMos6502OperationTakenCycles(uint8 opcode);
+	CycleCount GetMos6502OperationTakenCycles(uint8 opcode);
 }
