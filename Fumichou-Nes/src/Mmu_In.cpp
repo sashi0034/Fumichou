@@ -7,9 +7,8 @@ struct Nes::Mmu::In::Impl
 {
 	static void MapWholeAddr(Hardware& hw)
 	{
-		auto&& cpuRead = hw.GetMmu().m_cpuRead;
-
-		mapCpuRead(hw, cpuRead);
+		mapCpuRead(hw, hw.GetMmu().m_cpuRead);
+		mapCpuWrite(hw, hw.GetMmu().m_cpuWrite);
 	}
 
 private:

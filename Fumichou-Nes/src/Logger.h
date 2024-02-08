@@ -6,6 +6,7 @@ namespace Nes
 	{
 	public:
 		static void Error(StringView message);
+		static void Abort(StringView message);
 		static void Abort(const std::source_location& location = std::source_location::current());
 	};
 }

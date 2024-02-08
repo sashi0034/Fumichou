@@ -8,12 +8,17 @@ namespace Nes
 		std::cout << "[Error] " << message << "\n";
 	}
 
+	void Logger::Abort(StringView message)
+	{
+		System::MessageBoxOK(message, MessageBoxStyle::Error);
+	}
+
 	void Logger::Abort(const std::source_location& location)
 	{
 		const String message = U"Aborted at {} ({}) {}"_fmt(
 			Unicode::Widen(location.file_name()),
 			location.line(),
 			Unicode::Widen(location.function_name()));
-		System::MessageBoxOK(message, MessageBoxStyle::Error);
+		Abort(message);
 	}
 }
