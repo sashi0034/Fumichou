@@ -6,6 +6,12 @@
 
 namespace Nes
 {
+	// 命令資料
+	// https://www.nesdev.org/obelisk-6502-guide/reference.html
+
+	// サイクル数資料
+	// https://www.nesdev.org/wiki/6502_cycle_times
+
 	class Mos6502::In::Op
 	{
 	public:
@@ -252,17 +258,17 @@ namespace Nes
 
 		static void STA(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mmu.get().WritePrg8(args.srcAddr, args.mos6502.get().GetRegs().a);
 		}
 
 		static void STX(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mmu.get().WritePrg8(args.srcAddr, args.mos6502.get().GetRegs().x);
 		}
 
 		static void STY(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mmu.get().WritePrg8(args.srcAddr, args.mos6502.get().GetRegs().y);
 		}
 
 		static void TAX(const Mos6502OpArgs& args)

@@ -99,4 +99,9 @@ namespace Nes
 	{
 		return ReadPrg8(addr) | (ReadPrg8(addr + 1) << 8);
 	}
+
+	void Mmu::WritePrg8(addr16 addr, uint8 value) const
+	{
+		m_cpuWrite[addr].func(m_cpuWrite[addr].ctx, addr, value);
+	}
 }
