@@ -31,7 +31,7 @@ private:
 			return CreateBoardNrom(rom);
 
 		default:
-			Logger::Error(fmt::format("Unsupported mapper: {}", mapper));
+			Logger::Error(fmt::format(U"Unsupported mapper: {}", mapper));
 			return CreateBoardNrom(rom);
 		}
 	}

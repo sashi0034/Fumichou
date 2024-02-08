@@ -3,7 +3,7 @@
 
 namespace Nes
 {
-	void Logger::Error(std::string_view message)
+	void Logger::Error(StringView message)
 	{
 		std::cout << "[Error] " << message << "\n";
 	}

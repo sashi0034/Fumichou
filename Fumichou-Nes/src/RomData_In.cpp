@@ -18,7 +18,7 @@ namespace Nes
 		BinaryReader reader{romPath};
 		if (not reader.isOpen())
 		{
-			Logger::Error(fmt::format("Could not open {}", romPath.toUTF8()));
+			Logger::Error(fmt::format(U"Could not open {}", romPath));
 			return false;
 		}
 
@@ -28,7 +28,7 @@ namespace Nes
 
 		if (std::string{&header[0], &header[4]} != "NES\x1A")
 		{
-			Logger::Error(fmt::format("Invalid ROM header: {:02X} {:02X} {:02X} {:02X}",
+			Logger::Error(fmt::format(U"Invalid ROM header: {:02X} {:02X} {:02X} {:02X}",
 			                          header[0], header[1], header[2], header[3]));
 			return false;
 		}
@@ -42,12 +42,12 @@ namespace Nes
 
 		if (GetBits<2>(header[6]))
 		{
-			Logger::Error("Trainer is not supported");
+			Logger::Error(U"Trainer is not supported");
 		}
 
 		if (GetBits<0, 1>(header[10]) == 2 || GetBits<1>(header[10]))
 		{
-			Logger::Error("PAL ROM is not supported");
+			Logger::Error(U"PAL ROM is not supported");
 		}
 
 		// PRG-ROM読み込み
@@ -56,13 +56,13 @@ namespace Nes
 			self.m_prgRom.resize(0x4000 * prgBanks);
 			if (not reader.read(self.m_prgRom.data(), 0x4000 * prgBanks))
 			{
-				Logger::Error("Reading CHR-ROM failed.");
+				Logger::Error(U"Reading CHR-ROM failed.");
 				return false;
 			}
 		}
 		else
 		{
-			Logger::Error("ROM has no PRG-ROM banks.");
+			Logger::Error(U"ROM has no PRG-ROM banks.");
 			return false;
 		}
 
@@ -72,7 +72,7 @@ namespace Nes
 			self.m_chrRom.resize(0x2000 * chrBanks);
 			if (not reader.read(self.m_chrRom.data(), 0x2000 * chrBanks))
 			{
-				Logger::Error("Reading CHR-ROM failed.");
+				Logger::Error(U"Reading CHR-ROM failed.");
 				return false;
 			}
 		}
