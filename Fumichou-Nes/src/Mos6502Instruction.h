@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Forward.h"
+#include "Mos6502Forward.h"
 
 namespace Nes
 {
@@ -7,8 +8,8 @@ namespace Nes
 
 	struct Mos6502Instruction
 	{
-		using operation_type = uint8(*)(const Hardware& hw);
-		using addressing_type = addr16(*)(addr16& pc, const Mmu& mmu);
+		using operation_type = uint8(*)(Hardware& hw);
+		using addressing_type = addr16(*)(const Mos6502AddressingArgs& args);
 
 		operation_type operation{};
 		addressing_type addressing{};

@@ -29,6 +29,8 @@ namespace Nes
 	public:
 		class In;
 
+		const CpuRegs& GetRegs() const { return m_regs; }
+
 	private:
 		CpuRegs m_regs{};
 		CpuFlags m_flags{};
