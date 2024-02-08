@@ -80,17 +80,17 @@ namespace Nes
 
 		static void CLD(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.d = false;
 		}
 
 		static void CLI(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.i = false;
 		}
 
 		static void CLV(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.v = false;
 		}
 
 		static void CMP(const Mos6502OpArgs& args)
@@ -230,17 +230,17 @@ namespace Nes
 
 		static void SEC(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.c = true;
 		}
 
 		static void SED(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.d = true;
 		}
 
 		static void SEI(const Mos6502OpArgs& args)
 		{
-			Logger::Abort();
+			args.mos6502.get().m_flags.i = true;
 		}
 
 		static void STA(const Mos6502OpArgs& args)
