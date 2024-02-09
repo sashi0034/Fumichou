@@ -122,12 +122,14 @@ public:
 
 	static void DEX(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.x--;
+		setZN(args.mos6502, args.mos6502.get().m_regs.x);
 	}
 
 	static void DEY(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.y--;
+		setZN(args.mos6502, args.mos6502.get().m_regs.y);
 	}
 
 	static void INC(const Mos6502OpArgs& args)
