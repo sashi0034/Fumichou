@@ -115,7 +115,9 @@ public:
 
 	static void DEC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		const uint8 data = args.mmu.get().ReadPrg8(args.srcAddr) - 1;
+		setZN(args.mos6502, data);
+		args.mmu.get().WritePrg8(args.srcAddr, data);
 	}
 
 	static void DEX(const Mos6502OpArgs& args)
@@ -130,7 +132,9 @@ public:
 
 	static void INC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		const uint8 data = args.mmu.get().ReadPrg8(args.srcAddr) + 1;
+		setZN(args.mos6502, data);
+		args.mmu.get().WritePrg8(args.srcAddr, data);
 	}
 
 	static void INX(const Mos6502OpArgs& args)
