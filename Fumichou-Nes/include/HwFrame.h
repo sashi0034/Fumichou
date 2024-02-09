@@ -13,12 +13,22 @@ namespace Nes
 
 		void ControlFrames();
 
-		Optional<EmulationAbort> GetAbort() const;
-
-		const Hardware& GetEnv();
+		friend class HwFrameView;
+		static HwFrameView Instance();
 
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;
+	};
+
+	class HwFrameView
+	{
+	public:
+		HwFrameView(HwFrame::Impl* impl);
+		Optional<EmulationAbort> GetAbort() const;
+		const Hardware& GetHw() const;
+
+	private:
+		HwFrame::Impl* p_impl;
 	};
 }

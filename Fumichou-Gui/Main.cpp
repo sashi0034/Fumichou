@@ -5,6 +5,7 @@
 
 #include "FontKeys.h"
 #include "HwFrame.h"
+#include "Gui/GuiController.h"
 #include "Util/TomlStyleSheet.h"
 #include "Util\Utils.h"
 
@@ -54,13 +55,12 @@ void Main()
 
 	Console.writeln(U"Process started.");
 
+	Gui::GuiController gui{};
+
 	while (System::Update())
 	{
 		nes.ControlFrames();
-		if (const auto abort = nes.GetAbort())
-		{
-			(void)FontAsset(FontKeys::ZxProto_16_Bitmap)(abort->what()).drawAt(Scene::Center());
-		}
+		gui.Update();
 	}
 }
 

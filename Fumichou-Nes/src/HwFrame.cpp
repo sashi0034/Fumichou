@@ -9,8 +9,20 @@
 
 struct Nes::HwFrame::Impl
 {
+	inline static Impl* s_instance = nullptr;
+
 	Hardware m_hardware{};
 	Optional<EmulationAbort> m_abort{none};
+
+	Impl()
+	{
+		if (not s_instance) s_instance = this;
+	}
+
+	~Impl()
+	{
+		if (s_instance == this) s_instance = nullptr;
+	}
 
 	bool StartRomFile(FilePathView romPath)
 	{
@@ -69,12 +81,23 @@ namespace Nes
 		p_impl->ControlFrames();
 	}
 
-	Optional<EmulationAbort> HwFrame::GetAbort() const
+	HwFrameView HwFrame::Instance()
+	{
+		assert(Impl::s_instance);
+		return Impl::s_instance;
+	}
+
+	HwFrameView::HwFrameView(HwFrame::Impl* impl) :
+		p_impl(impl)
+	{
+	}
+
+	Optional<EmulationAbort> HwFrameView::GetAbort() const
 	{
 		return p_impl->m_abort;
 	}
 
-	const Hardware& HwFrame::GetEnv()
+	const Hardware& HwFrameView::GetHw() const
 	{
 		return p_impl->m_hardware;
 	}

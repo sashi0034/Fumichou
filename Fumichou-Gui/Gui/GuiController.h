@@ -1,13 +1,14 @@
 ﻿#pragma once
 #include "HwFrame.h"
 
-namespace Dui
+namespace Gui
 {
-	class DuiScene
+	class GuiController
 	{
 	public:
-		DuiScene();
-		void Update(Nes::HwFrame& nes);
+		GuiController();
+
+		void Update();
 
 	private:
 		struct Impl;
