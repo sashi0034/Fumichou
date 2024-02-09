@@ -100,17 +100,27 @@ public:
 
 	static void CMP(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		const uint16 compare = mos6502.m_regs.a - args.mmu.get().ReadPrg8(args.srcAddr);
+		mos6502.m_flags.c = not(compare & 0x100);
+		setZN(mos6502, compare);
+		args.consumedCycles += args.pageBoundary;
 	}
 
 	static void CPX(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		const uint16 compare = mos6502.m_regs.x - args.mmu.get().ReadPrg8(args.srcAddr);
+		mos6502.m_flags.c = not(compare & 0x100);
+		setZN(mos6502, compare);
 	}
 
 	static void CPY(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		const uint16 compare = mos6502.m_regs.y - args.mmu.get().ReadPrg8(args.srcAddr);
+		mos6502.m_flags.c = not(compare & 0x100);
+		setZN(mos6502, compare);
 	}
 
 	static void DEC(const Mos6502OpArgs& args)
