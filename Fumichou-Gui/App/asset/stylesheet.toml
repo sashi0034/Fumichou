@@ -1,4 +1,5 @@
 [Controller]
+sideBg = "#303030"
 sideWidth = 480
 
 [Trace]

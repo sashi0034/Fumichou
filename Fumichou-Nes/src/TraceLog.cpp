@@ -27,7 +27,7 @@ namespace Nes
 
 	String TraceCpuOperation::Stringify() const
 	{
-		return String(GetMos6502Instruction(opcode).desc);
+		return U"${:04X} | {}"_fmt(pc, GetMos6502Instruction(opcode).desc);
 	}
 
 	StringView TraceCpuOperation::Tag()
