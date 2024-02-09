@@ -87,7 +87,7 @@ public:
 
 	static void CLC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_flags.c = false;
 	}
 
 	static void CLD(const Mos6502OpArgs& args)
