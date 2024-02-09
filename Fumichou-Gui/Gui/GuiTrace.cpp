@@ -12,7 +12,7 @@ namespace
 	template <typename T>
 	inline T getToml(const String& key)
 	{
-		return Util::GetTomlStyle<T>(U"Trace." + key);
+		return Util::GetTomlStyle<T>(U"GuiTrace." + key);
 	}
 }
 

@@ -1,7 +1,7 @@
-[Controller]
+[GuiController]
 sideBg = "#303030"
-sideWidth = 480
+sideWidth = 420
 
-[Trace]
+[GuiTrace]
 tagWidth = 80
 lineHeight = 24
