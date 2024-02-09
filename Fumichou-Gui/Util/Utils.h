@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace Utils
+namespace Util
 {
 	inline void WaitAnyKeyOnConsole()
 	{

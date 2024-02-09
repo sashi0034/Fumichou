@@ -5,7 +5,8 @@
 
 #include "FontKeys.h"
 #include "HwFrame.h"
-#include "Utils\Utils.h"
+#include "Util/TomlStyleSheet.h"
+#include "Util\Utils.h"
 
 namespace
 {
@@ -26,10 +27,12 @@ void Main()
 	const bool isPassedTests = Catch::Session().run() == 0;
 	if (!isPassedTests)
 	{
-		Utils::WaitAnyKeyOnConsole();
+		Util::WaitAnyKeyOnConsole();
 	}
 
 	setupWindow();
+
+	Util::RegisterTomlStyleSheetAddon();
 
 	FontKeys::Register();
 
@@ -46,7 +49,7 @@ void Main()
 	Nes::HwFrame nes{};
 	if (nes.StartRomFile(romPath) == false)
 	{
-		Utils::WaitAnyKeyOnConsole();
+		Util::WaitAnyKeyOnConsole();
 	}
 
 	Console.writeln(U"Process started.");
