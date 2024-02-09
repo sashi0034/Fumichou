@@ -13,6 +13,8 @@ namespace Nes
 
 		void ControlFrames();
 
+		Optional<EmulationAbort> GetAbort() const;
+
 		const Hardware& GetEnv();
 
 	private:

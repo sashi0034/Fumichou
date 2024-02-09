@@ -22,4 +22,11 @@ namespace Nes
 	constexpr uint32 DisplayWidth_256 = 256;
 	constexpr uint32 DisplayHeight_240 = 240;
 	constexpr Size Display_256x240{DisplayWidth_256, DisplayHeight_240};
+
+	class EmulationAbort final : public Error
+	{
+	public:
+		using Error::Error;
+		[[nodiscard]] StringView type() const noexcept override { return U"EmulationAbort"; }
+	};
 }

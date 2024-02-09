@@ -48,7 +48,8 @@ namespace Nes
 
 	void Logger::Abort(StringView message)
 	{
-		System::MessageBoxOK(message, MessageBoxStyle::Error);
+		// System::MessageBoxOK(message, MessageBoxStyle::Error);
+		throw EmulationAbort(message);
 	}
 
 	void Logger::Abort(const std::source_location& location)

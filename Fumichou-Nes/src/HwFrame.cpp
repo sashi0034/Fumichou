@@ -10,6 +10,7 @@
 struct Nes::HwFrame::Impl
 {
 	Hardware m_hardware{};
+	Optional<EmulationAbort> m_abort{none};
 
 	bool StartRomFile(FilePathView romPath)
 	{
@@ -27,8 +28,17 @@ struct Nes::HwFrame::Impl
 
 	void ControlFrames()
 	{
+		if (m_abort.has_value()) return;
+
 		// TODO
-		emulateFrame();
+		try
+		{
+			emulateFrame();
+		}
+		catch (const EmulationAbort& abort)
+		{
+			m_abort = abort;
+		}
 	}
 
 private:
@@ -57,6 +67,11 @@ namespace Nes
 	void HwFrame::ControlFrames()
 	{
 		p_impl->ControlFrames();
+	}
+
+	Optional<EmulationAbort> HwFrame::GetAbort() const
+	{
+		return p_impl->m_abort;
 	}
 
 	const Hardware& HwFrame::GetEnv()
