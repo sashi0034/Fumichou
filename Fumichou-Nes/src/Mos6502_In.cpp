@@ -74,4 +74,17 @@ namespace Nes
 		pushStack8(self, mmu, value >> 8);
 		pushStack8(self, mmu, value & 0xFF);
 	}
+
+	uint8 Mos6502::In::popStack8(Mos6502& self, const Mmu& mmu)
+	{
+		self.m_regs.sp++;
+		return mmu.ReadPrg8(0x100 | self.m_regs.sp);
+	}
+
+	uint16 Mos6502::In::popStack16(Mos6502& self, const Mmu& mmu)
+	{
+		const uint16 lower = popStack8(self, mmu);
+		const uint16 higher = popStack8(self, mmu);
+		return lower | (higher << 8);
+	}
 }

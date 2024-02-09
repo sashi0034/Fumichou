@@ -250,7 +250,8 @@ public:
 
 	static void RTS(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.pc = popStack16(args.mos6502, args.mmu);
+		args.mos6502.get().m_regs.pc++;
 	}
 
 	static void SBC(const Mos6502OpArgs& args)
