@@ -215,7 +215,7 @@ public:
 
 	static void PHA(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		pushStack8(args.mos6502, args.mmu, args.mos6502.get().GetRegs().a);
 	}
 
 	static void PHP(const Mos6502OpArgs& args)
@@ -225,7 +225,8 @@ public:
 
 	static void PLA(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.a = popStack8(args.mos6502, args.mmu);
+		setZN(args.mos6502, args.mos6502.get().m_regs.a);
 	}
 
 	static void PLP(const Mos6502OpArgs& args)
