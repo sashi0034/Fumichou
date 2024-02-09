@@ -4,12 +4,19 @@
 
 namespace Nes
 {
+	struct TraceEmpty
+	{
+		String Stringify() const { return {}; }
+		static StringView Tag() { return {}; }
+	};
+
 	struct TraceMemoryRead
 	{
 		addr16 addr;
 		uint8 read;
 
 		String Stringify() const;
+		static StringView Tag();
 	};
 
 	struct TraceMemoryWrite
@@ -18,6 +25,7 @@ namespace Nes
 		uint8 wrote;
 
 		String Stringify() const;
+		static StringView Tag();
 	};
 
 	struct TraceCpuOperation
@@ -26,7 +34,23 @@ namespace Nes
 		uint8 opcode;
 
 		String Stringify() const;
+		static StringView Tag();
 	};
 
-	using TraceLog = std::variant<TraceMemoryRead, TraceMemoryWrite, TraceCpuOperation>;
+	using TraceLogType = std::variant<
+		TraceEmpty,
+		TraceMemoryRead,
+		TraceMemoryWrite,
+		TraceCpuOperation
+	>;
+
+	constexpr size_t TraceLogSize = sizeof(TraceLogType);
+
+	// class TraceLogTag
+	// {
+	// public:
+	// 	StringView operator()(const TraceMemoryRead&) const { return U"RD"; }
+	// 	StringView operator()(const TraceMemoryWrite&) const { return U"ST"; }
+	// 	StringView operator()(const TraceCpuOperation&) const { return U"OP"; }
+	// };
 }

@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="include\Cartridge.h" />
     <ClInclude Include="include\BoardBase.h" />
+    <ClInclude Include="include\LogReader.h" />
     <ClInclude Include="include\RomData.h" />
     <ClInclude Include="include\Forward.h" />
     <ClInclude Include="include\Hardware.h" />
