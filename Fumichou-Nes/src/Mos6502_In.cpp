@@ -62,4 +62,16 @@ namespace Nes
 	{
 		return Impl::Step(hw);
 	}
+
+	void Mos6502::In::pushStack8(Mos6502& self, const Mmu& mmu, uint8 value)
+	{
+		mmu.WritePrg8(0x100 | self.m_regs.sp, value);
+		self.m_regs.sp--;
+	}
+
+	void Mos6502::In::pushStack16(Mos6502& self, const Mmu& mmu, uint16 value)
+	{
+		pushStack8(self, mmu, value >> 8);
+		pushStack8(self, mmu, value & 0xFF);
+	}
 }

@@ -3,6 +3,8 @@
 
 namespace Nes
 {
+	class Mmu;
+
 	class Mos6502::In
 	{
 	public:
@@ -12,6 +14,9 @@ namespace Nes
 		class Op;
 
 	private:
+		static void pushStack8(Mos6502& self, const Mmu& mmu, uint8 value);
+		static void pushStack16(Mos6502& self, const Mmu& mmu, uint16 value);
+
 		class Impl;
 	};
 }

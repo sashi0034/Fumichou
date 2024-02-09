@@ -147,12 +147,13 @@ public:
 
 	static void JMP(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.pc = args.srcAddr;
 	}
 
 	static void JSR(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		pushStack16(args.mos6502, args.mmu, args.mos6502.get().m_regs.pc - 1);
+		args.mos6502.get().m_regs.pc = args.srcAddr;
 	}
 
 	static void LDA(const Mos6502OpArgs& args)
