@@ -3,8 +3,8 @@
 #define CATCH_CONFIG_RUNNER
 #include <ThirdParty/Catch2/catch.hpp>
 
+#include "FontKeys.h"
 #include "HwFrame.h"
-#include "Dui/DuiScene.h"
 #include "Utils\Utils.h"
 
 namespace
@@ -13,8 +13,9 @@ namespace
 	{
 		Window::SetTitle(U"Fumichou");
 		Window::SetStyle(WindowStyle::Sizable);
+		Scene::Resize(1920, 1080);
 		Window::Resize(1280, 720);
-		Scene::SetResizeMode(ResizeMode::Actual);
+		Scene::SetResizeMode(ResizeMode::Keep);
 		Scene::SetBackground(ColorF{0.3});
 		System::SetTerminationTriggers(UserAction::CloseButtonClicked);
 	}
@@ -22,8 +23,6 @@ namespace
 
 void Main()
 {
-	Addon::Register<ImGuiSivAddon>(U"ImGui");
-
 	const bool isPassedTests = Catch::Session().run() == 0;
 	if (!isPassedTests)
 	{
@@ -31,6 +30,8 @@ void Main()
 	}
 
 	setupWindow();
+
+	FontKeys::Register();
 
 	auto args = System::GetCommandLineArgs();
 
@@ -50,12 +51,13 @@ void Main()
 
 	Console.writeln(U"Process started.");
 
-	Dui::DuiScene dui{};
-
 	while (System::Update())
 	{
-		dui.Update(nes);
 		nes.ControlFrames();
+		if (const auto abort = nes.GetAbort())
+		{
+			(void)FontAsset(FontKeys::ZxProto_16_Bitmap)(abort->what()).draw();
+		}
 	}
 }
 

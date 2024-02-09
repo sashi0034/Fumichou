@@ -412,6 +412,8 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\.gitignore" />
+    <Content Include="App\asset\font\0xProto\0xProto-Regular.ttf" />
+    <Content Include="App\asset\font\0xProto\README.md" />
     <Content Include="App\asset\font\DotGothic16\DotGothic16-Regular.ttf" />
     <Content Include="App\asset\font\DotGothic16\OFL.txt" />
     <Content Include="App\asset\font\DotGothic16\README-JP.md" />
@@ -421,6 +423,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <Content Include="App\asset\font\RocknRoll\README.md" />
     <Content Include="App\asset\font\RocknRoll\RocknRollOne-Regular.ttf" />
     <Content Include="App\icon.ico" />
+    <ClInclude Include="FontKeys.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExternalLibraries\ExternalLibraries.vcxproj">
