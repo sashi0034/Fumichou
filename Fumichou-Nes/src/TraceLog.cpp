@@ -7,7 +7,7 @@ namespace Nes
 {
 	String TraceMemoryRead::Stringify() const
 	{
-		return U"${} -> {}"_fmt(addr, read);
+		return U"${:04X} -> {:02X}"_fmt(addr, read);
 	}
 
 	StringView TraceMemoryRead::Tag()
@@ -17,7 +17,7 @@ namespace Nes
 
 	String TraceMemoryWrite::Stringify() const
 	{
-		return U"${} -> {}"_fmt(addr, wrote);
+		return U"${:04X} -> {:02X}"_fmt(addr, wrote);
 	}
 
 	StringView TraceMemoryWrite::Tag()

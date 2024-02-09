@@ -6,7 +6,7 @@ namespace Nes
 {
 	struct TraceEmpty
 	{
-		String Stringify() const { return {}; }
+		static String Stringify() { return {}; }
 		static StringView Tag() { return {}; }
 	};
 

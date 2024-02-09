@@ -1,2 +1,22 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Applicability/=Surround/@EntryIndexedValue">False</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Description/@EntryValue">GetTomlStyle</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/IsBlessed/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Scope/=139FF4CE89E7094686FDA7BF5FFBBE92/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Scope/=139FF4CE89E7094686FDA7BF5FFBBE92/Type/@EntryValue">Everywhere</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Scope/=F6696F8185506F41B9C4252540BE9C18/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Scope/=F6696F8185506F41B9C4252540BE9C18/Type/@EntryValue">InCppFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Shortcut/@EntryValue">tomlcpp</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=FB484CA12F27DB48B18CFD0E63550C18/Text/@EntryValue">	template &lt;typename T&gt;
+	inline T getToml(const String&amp; key)
+	{
+		return Util::GetTomlStyle&lt;T&gt;(U"$NAME$." + key);
+	}
+</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Fumichou/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -15,11 +15,11 @@ namespace
 	{
 		Window::SetTitle(U"Fumichou");
 		Window::SetStyle(WindowStyle::Sizable);
-		Scene::Resize(1920, 1080);
-		Window::Resize(1280, 720);
 		Scene::SetResizeMode(ResizeMode::Keep);
 		Scene::SetBackground(ColorF{0.3});
 		System::SetTerminationTriggers(UserAction::CloseButtonClicked);
+		Scene::Resize(1920, 1080);
+		Window::Resize(1280, 720);
 	}
 }
 

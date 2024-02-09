@@ -1,1 +1,6 @@
+[Controller]
+sideWidth = 480
 
+[Trace]
+tagWidth = 80
+lineHeight = 24

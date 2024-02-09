@@ -24,7 +24,10 @@ namespace
 			m_head = (m_head + 1) % TraceBufferSize;
 		}
 
-		const TraceLogType& Get(int index) const { return m_buffer[(m_head + index) % TraceBufferSize]; }
+		const TraceLogType& Get(int index) const
+		{
+			return m_buffer[(m_head - 1 - index + TraceBufferSize) % TraceBufferSize];
+		}
 
 	private:
 		std::array<TraceLogType, TraceBufferSize> m_buffer{};

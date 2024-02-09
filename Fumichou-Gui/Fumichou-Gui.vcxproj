@@ -120,6 +120,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Gui\GuiController.cpp" />
+    <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -321,6 +322,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gui\GuiController.h" />
+    <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\TomlStyleSheet.h" />
     <ClInclude Include="Util\Utils.h" />
