@@ -92,7 +92,9 @@ namespace Nes
 
 	uint8 Mmu::ReadPrg8(addr16 addr) const
 	{
-		return m_cpuRead[addr].func(m_cpuRead[addr].ctx, addr);
+		const uint8 value = m_cpuRead[addr].func(m_cpuRead[addr].ctx, addr);
+		Logger::Trace(TraceMemoryRead{.addr = addr, .read = value});
+		return value;
 	}
 
 	uint16 Mmu::ReadPrg16(addr16 addr) const
@@ -103,5 +105,6 @@ namespace Nes
 	void Mmu::WritePrg8(addr16 addr, uint8 value) const
 	{
 		m_cpuWrite[addr].func(m_cpuWrite[addr].ctx, addr, value);
+		Logger::Trace(TraceMemoryWrite{.addr = addr, .wrote = value});
 	}
 }

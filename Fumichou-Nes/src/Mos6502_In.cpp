@@ -2,6 +2,7 @@
 #include "Mos6502_In.h"
 
 #include "Hardware.h"
+#include "Logger.h"
 #include "Mos6502Forward.h"
 #include "Mos6502Instruction.h"
 
@@ -26,9 +27,12 @@ public:
 
 		// 命令フェッチ
 		const uint8 fetchedOpcode = mmu.ReadPrg8(mos6502.GetRegs().pc);
-		mos6502.m_regs.pc++;
 		auto&& fetchedInstr = GetMos6502Instruction(fetchedOpcode);
 		CpuCycle consumedCycles = GetMos6502OperationCycleCount(fetchedOpcode);
+
+		Logger::Trace(TraceCpuOperation{.pc = mos6502.m_regs.pc, .opcode = fetchedOpcode});
+		mos6502.m_regs.pc++;
+
 		CpuCycle pageBoundary{};
 
 		// アドレッシング

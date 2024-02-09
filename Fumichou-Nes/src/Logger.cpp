@@ -21,7 +21,7 @@ namespace
 		void Push(const TraceLogType& trace)
 		{
 			m_buffer[m_head] = trace;
-			m_head = (m_head + 1) & TraceBufferSize;
+			m_head = (m_head + 1) % TraceBufferSize;
 		}
 
 		const TraceLogType& Get(int index) const { return m_buffer[(m_head + index) % TraceBufferSize]; }
