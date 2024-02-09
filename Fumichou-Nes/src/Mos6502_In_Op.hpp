@@ -40,42 +40,42 @@ public:
 
 	static void BCC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (not args.mos6502.get().m_flags.c) branchConditional(args);
 	}
 
 	static void BCS(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (args.mos6502.get().m_flags.c) branchConditional(args);
 	}
 
 	static void BEQ(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (args.mos6502.get().m_flags.z) branchConditional(args);
 	}
 
 	static void BMI(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (args.mos6502.get().m_flags.n) branchConditional(args);
 	}
 
 	static void BNE(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (not args.mos6502.get().m_flags.z) branchConditional(args);
 	}
 
 	static void BPL(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (not args.mos6502.get().m_flags.n) branchConditional(args);
 	}
 
 	static void BVC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (not args.mos6502.get().m_flags.v) branchConditional(args);
 	}
 
 	static void BVS(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		if (args.mos6502.get().m_flags.v) branchConditional(args);
 	}
 
 	static void CLC(const Mos6502OpArgs& args)
@@ -135,12 +135,14 @@ public:
 
 	static void INX(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.x++;
+		setZN(args.mos6502, args.mos6502.get().m_regs.x);
 	}
 
 	static void INY(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.y++;
+		setZN(args.mos6502, args.mos6502.get().m_regs.y);
 	}
 
 	static void JMP(const Mos6502OpArgs& args)
@@ -315,5 +317,11 @@ private:
 	{
 		mos6502.m_flags.z = value != 0;
 		mos6502.m_flags.n = value & 0x80;
+	}
+
+	static void branchConditional(const Mos6502OpArgs& args)
+	{
+		args.consumedCycles += 1 + args.pageBoundary; // 分岐すると {1, 2} サイクル遅れる
+		args.mos6502.get().m_regs.pc = args.srcAddr;
 	}
 };
