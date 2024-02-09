@@ -121,6 +121,7 @@
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
     <ClCompile Include="src\Boards\BoardNrom.cpp" />
+    <ClCompile Include="src\TraceLog.cpp" />
     <ClCompile Include="src\Mmu_In.cpp" />
     <ClCompile Include="src\Mos6502Addressing.cpp" />
     <ClCompile Include="src\Mos6502Instruction.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />
     <ClInclude Include="src\HardwareConstants.h" />
+    <ClInclude Include="src\TraceLog.h" />
     <ClInclude Include="src\Mmu_In.h" />
     <ClInclude Include="src\Mos6502Addressing.h" />
     <ClInclude Include="src\Mos6502Forward.h" />
