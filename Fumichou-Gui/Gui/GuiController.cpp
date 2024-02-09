@@ -26,7 +26,7 @@ struct GuiController::Impl
 		const auto sideBg = getToml<ColorF>(U"sideBg");
 
 		{
-			Transformer2D t{Mat3x2::Translate(Scene::Size().x - sideWidth, 0)};
+			Transformer2D t{Mat3x2::Translate(Scene::Size().x - sideWidth, 0), TransformCursor::Yes};
 			const auto available = Scene::Size().withX(sideWidth);
 			(void)Rect(available).rounded(4).draw(sideBg).drawFrame(1, sideBg * 1.1f);
 			m_trace.Update(available);

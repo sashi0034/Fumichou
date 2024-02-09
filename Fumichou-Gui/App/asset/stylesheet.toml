@@ -1,7 +1,13 @@
 [GuiController]
-sideBg = "#303030"
-sideWidth = 420
+sideBg = "#161616"
+sideWidth = 480
 
 [GuiTrace]
-tagWidth = 80
+tagLeft = 96
+messageLeft = 160
 lineHeight = 24
+
+[WidgetSlideBar]
+defaultWidth = 20
+minHeight = 80 
+tabColor = "#484848"
