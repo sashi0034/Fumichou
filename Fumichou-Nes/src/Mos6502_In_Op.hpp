@@ -15,7 +15,14 @@ class Nes::Mos6502::In::Op
 public:
 	static void ADC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		const uint16 m = args.mmu.get().ReadPrg8(args.srcAddr);
+		const uint16 a = mos6502.m_regs.a + m + mos6502.m_flags.c;
+		mos6502.m_flags.c = a & 0x100;
+		mos6502.m_flags.v = (mos6502.m_regs.a ^ a) & (m ^ a) & 0x80; // 符号変化が 正+正->負 か 負+負->正 になったらオーバーフロー
+		setZN(mos6502, a);
+		mos6502.m_regs.a = a;
+		args.consumedCycles += args.pageBoundary;
 	}
 
 	static void AND(const Mos6502OpArgs& args)
@@ -257,7 +264,14 @@ public:
 
 	static void SBC(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto&& mos6502 = args.mos6502.get();
+		const uint16 m = args.mmu.get().ReadPrg8(args.srcAddr);
+		const uint16 a = mos6502.m_regs.a - m - (not mos6502.m_flags.c);
+		mos6502.m_flags.c = not(a & 0x100);
+		mos6502.m_flags.v = (mos6502.m_regs.a ^ a) & (~m ^ a) & 0x80; // 符号変化が 正+(-負)->負 か 負+(-正)->正 になったらオーバーフロー
+		setZN(mos6502, a);
+		mos6502.m_regs.a = a;
+		args.consumedCycles += args.pageBoundary;
 	}
 
 	static void SEC(const Mos6502OpArgs& args)
