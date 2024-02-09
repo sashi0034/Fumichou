@@ -56,7 +56,7 @@ void Main()
 		nes.ControlFrames();
 		if (const auto abort = nes.GetAbort())
 		{
-			(void)FontAsset(FontKeys::ZxProto_16_Bitmap)(abort->what()).draw();
+			(void)FontAsset(FontKeys::ZxProto_16_Bitmap)(abort->what()).drawAt(Scene::Center());
 		}
 	}
 }
