@@ -348,7 +348,7 @@ public:
 private:
 	static void setZN(Mos6502& mos6502, uint8 value)
 	{
-		mos6502.m_flags.z = value != 0;
+		mos6502.m_flags.z = value == 0;
 		mos6502.m_flags.n = value & 0x80;
 	}
 
