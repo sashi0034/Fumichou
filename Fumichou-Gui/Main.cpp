@@ -7,6 +7,7 @@
 #include "HwFrame.h"
 #include "Gui/GuiController.h"
 #include "Gui/GuiForward.h"
+#include "Gui/GuiIni.h"
 #include "Util/TomlStyleSheet.h"
 #include "Util\Utils.h"
 
@@ -33,6 +34,7 @@ void Main()
 	}
 
 	setupWindow();
+	Gui::LoadGuiIni();
 
 	Util::RegisterTomlStyleSheetAddon();
 	Gui::RegisterGuiAddon();
@@ -58,20 +60,14 @@ void Main()
 	Console.writeln(U"Process started.");
 
 	Gui::GuiController gui{};
-	Stopwatch sleepTimer{};
 
 	while (System::Update())
 	{
 		nes.ControlFrames();
 		gui.Update();
-
-		// 省エネ
-		// while (not Window::GetState().focused && sleepTimer.sF() < 1.0)
-		// {
-		// 	System::Sleep(1000 / Profiler::FPS());
-		// }
-		sleepTimer.restart();
 	}
+
+	Gui::SaveGuiIni();
 }
 
 //

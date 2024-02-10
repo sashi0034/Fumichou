@@ -7,7 +7,7 @@ namespace Nes
 {
 	String TraceMemoryRead::Stringify() const
 	{
-		return U"${:04X} -> {:02X}"_fmt(addr, read);
+		return U"{:04X} -> {:02X}"_fmt(addr, read);
 	}
 
 	StringView TraceMemoryRead::Tag()
@@ -17,7 +17,7 @@ namespace Nes
 
 	String TraceMemoryWrite::Stringify() const
 	{
-		return U"${:04X} -> {:02X}"_fmt(addr, wrote);
+		return U"{:04X} <- {:02X}"_fmt(addr, wrote);
 	}
 
 	StringView TraceMemoryWrite::Tag()
@@ -27,7 +27,7 @@ namespace Nes
 
 	String TraceCpuOperation::Stringify() const
 	{
-		return U"${:04X} | {}"_fmt(pc, GetMos6502Instruction(opcode).desc);
+		return U"{:04X} | {}"_fmt(pc, GetMos6502Instruction(opcode).desc);
 	}
 
 	StringView TraceCpuOperation::Tag()

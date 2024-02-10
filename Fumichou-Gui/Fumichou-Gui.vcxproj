@@ -121,6 +121,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   <ItemGroup>
     <ClCompile Include="Gui\GuiController.cpp" />
     <ClCompile Include="Gui\GuiForward.cpp" />
+    <ClCompile Include="Gui\GuiIni.cpp" />
     <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Gui\WidgetSlideBar.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -325,6 +326,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   <ItemGroup>
     <ClInclude Include="Gui\GuiController.h" />
     <ClInclude Include="Gui\GuiForward.h" />
+    <ClInclude Include="Gui\GuiIni.h" />
     <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="Gui\WidgetSlideBar.h" />
     <ClInclude Include="stdafx.h" />
