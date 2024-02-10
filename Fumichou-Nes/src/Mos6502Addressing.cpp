@@ -53,24 +53,27 @@ namespace Nes::Mos6502Addressing
 	addr16 IndirectX(const Mos6502AddressingArgs& args)
 	{
 		auto& hw = args.hw.get();
-		const uint16 temp0 = hw.GetMmu().ReadPrg8(args.pc);
+		const uint8 temp0 = hw.GetMmu().ReadPrg8(args.pc);
 		args.pc++;
 		const uint16 tempX = temp0 + hw.GetMos6502().GetRegs().x;
+		// オペランドとXレジスタの和より、ゼロページからアドレスを求める
 		return hw.GetMmu().ReadPrg8(tempX & 0xFF) | (hw.GetMmu().ReadPrg8((tempX + 1) & 0xFF) << 8);
 	}
 
 	addr16 IndirectY(const Mos6502AddressingArgs& args)
 	{
 		auto& hw = args.hw.get();
-		const uint16 temp0 = hw.GetMmu().ReadPrg8(args.pc);
+		const uint8 temp0 = hw.GetMmu().ReadPrg8(args.pc);
 		args.pc++;
-		const uint16 tempY = temp0 + hw.GetMos6502().GetRegs().y;
+		// メモリから間接指定に使用するアドレスをロード
+		const uint16 loaded = hw.GetMmu().ReadPrg8(temp0 & 0xFF) | (hw.GetMmu().ReadPrg8((temp0 + 1) & 0xFF) << 8);
 
 		// https://www.nesdev.org/wiki/6502_cycle_times
-		// 多分 IND,Y は A と X と違ってサイクル遅れが発生する可能性あり
-		args.pageBoundary.get() = (tempY & 0xFF) == 0xFF;
+		// IND,Y は A と X と違ってサイクル遅れが発生する可能性あり
+		args.pageBoundary.get() = temp0 == 0xFF;
 
-		return hw.GetMmu().ReadPrg8(tempY & 0xFF) | (hw.GetMmu().ReadPrg8((tempY + 1) & 0xFF) << 8);
+		// ロードしたアドレスとYを用いる
+		return loaded + hw.GetMos6502().GetRegs().y;
 	}
 
 	addr16 Accumulator(const Mos6502AddressingArgs& args)
