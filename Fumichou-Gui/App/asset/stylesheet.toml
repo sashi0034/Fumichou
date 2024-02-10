@@ -1,11 +1,16 @@
+[Common]
+leftMargin = 48
+
 [GuiController]
 sideBg = "#161616"
-sideWidth = 480
+sideWidth = 600
 
 [GuiTrace]
 tagLeft = 96
 messageLeft = 160
-lineHeight = 24
+
+[GuiMapping]
+descLeft = 220
 
 [WidgetSlideBar]
 defaultWidth = 20

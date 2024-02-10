@@ -8,26 +8,26 @@ namespace Nes
 	{
 		using func_type = uint8(*)(const void* ctx, addr16 addr);
 
-		std::string_view desc;
+		StringView desc;
 		const void* ctx;
 		func_type func;
 
 		static MappedRead Unmapped();
 		static MappedRead Invalid();
-		static MappedRead Unsupported(std::string_view desc);
+		static MappedRead Unsupported(StringView desc);
 	};
 
 	struct MappedWrite
 	{
 		using func_type = void (*)(void* ctx, addr16 addr, uint8 value);
 
-		std::string_view desc;
+		StringView desc;
 		void* ctx;
 		func_type func;
 
 		static MappedWrite Unmapped();
 		static MappedWrite Invalid();
-		static MappedWrite Unsupported(std::string_view desc);
+		static MappedWrite Unsupported(StringView desc);
 	};
 
 	using MappedReaderArray = std::array<MappedRead, AddrSize_0x10000>;

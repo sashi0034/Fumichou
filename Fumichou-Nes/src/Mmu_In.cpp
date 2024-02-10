@@ -19,7 +19,7 @@ private:
 		for (const auto addr : Range(0, 0x7FF))
 		{
 			cpuRead[addr] = {
-				.desc = "Internal RAM",
+				.desc = U"Internal RAM",
 				.ctx = &ram,
 				.func = [](const void* ctx, addr16 addr)
 				{
@@ -32,7 +32,7 @@ private:
 		for (const auto addr : Range(0x800, 0x1FFF))
 		{
 			cpuRead[addr] = {
-				.desc = "Mirrors of internal RAM",
+				.desc = U"Mirrors of internal RAM",
 				.ctx = &ram,
 				.func = [](const void* ctx, addr16 addr)
 				{
@@ -46,7 +46,7 @@ private:
 		{
 			// FIXME: 外部RAMを持っていないカートリッジもある
 			cpuRead[addr] = {
-				.desc = "Extra RAM on cartridge",
+				.desc = U"Extra RAM on cartridge",
 				.ctx = &ram,
 				.func = [](const void* ctx, addr16 addr)
 				{
@@ -69,7 +69,7 @@ private:
 		for (const auto addr : Range(0, 0x7FF))
 		{
 			cpuWrite[addr] = {
-				.desc = "Internal RAM",
+				.desc = U"Internal RAM",
 				.ctx = &ram,
 				.func = [](void* ctx, addr16 addr, uint8 value)
 				{
@@ -82,7 +82,7 @@ private:
 		for (const auto addr : Range(0x800, 0x1FFF))
 		{
 			cpuWrite[addr] = {
-				.desc = "Mirrors of internal RAM",
+				.desc = U"Mirrors of internal RAM",
 				.ctx = &ram,
 				.func = [](void* ctx, addr16 addr, uint8 value)
 				{
@@ -96,7 +96,7 @@ private:
 		{
 			// FIXME: 外部RAMを持っていないカートリッジもある
 			cpuWrite[addr] = {
-				.desc = "Extra RAM on cartridge",
+				.desc = U"Extra RAM on cartridge",
 				.ctx = &ram,
 				.func = [](void* ctx, addr16 addr, uint8 value)
 				{

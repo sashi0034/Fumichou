@@ -1,5 +1,9 @@
 ﻿#include "stdafx.h"
 
+#if	 SIV3D_PLATFORM(WINDOWS)
+#include <dwmapi.h>
+#endif
+
 #define CATCH_CONFIG_RUNNER
 #include <ThirdParty/Catch2/catch.hpp>
 
@@ -15,6 +19,12 @@ namespace
 {
 	void setupWindow()
 	{
+#if	 SIV3D_PLATFORM(WINDOWS)
+		const auto hWnd = static_cast<HWND>(Platform::Windows::Window::GetHWND());
+		enum { DWMWA_USE_IMMERSIVE_DARK_MODE = 20 };
+		constexpr BOOL DARK_MODE = true;
+		DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &DARK_MODE, sizeof(DARK_MODE));
+#endif
 		Window::SetTitle(U"Fumichou");
 		Window::SetStyle(WindowStyle::Sizable);
 		Scene::SetResizeMode(ResizeMode::Keep);

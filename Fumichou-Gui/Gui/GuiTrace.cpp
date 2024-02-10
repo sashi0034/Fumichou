@@ -30,7 +30,7 @@ struct GuiTrace::Impl
 
 	void Update(const SizeF& availableRegion)
 	{
-		const int lineHeight = getToml<int>(U"lineHeight");
+		constexpr int lineHeight = LineHeight;
 		const Transformer2D t{Mat3x2::Translate(0, lineHeight), TransformCursor::Yes};
 		updateBody({availableRegion.x, availableRegion.y - lineHeight});
 	}
@@ -39,7 +39,7 @@ private:
 	void updateBody(const SizeF& availableRegion)
 	{
 		constexpr int pageSize = 1024;
-		const int lineHeight = getToml<int>(U"lineHeight");
+		constexpr int lineHeight = LineHeight;
 		const int tagLeft = getToml<int>(U"tagLeft");
 		const int messageLeft = getToml<int>(U"messageLeft");
 
@@ -47,25 +47,23 @@ private:
 
 		// 表示領域のライン描画
 		int indexTail = 0;
+		for (double y = availableRegion.y; y > 0; y -= lineHeight)
 		{
-			for (double y = availableRegion.y; y > 0; y -= lineHeight)
+			const int lineIndex = m_pageHead + m_headIndex + indexTail;
+			auto&& data = Nes::LogReader::GetTraceData(lineIndex);
+			if (lineIndex == m_focusedIndex)
 			{
-				const int lineIndex = m_pageHead + m_headIndex + indexTail;
-				auto&& data = Nes::LogReader::GetTraceData(lineIndex);
-				if (lineIndex == m_focusedIndex)
-				{
-					// フォーカス対象
-					RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).draw(ColorF(1.0, 0.1));
-				}
-				font(Format(lineIndex))
-					.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
-				const auto color = getTagColor(data.tag);
-				font(data.tag)
-					.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2}, color);
-				font(data.message)
-					.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2}, color);
-				indexTail++;
+				// フォーカス対象
+				RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).draw(ColorF(1.0, 0.1));
 			}
+			font(Format(lineIndex))
+				.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
+			const auto color = getTagColor(data.tag);
+			font(data.tag)
+				.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2}, color);
+			font(data.message)
+				.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2}, color);
+			indexTail++;
 		}
 
 		// インデックス移動

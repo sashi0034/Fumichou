@@ -9,6 +9,7 @@ namespace Gui
 
 		static int DefaultWidth();
 		static RectF AvailableAtRightCenter(const SizeF& parentRegion);
+		static RectF AvailableAtLeftCenter(const SizeF& parentRegion);
 
 		struct update_args
 		{

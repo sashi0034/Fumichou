@@ -30,6 +30,8 @@ struct WidgetSlideBar::Impl
 
 	void Update(const update_args& args)
 	{
+		if (args.maxIndex - args.minIndex <= args.pageSize) return;
+
 		const int minHeight = getToml<int>(U"minHeight");
 		const double tabSize = minHeight; // TODO: 少ない要素では大きく
 		const auto minAvailableId = args.minIndex;
@@ -94,6 +96,14 @@ namespace Gui
 	{
 		return RectF{
 			Arg::rightCenter = parentRegion.withY(parentRegion.y / 2),
+			SizeF{DefaultWidth(), parentRegion.y}
+		};
+	}
+
+	RectF WidgetSlideBar::AvailableAtLeftCenter(const SizeF& parentRegion)
+	{
+		return RectF{
+			Arg::leftCenter = Vec2{0, parentRegion.y / 2},
 			SizeF{DefaultWidth(), parentRegion.y}
 		};
 	}

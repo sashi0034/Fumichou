@@ -2,6 +2,7 @@
 #include "GuiController.h"
 
 #include "FontKeys.h"
+#include "GuiMapping.h"
 #include "GuiTrace.h"
 #include "Util/TomlStyleSheet.h"
 
@@ -19,6 +20,7 @@ namespace
 struct GuiController::Impl
 {
 	GuiTrace m_trace{};
+	GuiMapping m_mapping{};
 
 	void Updaate()
 	{
@@ -30,6 +32,12 @@ struct GuiController::Impl
 			const auto available = Scene::Size().withX(sideWidth);
 			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
 			m_trace.Update(available);
+		}
+
+		{
+			const auto available = Scene::Size().withX(sideWidth);
+			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			m_mapping.Update(available);
 		}
 
 		// アボートメッセージ

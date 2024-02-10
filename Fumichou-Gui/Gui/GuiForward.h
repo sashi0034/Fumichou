@@ -7,6 +7,8 @@ namespace Gui
 	constexpr ColorF ColorOrange{U"#FF7E01"};
 	constexpr ColorF ColorBlue{U"#018AD3"};
 
+	constexpr int LineHeight = 24;
+
 	void RegisterGuiAddon();
 
 	void AcceptMouseCaptured();

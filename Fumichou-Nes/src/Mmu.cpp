@@ -9,7 +9,7 @@ namespace Nes
 	MappedRead MappedRead::Unmapped()
 	{
 		return {
-			.desc = "(Unmapped)",
+			.desc = U"(Unmapped)",
 			.ctx = nullptr,
 			.func = [](const void* ctx, addr16 addr)
 			{
@@ -22,7 +22,7 @@ namespace Nes
 	MappedRead MappedRead::Invalid()
 	{
 		return {
-			.desc = "Invalid access",
+			.desc = U"Invalid access",
 			.ctx = nullptr,
 			.func = [](const void* ctx, addr16 addr)
 			{
@@ -32,7 +32,7 @@ namespace Nes
 		};
 	}
 
-	MappedRead MappedRead::Unsupported(std::string_view desc)
+	MappedRead MappedRead::Unsupported(StringView desc)
 	{
 		return {
 			.desc = desc,
@@ -48,7 +48,7 @@ namespace Nes
 	MappedWrite MappedWrite::Unmapped()
 	{
 		return {
-			.desc = "(Unmapped)",
+			.desc = U"(Unmapped)",
 			.ctx = nullptr,
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
@@ -60,7 +60,7 @@ namespace Nes
 	MappedWrite MappedWrite::Invalid()
 	{
 		return {
-			.desc = "Invalid access",
+			.desc = U"Invalid access",
 			.ctx = nullptr,
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
@@ -69,7 +69,7 @@ namespace Nes
 		};
 	}
 
-	MappedWrite MappedWrite::Unsupported(std::string_view desc)
+	MappedWrite MappedWrite::Unsupported(StringView desc)
 	{
 		return {
 			.desc = desc,
