@@ -3,6 +3,7 @@
 
 #include <iso646.h>
 
+#include "GuiForward.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -58,6 +59,7 @@ struct WidgetSlideBar::Impl
 			// ドラッグ中
 			if (MouseL.pressed())
 			{
+				AcceptMouseCaptured();
 				const auto newY = Cursor::PosF().y + m_dragging.offset;
 				const auto rate = (newY - bottomY) / (topY - bottomY);
 				args.currentIndex.get() = minAvailableId + (maxAvailableId - minAvailableId) * rate;

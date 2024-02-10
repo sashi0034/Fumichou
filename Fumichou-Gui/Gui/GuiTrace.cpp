@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "GuiTrace.h"
 
+#include <iso646.h>
+
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "LogReader.h"
@@ -20,7 +22,8 @@ namespace
 
 struct GuiTrace::Impl
 {
-	int m_head{};
+	int m_headIndex{};
+	int m_focusedIndex{};
 	WidgetSlideBar m_slideBar{};
 
 	void Update(const SizeF& availableRegion)
@@ -29,12 +32,19 @@ struct GuiTrace::Impl
 		const int tagLeft = getToml<int>(U"tagLeft");
 		const int messageLeft = getToml<int>(U"messageLeft");
 
+		// 表示領域のライン描画
 		int indexTail = 0;
 		for (double y = availableRegion.y; y > 0; y -= lineHeight)
 		{
-			auto&& data = Nes::LogReader::GetTraceData(m_head + indexTail);
+			const int lineIndex = m_headIndex + indexTail;
+			auto&& data = Nes::LogReader::GetTraceData(lineIndex);
 			auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-			font(Format(m_head + indexTail))
+			if (lineIndex == m_focusedIndex)
+			{
+				// フォーカス対象
+				RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).draw(ColorF(1.0, 0.1));
+			}
+			font(Format(lineIndex))
 				.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
 			const auto color = getTagColor(data.tag);
 			font(data.tag)
@@ -48,17 +58,33 @@ struct GuiTrace::Impl
 		if (RectF(availableRegion).intersects(Cursor::PosF()))
 		{
 			const int amount = indexTail / 8;
-			if (Mouse::Wheel() < 0) m_head += amount;
-			else if (Mouse::Wheel() > 0) m_head -= amount;
+			if (Mouse::Wheel() < 0) m_headIndex += amount;
+			else if (Mouse::Wheel() > 0) m_headIndex -= amount;
 		}
 
 		m_slideBar.Update({
 			.availableRect = WidgetSlideBar::AvailableAtRightCenter(availableRegion),
-			.currentIndex = m_head,
+			.currentIndex = m_headIndex,
 			.minIndex = 0,
 			.maxIndex = Nes::LogReader::GetTraceSize(),
 			.pageSize = indexTail
 		});
+
+		// フォーカス変更
+		if (not IsMouseCaptured() && MouseL.down())
+		{
+			int index = m_headIndex;
+			for (double y = availableRegion.y; y > 0; y -= lineHeight)
+			{
+				if (RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).intersects(Cursor::PosF()))
+				{
+					AcceptMouseCaptured();
+					m_focusedIndex = index;
+					break;
+				}
+				index++;
+			}
+		}
 	}
 
 private:

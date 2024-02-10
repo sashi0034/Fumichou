@@ -6,6 +6,7 @@
 #include "FontKeys.h"
 #include "HwFrame.h"
 #include "Gui/GuiController.h"
+#include "Gui/GuiForward.h"
 #include "Util/TomlStyleSheet.h"
 #include "Util\Utils.h"
 
@@ -34,6 +35,7 @@ void Main()
 	setupWindow();
 
 	Util::RegisterTomlStyleSheetAddon();
+	Gui::RegisterGuiAddon();
 
 	FontKeys::Register();
 
