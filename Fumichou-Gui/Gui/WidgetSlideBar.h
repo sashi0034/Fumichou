@@ -7,6 +7,7 @@ namespace Gui
 	public:
 		WidgetSlideBar();
 
+		static int DefaultWidth();
 		static RectF AvailableAtRightCenter(const SizeF& parentRegion);
 
 		struct update_args
@@ -18,7 +19,8 @@ namespace Gui
 			int pageSize;
 		};
 
-		void Update(const update_args& args);
+		void UpdateVertical(const update_args& args);
+		void UpdateHorizontal(update_args&& args);
 
 	private:
 		struct Impl;

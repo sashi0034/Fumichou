@@ -22,36 +22,49 @@ namespace
 
 struct GuiTrace::Impl
 {
+	int m_pageHead{};
 	int m_headIndex{};
 	int m_focusedIndex{};
-	WidgetSlideBar m_slideBar{};
+	WidgetSlideBar m_horizontalSlider{};
+	WidgetSlideBar m_verticalSlider{};
 
 	void Update(const SizeF& availableRegion)
 	{
+		const int lineHeight = getToml<int>(U"lineHeight");
+		const Transformer2D t{Mat3x2::Translate(0, lineHeight), TransformCursor::Yes};
+		updateBody({availableRegion.x, availableRegion.y - lineHeight});
+	}
+
+private:
+	void updateBody(const SizeF& availableRegion)
+	{
+		constexpr int pageSize = 1024;
 		const int lineHeight = getToml<int>(U"lineHeight");
 		const int tagLeft = getToml<int>(U"tagLeft");
 		const int messageLeft = getToml<int>(U"messageLeft");
 
 		// 表示領域のライン描画
 		int indexTail = 0;
-		for (double y = availableRegion.y; y > 0; y -= lineHeight)
 		{
-			const int lineIndex = m_headIndex + indexTail;
-			auto&& data = Nes::LogReader::GetTraceData(lineIndex);
-			auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-			if (lineIndex == m_focusedIndex)
+			for (double y = availableRegion.y; y > 0; y -= lineHeight)
 			{
-				// フォーカス対象
-				RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).draw(ColorF(1.0, 0.1));
+				const int lineIndex = m_pageHead + m_headIndex + indexTail;
+				auto&& data = Nes::LogReader::GetTraceData(lineIndex);
+				auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
+				if (lineIndex == m_focusedIndex)
+				{
+					// フォーカス対象
+					RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).draw(ColorF(1.0, 0.1));
+				}
+				font(Format(lineIndex))
+					.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
+				const auto color = getTagColor(data.tag);
+				font(data.tag)
+					.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2}, color);
+				font(data.message)
+					.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2}, color);
+				indexTail++;
 			}
-			font(Format(lineIndex))
-				.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
-			const auto color = getTagColor(data.tag);
-			font(data.tag)
-				.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2}, color);
-			font(data.message)
-				.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2}, color);
-			indexTail++;
 		}
 
 		// インデックス移動
@@ -62,18 +75,29 @@ struct GuiTrace::Impl
 			else if (Mouse::Wheel() > 0) m_headIndex -= amount;
 		}
 
-		m_slideBar.Update({
+		m_horizontalSlider.UpdateHorizontal({
+			.availableRect = RectF{
+				Arg::topCenter = Vec2{availableRegion.x / 2, -lineHeight},
+				SizeF{availableRegion.x, lineHeight}
+			},
+			.currentIndex = m_pageHead,
+			.minIndex = 0,
+			.maxIndex = Nes::LogReader::GetTraceSize(),
+			.pageSize = pageSize
+		});
+
+		m_verticalSlider.UpdateVertical({
 			.availableRect = WidgetSlideBar::AvailableAtRightCenter(availableRegion),
 			.currentIndex = m_headIndex,
 			.minIndex = 0,
-			.maxIndex = Nes::LogReader::GetTraceSize(),
+			.maxIndex = pageSize + 1,
 			.pageSize = indexTail
 		});
 
 		// フォーカス変更
 		if (not IsMouseCaptured() && MouseL.down())
 		{
-			int index = m_headIndex;
+			int index = m_pageHead + m_headIndex;
 			for (double y = availableRegion.y; y > 0; y -= lineHeight)
 			{
 				if (RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(lineHeight)).intersects(Cursor::PosF()))
@@ -87,7 +111,6 @@ struct GuiTrace::Impl
 		}
 	}
 
-private:
 	static const ColorF& getTagColor(StringView message)
 	{
 		static HashTable<String, ColorF> table = []()

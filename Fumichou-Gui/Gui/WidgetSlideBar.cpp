@@ -82,16 +82,28 @@ namespace Gui
 	{
 	}
 
+	int WidgetSlideBar::DefaultWidth()
+	{
+		return getToml<int>(U"defaultWidth");
+	}
+
 	RectF WidgetSlideBar::AvailableAtRightCenter(const SizeF& parentRegion)
 	{
 		return RectF{
 			Arg::rightCenter = parentRegion.withY(parentRegion.y / 2),
-			SizeF{getToml<int>(U"defaultWidth"), parentRegion.y}
+			SizeF{DefaultWidth(), parentRegion.y}
 		};
 	}
 
-	void WidgetSlideBar::Update(const update_args& args)
+	void WidgetSlideBar::UpdateVertical(const update_args& args)
 	{
+		p_impl->Update(args);
+	}
+
+	void WidgetSlideBar::UpdateHorizontal(update_args&& args)
+	{
+		args.availableRect.rotate90At(args.availableRect.center());
+		const Transformer2D t{Mat3x2::Rotate(90_deg, args.availableRect.center()), TransformCursor::Yes};
 		p_impl->Update(args);
 	}
 }

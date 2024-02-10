@@ -8,7 +8,7 @@ namespace
 {
 	using namespace Nes;
 
-	constexpr int TraceBufferSize = 1024;
+	constexpr int TraceBufferSize = 65536;
 
 	class TraceBuffer
 	{

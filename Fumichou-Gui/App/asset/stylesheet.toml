@@ -9,5 +9,5 @@ lineHeight = 24
 
 [WidgetSlideBar]
 defaultWidth = 20
-minHeight = 80 
+minHeight = 120
 tabColor = "#484848"
