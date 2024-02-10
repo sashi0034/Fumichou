@@ -43,6 +43,8 @@ private:
 		const int tagLeft = getToml<int>(U"tagLeft");
 		const int messageLeft = getToml<int>(U"messageLeft");
 
+		auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
+
 		// 表示領域のライン描画
 		int indexTail = 0;
 		{
@@ -50,7 +52,6 @@ private:
 			{
 				const int lineIndex = m_pageHead + m_headIndex + indexTail;
 				auto&& data = Nes::LogReader::GetTraceData(lineIndex);
-				auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 				if (lineIndex == m_focusedIndex)
 				{
 					// フォーカス対象
@@ -70,9 +71,19 @@ private:
 		// インデックス移動
 		if (RectF(availableRegion).intersects(Cursor::PosF()))
 		{
-			const int amount = indexTail / 8;
-			if (Mouse::Wheel() < 0) m_headIndex += amount;
-			else if (Mouse::Wheel() > 0) m_headIndex -= amount;
+			const int step = indexTail / 8;
+			const auto wheel = Mouse::Wheel();
+			int amount{};
+			if (wheel < 0) amount = step;
+			else if (wheel > 0) amount = -step;
+			if (KeyShift.pressed())
+			{
+				m_pageHead += amount;
+			}
+			else
+			{
+				m_headIndex += amount;
+			}
 		}
 
 		m_horizontalSlider.UpdateHorizontal({
@@ -85,12 +96,13 @@ private:
 			.maxIndex = Nes::LogReader::GetTraceSize(),
 			.pageSize = pageSize
 		});
+		(void)font(Format(m_pageHead)).drawAt(m_horizontalSlider.GetTab().center(), ColorF(0.9));
 
 		m_verticalSlider.UpdateVertical({
 			.availableRect = WidgetSlideBar::AvailableAtRightCenter(availableRegion),
 			.currentIndex = m_headIndex,
 			.minIndex = 0,
-			.maxIndex = pageSize + 1,
+			.maxIndex = pageSize,
 			.pageSize = indexTail
 		});
 

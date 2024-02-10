@@ -22,6 +22,8 @@ namespace Gui
 		void UpdateVertical(const update_args& args);
 		void UpdateHorizontal(update_args&& args);
 
+		RectF GetTab() const;
+
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;

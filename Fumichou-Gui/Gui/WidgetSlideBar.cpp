@@ -19,6 +19,8 @@ namespace
 
 struct WidgetSlideBar::Impl
 {
+	RectF m_tabRect{};
+
 	struct
 	{
 		bool flag;
@@ -39,8 +41,9 @@ struct WidgetSlideBar::Impl
 
 		// 描画
 		const auto tabColor = getToml<ColorF>(U"tabColor");
-		const auto tabRect = RectF(Arg::center = Vec2{args.availableRect.centerX(), currentY},
-		                           args.availableRect.size.withY(minHeight));
+		m_tabRect = RectF(Arg::center = Vec2{args.availableRect.centerX(), currentY},
+		                  args.availableRect.size.withY(minHeight));
+		const auto& tabRect = m_tabRect;
 		(void)tabRect
 		      .draw(tabColor)
 		      .drawFrame(m_dragging.flag ? 1.0 : 0.0, Palette::Wheat);
@@ -102,8 +105,15 @@ namespace Gui
 
 	void WidgetSlideBar::UpdateHorizontal(update_args&& args)
 	{
-		args.availableRect.rotate90At(args.availableRect.center());
-		const Transformer2D t{Mat3x2::Rotate(90_deg, args.availableRect.center()), TransformCursor::Yes};
+		const auto center = args.availableRect.center();
+		args.availableRect.rotate90At(center);
+		const Transformer2D t{Mat3x2::Rotate(90_deg, center), TransformCursor::Yes};
 		p_impl->Update(args);
+		p_impl->m_tabRect.rotate90At(center);
+	}
+
+	RectF WidgetSlideBar::GetTab() const
+	{
+		return p_impl->m_tabRect;
 	}
 }
