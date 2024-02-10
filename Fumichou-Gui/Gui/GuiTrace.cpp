@@ -2,6 +2,7 @@
 #include "GuiTrace.h"
 
 #include "FontKeys.h"
+#include "GuiForward.h"
 #include "LogReader.h"
 #include "WidgetSlideBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -35,11 +36,20 @@ struct GuiTrace::Impl
 			auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			font(Format(m_head + indexTail))
 				.draw(Arg::leftCenter = Vec2{8, y - lineHeight / 2}, Palette::Gray);
+			const auto color = getTagColor(data.tag);
 			font(data.tag)
-				.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2});
+				.draw(Arg::leftCenter = Vec2{tagLeft, y - lineHeight / 2}, color);
 			font(data.message)
-				.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2});
+				.draw(Arg::leftCenter = Vec2{messageLeft, y - lineHeight / 2}, color);
 			indexTail++;
+		}
+
+		// インデックス移動
+		if (RectF(availableRegion).intersects(Cursor::PosF()))
+		{
+			const int amount = indexTail / 8;
+			if (Mouse::Wheel() < 0) m_head += amount;
+			else if (Mouse::Wheel() > 0) m_head -= amount;
 		}
 
 		m_slideBar.Update({
@@ -49,6 +59,22 @@ struct GuiTrace::Impl
 			.maxIndex = Nes::LogReader::GetTraceSize(),
 			.pageSize = indexTail
 		});
+	}
+
+private:
+	static const ColorF& getTagColor(StringView message)
+	{
+		static HashTable<String, ColorF> table = []()
+		{
+			HashTable<String, ColorF> table{};
+			table[U"OP"] = ColorGreen.lerp(Palette::Lightgray, 0.3);
+			table[U"RD"] = ColorBlue.lerp(Palette::Lightgray, 0.3);
+			table[U"ST"] = ColorOrange.lerp(Palette::Lightgray, 0.3);
+			return table;
+		}();
+		auto&& color = table.find(message.data());
+		if (color != table.end()) return color->second;
+		return Palette::Lightgray;
 	}
 };
 

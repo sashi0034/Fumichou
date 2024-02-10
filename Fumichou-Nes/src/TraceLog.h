@@ -7,7 +7,7 @@ namespace Nes
 	struct TraceEmpty
 	{
 		static String Stringify() { return {}; }
-		static StringView Tag() { return {}; }
+		static StringView Tag() { return U""; }
 	};
 
 	struct TraceMemoryRead
