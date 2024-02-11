@@ -24,7 +24,21 @@ namespace
 		ColorF descColor;
 	};
 
-	using MappingTextType = std::variant<std::monostate, String, MappingDesc>;
+	struct SplitLine
+	{
+	};
+
+	struct HeaderText
+	{
+		String text;
+	};
+
+	struct PlainText
+	{
+		String text;
+	};
+
+	using MappingTextType = std::variant<std::monostate, HeaderText, PlainText, MappingDesc, SplitLine>;
 
 	template <typename T>
 	void makeSingleDescs(
@@ -57,17 +71,20 @@ namespace
 		Array<MappingTextType> texts{};
 
 		auto&& mmu = Nes::HwFrame::Instance().GetHw().GetMmu();
-
-		texts.push_back(U"CPU read-mapping");
+		texts.push_back(HeaderText(U"CPU read-mapping"));
+		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuRead(), ColorBlue);
+		texts.push_back(SplitLine());
+		texts.push_back(HeaderText(U"CPU write-mapping"));
 		texts.push_back(std::monostate{});
-		texts.push_back(U"CPU write-mapping");
 		makeSingleDescs(texts, mmu.GetCpuWrite(), ColorOrange);
+		texts.push_back(SplitLine());
+		texts.push_back(HeaderText(U"PPU read-mapping"));
 		texts.push_back(std::monostate{});
-		texts.push_back(U"PPU read-mapping");
 		makeSingleDescs(texts, mmu.GetPpuRead(), ColorBlue);
+		texts.push_back(SplitLine());
+		texts.push_back(HeaderText(U"PPU write-mapping"));
 		texts.push_back(std::monostate{});
-		texts.push_back(U"PPU write-mapping");
 		makeSingleDescs(texts, mmu.GetPpuWrite(), ColorOrange);
 
 		return texts;
@@ -75,13 +92,20 @@ namespace
 
 	struct TextDraw
 	{
+		int rightmost;
 		Vec2 leftCenter;
 
 		void operator()(std::monostate) const { return; }
 
-		void operator()(const String& text)
+		void operator()(const HeaderText& text) const
 		{
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(text).draw(Arg::leftCenter = leftCenter);
+			FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text)
+				.draw(24, Arg::leftCenter = leftCenter.movedBy(0, LineHeight / 2));
+		}
+
+		void operator()(const PlainText& text)
+		{
+			FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text).draw(Arg::leftCenter = leftCenter);
 		}
 
 		void operator()(const MappingDesc& desc)
@@ -90,6 +114,11 @@ namespace
 				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
 			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.desc)
 				.draw(Arg::leftCenter = leftCenter.withX(getToml<int>(U"descLeft")), desc.descColor);
+		}
+
+		void operator()(SplitLine) const
+		{
+			(void)Line(leftCenter, leftCenter.withX(rightmost)).stretched(-4).draw(1, Palette::Gray);
 		}
 	};
 }
@@ -102,6 +131,7 @@ struct GuiMapping::Impl
 
 	void Update(const Size& availableRegion)
 	{
+		const ScopedViewport2D viewport2D{availableRegion};
 		if (not m_mappingTexts) m_mappingTexts = generateTexts();
 
 		const double leftMargin = Util::GetTomlStyle<int>(U"Common.leftMargin");
@@ -112,7 +142,10 @@ struct GuiMapping::Impl
 			const int index = indexTail + m_headIndex;
 			if (index < m_mappingTexts.size())
 			{
-				std::visit(TextDraw{.leftCenter = Vec2{leftMargin, y + LineHeight / 2}},
+				std::visit(TextDraw{
+					           .rightmost = availableRegion.x,
+					           .leftCenter = Vec2{leftMargin, y + LineHeight / 2}
+				           },
 				           m_mappingTexts[index]);
 			}
 			indexTail++;
