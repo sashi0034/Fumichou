@@ -68,19 +68,19 @@ namespace
 	void generateTexts(MappingDocumentData::array_type& texts)
 	{
 		auto&& mmu = Nes::HwFrame::Instance().GetHw().GetMmu();
-		texts.push_back(Document::HeaderText(U"CPU read-mapping"));
+		texts.push_back(Document::HeaderText(U"CPU Read-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuRead(), ColorBlue);
 		texts.push_back(Document::SplitLine());
-		texts.push_back(Document::HeaderText(U"CPU write-mapping"));
+		texts.push_back(Document::HeaderText(U"CPU Write-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuWrite(), ColorOrange);
 		texts.push_back(Document::SplitLine());
-		texts.push_back(Document::HeaderText(U"PPU read-mapping"));
+		texts.push_back(Document::HeaderText(U"PPU Read-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuRead(), ColorBlue);
 		texts.push_back(Document::SplitLine());
-		texts.push_back(Document::HeaderText(U"PPU write-mapping"));
+		texts.push_back(Document::HeaderText(U"PPU Write-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuWrite(), ColorOrange);
 	}

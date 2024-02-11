@@ -30,7 +30,7 @@ namespace
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
-		texts.push_back(Document::HeaderText(U"CPU status"));
+		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(CpuView());
 	}

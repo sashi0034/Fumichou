@@ -46,7 +46,7 @@ private:
 		{
 			// FIXME: 外部RAMを持っていないカートリッジもある
 			cpuRead[addr] = {
-				.desc = U"Extra RAM on cartridge",
+				.desc = U"Extra RAM on Cartridge",
 				.ctx = &ram,
 				.func = [](const void* ctx, addr16 addr)
 				{
@@ -96,7 +96,7 @@ private:
 		{
 			// FIXME: 外部RAMを持っていないカートリッジもある
 			cpuWrite[addr] = {
-				.desc = U"Extra RAM on cartridge",
+				.desc = U"Extra RAM on Cartridge",
 				.ctx = &ram,
 				.func = [](void* ctx, addr16 addr, uint8 value)
 				{

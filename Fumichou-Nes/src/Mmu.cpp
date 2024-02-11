@@ -13,7 +13,7 @@ namespace Nes
 			.ctx = nullptr,
 			.func = [](const void* ctx, addr16 addr)
 			{
-				Logger::Abort(U"${:04X} is not read-mapped"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Read-mapped"_fmt(addr));
 				return uint8();
 			},
 		};
@@ -22,11 +22,11 @@ namespace Nes
 	MappedRead MappedRead::Invalid()
 	{
 		return {
-			.desc = U"Invalid access",
+			.desc = U"Invalid Access",
 			.ctx = nullptr,
 			.func = [](const void* ctx, addr16 addr)
 			{
-				Logger::Abort(U"${:04X} is not read-accessable"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Read-accessable"_fmt(addr));
 				return uint8();
 			},
 		};
@@ -39,7 +39,7 @@ namespace Nes
 			.ctx = nullptr,
 			.func = [](const void* ctx, addr16 addr)
 			{
-				Logger::Abort(U"${:04X} is not read-supported"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Read-supported"_fmt(addr));
 				return uint8();
 			},
 		};
@@ -52,7 +52,7 @@ namespace Nes
 			.ctx = nullptr,
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
-				Logger::Abort(U"${:04X} is not write-mapped"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Write-mapped"_fmt(addr));
 			},
 		};
 	}
@@ -60,11 +60,11 @@ namespace Nes
 	MappedWrite MappedWrite::Invalid()
 	{
 		return {
-			.desc = U"Invalid access",
+			.desc = U"Invalid Access",
 			.ctx = nullptr,
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
-				Logger::Abort(U"${:04X} is not write-accessable"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Write-accessable"_fmt(addr));
 			},
 		};
 	}
@@ -76,7 +76,7 @@ namespace Nes
 			.ctx = nullptr,
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
-				Logger::Abort(U"${:04X} is not write-supported"_fmt(addr));
+				Logger::Abort(U"${:04X} is not Write-supported"_fmt(addr));
 			},
 		};
 	}
