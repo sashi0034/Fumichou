@@ -9,6 +9,9 @@ messageLeft = 160
 [GuiMapping]
 descLeft = 220
 
+[WidgetTabBar]
+plainColor = "#323232"
+
 [WidgetSlideBar]
 defaultWidth = 20
 minHeight = 120

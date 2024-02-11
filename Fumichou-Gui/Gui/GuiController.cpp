@@ -2,8 +2,11 @@
 #include "GuiController.h"
 
 #include "FontKeys.h"
+#include "GuiForward.h"
+#include "GuiStatus.h"
 #include "GuiMapping.h"
 #include "GuiTrace.h"
+#include "WidgetTabBar.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -20,13 +23,21 @@ namespace
 struct GuiController::Impl
 {
 	GuiTrace m_trace{};
-	GuiMapping m_mapping{};
 
-	void Updaate()
+	struct
+	{
+		WidgetTabBar tab{};
+		int tabIndex{};
+		GuiStatus generalStatus{};
+		GuiMapping mapping{};
+	} m_left;
+
+	void Update()
 	{
 		const int sideWidth = getToml<int>(U"sideWidth");
 		const auto sideBg = getToml<ColorF>(U"sideBg");
 
+		// 右領域更新
 		{
 			Transformer2D t{Mat3x2::Translate(Scene::Size().x - sideWidth, 0), TransformCursor::Yes};
 			const auto available = Scene::Size().withX(sideWidth);
@@ -34,10 +45,32 @@ struct GuiController::Impl
 			m_trace.Update(available);
 		}
 
+		// 左領域更新
 		{
-			const auto available = Scene::Size().withX(sideWidth);
+			constexpr int tabHeight = LineHeight * 2;
+			auto available = Size{sideWidth, Scene::Size().y};
+
 			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
-			m_mapping.Update(available);
+
+			static const std::array tabNames = {U"Status"_s, U"Mapping"_s};
+			m_left.tab.Update({
+				.availableRect = Rect(available.withY(tabHeight)),
+				.currentIndex = m_left.tabIndex,
+				.tabNames = tabNames,
+			});
+
+			available.y -= tabHeight;
+			Transformer2D t{Mat3x2::Translate(0, tabHeight), TransformCursor::Yes};
+			switch (m_left.tabIndex)
+			{
+			case 0:
+				m_left.generalStatus.Update(available);
+				break;
+			case 1:
+				m_left.mapping.Update(available);
+				break;
+			default: break;
+			}
 		}
 
 		// アボートメッセージ
@@ -58,6 +91,6 @@ namespace Gui
 
 	void GuiController::Update()
 	{
-		p_impl->Updaate();
+		p_impl->Update();
 	}
 }

@@ -121,11 +121,13 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   <ItemGroup>
     <ClCompile Include="Gui\GuiController.cpp" />
     <ClCompile Include="Gui\GuiForward.cpp" />
+    <ClCompile Include="Gui\GuiStatus.cpp" />
     <ClCompile Include="Gui\GuiIni.cpp" />
     <ClCompile Include="Gui\GuiMapping.cpp" />
     <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Gui\WidgetDocument.cpp" />
     <ClCompile Include="Gui\WidgetSlideBar.cpp" />
+    <ClCompile Include="Gui\WidgetTabBar.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -328,11 +330,13 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
   <ItemGroup>
     <ClInclude Include="Gui\GuiController.h" />
     <ClInclude Include="Gui\GuiForward.h" />
+    <ClInclude Include="Gui\GuiStatus.h" />
     <ClInclude Include="Gui\GuiIni.h" />
     <ClInclude Include="Gui\GuiMapping.h" />
     <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="Gui\WidgetDocument.h" />
     <ClInclude Include="Gui\WidgetSlideBar.h" />
+    <ClInclude Include="Gui\WidgetTabBar.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\TomlStyleSheet.h" />
     <ClInclude Include="Util\Utils.h" />
