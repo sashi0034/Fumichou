@@ -4,7 +4,7 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
-#include "WidgetSlideBar.h"
+#include "WidgetDocument.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -24,25 +24,24 @@ namespace
 		ColorF descColor;
 	};
 
-	struct SplitLine
+	struct MappingDraw : Document::Drawer
 	{
+		using Drawer::operator();
+
+		void operator()(const MappingDesc& desc) const
+		{
+			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.addrRange)
+				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
+			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.desc)
+				.draw(Arg::leftCenter = leftCenter.withX(getToml<int>(U"descLeft")), desc.descColor);
+		}
 	};
 
-	struct HeaderText
-	{
-		String text;
-	};
-
-	struct PlainText
-	{
-		String text;
-	};
-
-	using MappingTextType = std::variant<std::monostate, HeaderText, PlainText, MappingDesc, SplitLine>;
+	using MappingDocumentData = DocumentData<MappingDraw, MappingDesc>;
 
 	template <typename T>
 	void makeSingleDescs(
-		Array<MappingTextType>& texts,
+		MappingDocumentData::array_type& texts,
 		const T& mapped,
 		const ColorF& color)
 	{
@@ -66,98 +65,37 @@ namespace
 		}
 	}
 
-	Array<MappingTextType> generateTexts()
+	void generateTexts(MappingDocumentData::array_type& texts)
 	{
-		Array<MappingTextType> texts{};
-
 		auto&& mmu = Nes::HwFrame::Instance().GetHw().GetMmu();
-		texts.push_back(HeaderText(U"CPU read-mapping"));
+		texts.push_back(Document::HeaderText(U"CPU read-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuRead(), ColorBlue);
-		texts.push_back(SplitLine());
-		texts.push_back(HeaderText(U"CPU write-mapping"));
+		texts.push_back(Document::SplitLine());
+		texts.push_back(Document::HeaderText(U"CPU write-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuWrite(), ColorOrange);
-		texts.push_back(SplitLine());
-		texts.push_back(HeaderText(U"PPU read-mapping"));
+		texts.push_back(Document::SplitLine());
+		texts.push_back(Document::HeaderText(U"PPU read-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuRead(), ColorBlue);
-		texts.push_back(SplitLine());
-		texts.push_back(HeaderText(U"PPU write-mapping"));
+		texts.push_back(Document::SplitLine());
+		texts.push_back(Document::HeaderText(U"PPU write-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuWrite(), ColorOrange);
-
-		return texts;
 	}
-
-	struct TextDraw
-	{
-		int rightmost;
-		Vec2 leftCenter;
-
-		void operator()(std::monostate) const { return; }
-
-		void operator()(const HeaderText& text) const
-		{
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text)
-				.draw(24, Arg::leftCenter = leftCenter.movedBy(0, LineHeight / 2));
-		}
-
-		void operator()(const PlainText& text)
-		{
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text).draw(Arg::leftCenter = leftCenter);
-		}
-
-		void operator()(const MappingDesc& desc)
-		{
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.addrRange)
-				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.desc)
-				.draw(Arg::leftCenter = leftCenter.withX(getToml<int>(U"descLeft")), desc.descColor);
-		}
-
-		void operator()(SplitLine) const
-		{
-			(void)Line(leftCenter, leftCenter.withX(rightmost)).stretched(-4).draw(1, Palette::Gray);
-		}
-	};
 }
 
 struct GuiMapping::Impl
 {
 	int m_headIndex{};
-	Array<MappingTextType> m_mappingTexts{};
-	WidgetSlideBar m_verticalSlider{};
+	WidgetDocument<MappingDocumentData> m_document{};
 
 	void Update(const Size& availableRegion)
 	{
 		const ScopedViewport2D viewport2D{availableRegion};
-		if (not m_mappingTexts) m_mappingTexts = generateTexts();
-
-		const double leftMargin = Util::GetTomlStyle<int>(U"Common.leftMargin");
-
-		int indexTail = 0;
-		for (double y = 0; y <= availableRegion.y; y += LineHeight)
-		{
-			const int index = indexTail + m_headIndex;
-			if (index < m_mappingTexts.size())
-			{
-				std::visit(TextDraw{
-					           .rightmost = availableRegion.x,
-					           .leftCenter = Vec2{leftMargin, y + LineHeight / 2}
-				           },
-				           m_mappingTexts[index]);
-			}
-			indexTail++;
-		}
-
-		m_verticalSlider.UpdateVertical({
-			.availableRect = WidgetSlideBar::AvailableAtLeftCenter(availableRegion),
-			.currentIndex = m_headIndex,
-			.minIndex = 0,
-			.maxIndex = static_cast<int>(m_mappingTexts.size()),
-			.pageSize = indexTail
-		});
+		if (not m_document.Data().Size()) generateTexts(m_document.Data().Raw());
+		m_document.Update(availableRegion);
 	}
 
 private:

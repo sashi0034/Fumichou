@@ -1,6 +1,3 @@
-[Common]
-leftMargin = 48
-
 [GuiController]
 sideBg = "#161616"
 sideWidth = 600
@@ -16,3 +13,6 @@ descLeft = 220
 defaultWidth = 20
 minHeight = 120
 tabColor = "#484848"
+
+[WidgetDocument]
+leftMargin = 48
