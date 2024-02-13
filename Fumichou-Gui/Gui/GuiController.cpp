@@ -47,7 +47,7 @@ struct GuiController::Impl
 
 		// 左領域更新
 		{
-			constexpr int tabHeight = LineHeight * 2;
+			constexpr int tabHeight = LineHeight * 1;
 			auto available = Size{sideWidth, Scene::Size().y};
 
 			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
@@ -77,7 +77,7 @@ struct GuiController::Impl
 		auto&& nes = Nes::HwFrame::Instance();
 		if (const auto abort = nes.GetAbort())
 		{
-			(void)FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what()).drawAt(Scene::Center());
+			(void)FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what()).drawAt(Scene::Center(), ColorRed);
 		}
 	}
 };
