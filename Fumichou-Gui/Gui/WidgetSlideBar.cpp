@@ -113,6 +113,14 @@ namespace Gui
 		p_impl->Update(args);
 	}
 
+	void WidgetSlideBar::UpdateVerticalInverted(update_args&& args)
+	{
+		const auto center = args.availableRect.center();
+		args.availableRect.rotate90At(center, 2);
+		const Transformer2D t{Mat3x2::Rotate(180_deg, center), TransformCursor::Yes};
+		p_impl->Update(args);
+	}
+
 	void WidgetSlideBar::UpdateHorizontal(update_args&& args)
 	{
 		const auto center = args.availableRect.center();

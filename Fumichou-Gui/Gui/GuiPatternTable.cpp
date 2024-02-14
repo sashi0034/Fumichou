@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GuiPatternTable.h"
 
+#include "FontKeys.h"
 #include "HwFrame.h"
 #include "WidgetSlideBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -27,26 +28,43 @@ struct GuiPatternTable::Impl
 
 		// 行の適切なサイズを計算
 		const int lineColumn = getToml<int>(U"lineColumn");
+		const int lineLeft = getToml<int>(U"lineLeft");
+		const int lineHeight = getToml<int>(U"lineHeight");
 		const int sliderMargin = getToml<int>(U"sliderMargin");
 		const int lineW = lineColumn * 8;
-		const double scale = (availableRegion.x - sliderMargin) / lineW;
+		const double scale = static_cast<double>(availableRegion.x - sliderMargin - lineLeft) / lineW;
 
 		// 行ごとに描画
 		const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
 		const int lineSize = patternTable.width() / lineW;
+		auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 		for (int y = 0; y < lineSize; ++y)
 		{
-			patternTable(lineW * y, 0, lineW, 8)
-				.scaled(scale)
-				.draw(Arg::topLeft = Vec2{0, -m_offsetY + y * 8 * scale});
+			const auto leftCenter = Vec2{0, -m_offsetY + (y + 0.5) * lineHeight * scale};
+			font(Format(y * lineColumn)).draw(Arg::leftCenter = leftCenter);
+			const auto lineRect = patternTable(lineW * y, 0, lineW, 8)
+			                      .scaled(scale)
+			                      .draw(Arg::leftCenter = leftCenter.withX(lineLeft));
+			// (void)rect.bottom().movedBy(0, 1).draw(ColorBlue);
+		}
+
+		// インデックス移動
+		if (RectF(availableRegion).intersects(Cursor::PosF()))
+		{
+			const int step = static_cast<int>(lineHeight * scale);
+			const auto wheel = Mouse::Wheel();
+			int amount{};
+			if (wheel < 0) amount = -step;
+			else if (wheel > 0) amount = step;
+			m_offsetY += amount;
 		}
 
 		// 垂直バー
-		m_slider.UpdateVertical({
+		m_slider.UpdateVerticalInverted({
 			.availableRect = WidgetSlideBar::AvailableAtRightCenter(availableRegion),
 			.currentIndex = m_offsetY,
 			.minIndex = 0,
-			.maxIndex = static_cast<int>(lineSize * 8 * scale),
+			.maxIndex = static_cast<int>(lineSize * lineHeight * scale),
 			.pageSize = availableRegion.y - 1
 		});
 	}

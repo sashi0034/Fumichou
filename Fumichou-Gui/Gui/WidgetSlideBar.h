@@ -21,6 +21,7 @@ namespace Gui
 		};
 
 		void UpdateVertical(const update_args& args);
+		void UpdateVerticalInverted(update_args&& args);
 		void UpdateHorizontal(update_args&& args);
 
 		RectF GetTab() const;
