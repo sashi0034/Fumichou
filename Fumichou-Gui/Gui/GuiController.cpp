@@ -41,9 +41,10 @@ struct GuiController::Impl
 	void Update()
 	{
 		const int screenMargin = getToml<int>(U"screenMargin");
+		const int smallMargin = getToml<int>(U"smallMargin");
 		const auto sideBg = getToml<ColorF>(U"sideBg");
 
-		constexpr auto screenSize = Nes::Display_256x240 * 2 + Nes::Display_256x240 / 2;
+		constexpr auto screenSize = Nes::Display_256x240 * 3; // + Nes::Display_256x240 / 2;
 		const auto [sideWidth, sideHeight] = (Scene::Size() - screenSize) / 2 - Point::One() * screenMargin;
 
 		// 右領域更新
@@ -84,9 +85,12 @@ struct GuiController::Impl
 
 		{
 			// 下側領域
-			Transformer2D t{Mat3x2::Translate(sideWidth, Scene::Size().y - sideHeight), TransformCursor::Yes};
-			auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
+			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
+			const auto bg = Rect(available.movedBy(0, smallMargin)).movedBy(tl.x, tl.y - smallMargin);
+			(void)bg.rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			const ScopedViewport2D viewport2D{tl, available};
+			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
 			m_bottom.patternTable.Update(available);
 		}
 

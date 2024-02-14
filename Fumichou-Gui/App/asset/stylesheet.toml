@@ -1,6 +1,7 @@
 [GuiController]
 sideBg = "#161616"
 screenMargin = 24
+smallMargin = 8
 
 [GuiTrace]
 tagLeft = 96
@@ -10,7 +11,8 @@ messageLeft = 160
 descLeft = 220
 
 [GuiPatternTable]
-margin = 8
+lineColumn = 32
+sliderMargin = 24
 
 [WidgetTabBar]
 plainColor = "#323232"

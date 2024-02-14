@@ -2,6 +2,7 @@
 #include "GuiPatternTable.h"
 
 #include "HwFrame.h"
+#include "WidgetSlideBar.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -17,15 +18,37 @@ namespace
 
 struct GuiPatternTable::Impl
 {
+	int m_offsetY{};
+	WidgetSlideBar m_slider{};
+
 	void Update(const Size& availableRegion)
 	{
-		const int margin = getToml<int>(U"margin");
 		auto&& patternTable = Nes::HwFrame::Instance().GetHw().GetCartridge().GetBoard().PatternTableTexture();
-		const int lineW = (availableRegion.x / 8) * 8;
-		for (int y = 0; y < patternTable.width() / lineW + 1; ++y)
+
+		// 行の適切なサイズを計算
+		const int lineColumn = getToml<int>(U"lineColumn");
+		const int sliderMargin = getToml<int>(U"sliderMargin");
+		const int lineW = lineColumn * 8;
+		const double scale = (availableRegion.x - sliderMargin) / lineW;
+
+		// 行ごとに描画
+		const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
+		const int lineSize = patternTable.width() / lineW;
+		for (int y = 0; y < lineSize; ++y)
 		{
-			patternTable(lineW * y, 0, lineW, 8).draw(Arg::topCenter = Vec2{availableRegion.x / 2, margin + y * 8});
+			patternTable(lineW * y, 0, lineW, 8)
+				.scaled(scale)
+				.draw(Arg::topLeft = Vec2{0, -m_offsetY + y * 8 * scale});
 		}
+
+		// 垂直バー
+		m_slider.UpdateVertical({
+			.availableRect = WidgetSlideBar::AvailableAtRightCenter(availableRegion),
+			.currentIndex = m_offsetY,
+			.minIndex = 0,
+			.maxIndex = static_cast<int>(lineSize * 8 * scale),
+			.pageSize = availableRegion.y - 1
+		});
 	}
 };
 
