@@ -10,7 +10,7 @@ namespace Nes
 	class PpuControl8
 	{
 	public:
-		PpuControl8(uint8 value) : m_value(value) { return; }
+		PpuControl8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
 		auto BaseNameTableAddr() { return BitAccess<0, 1>(m_value); }
@@ -29,7 +29,7 @@ namespace Nes
 	class PpuMask8
 	{
 	public:
-		PpuMask8(uint8 value) : m_value(value) { return; }
+		PpuMask8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
 	private:
@@ -40,19 +40,39 @@ namespace Nes
 	class PpuStatus8
 	{
 	public:
-		PpuStatus8(uint8 value) : m_value(value) { return; }
+		PpuStatus8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
 	private:
 		uint8 m_value{};
 	};
 
+	// $2006
+	class PpuAddr16
+	{
+	public:
+		PpuAddr16(uint16 value = 0) : m_value(value) { return; }
+		operator uint16() const { return m_value; }
+
+		auto NameTableAddr() { return BitAccess<10, 11>(m_value); }
+
+	private:
+		uint16 m_value{};
+	};
+
 	struct PpuRegs
 	{
 		PpuControl8 control; // $2000
 		PpuMask8 mask; // $2001
-		PpuStatus8 status; // $2002
 		uint8 OamOffset; // $2003
+		PpuAddr16 dataAddr; // $2006
+		PpuAddr16 tempAddr;
+	};
+
+	struct PpuUnstableRegs
+	{
+		PpuStatus8 status; // $2002
+		bool writeToggle;
 	};
 
 	class Ppu
@@ -63,5 +83,7 @@ namespace Nes
 	private:
 		PpuCycle m_lineCycles{}; // [0, 341)
 		uint32 m_scanLine{};
+		PpuRegs m_regs{};
+		mutable PpuUnstableRegs m_unstable{};
 	};
 }
