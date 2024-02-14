@@ -5,6 +5,7 @@
 namespace Nes
 {
 	// https://www.nesdev.org/wiki/PPU_registers
+	// https://www.nesdev.org/wiki/PPU_scrolling
 
 	// $2000
 	class PpuControl8
@@ -54,7 +55,11 @@ namespace Nes
 		PpuAddr16(uint16 value = 0) : m_value(value) { return; }
 		operator uint16() const { return m_value; }
 
+		auto CoarseX() { return BitAccess<0, 4>(m_value); }
+		auto CoarseY() { return BitAccess<5, 9>(m_value); }
 		auto NameTableAddr() { return BitAccess<10, 11>(m_value); }
+		auto FineY() { return BitAccess<12, 14>(m_value); }
+		// [15] Unused
 
 	private:
 		uint16 m_value{};
@@ -64,8 +69,9 @@ namespace Nes
 	{
 		PpuControl8 control; // $2000
 		PpuMask8 mask; // $2001
-		uint8 OamOffset; // $2003
-		PpuAddr16 dataAddr; // $2006
+		uint8 OamAddr; // $2003
+		uint8 fineX;
+		PpuAddr16 vramAddr; // $2006
 		PpuAddr16 tempAddr;
 	};
 
@@ -75,12 +81,23 @@ namespace Nes
 		bool writeToggle;
 	};
 
+	struct OamData
+	{
+		uint8 y;
+		uint8 index;
+		uint8 attribute;
+		uint8 x;
+	};
+
+	static_assert(sizeof(OamData) == 4);
+
 	class Ppu
 	{
 	public:
 		class In;
 
 	private:
+		std::array<OamData, 64> m_oam{};
 		PpuCycle m_lineCycles{}; // [0, 341)
 		uint32 m_scanLine{};
 		PpuRegs m_regs{};

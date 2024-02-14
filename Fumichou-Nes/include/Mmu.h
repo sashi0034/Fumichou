@@ -50,6 +50,8 @@ namespace Nes
 
 		void WritePrg8(addr16 addr, uint8 value) const;
 
+		void WriteChr8(addr16 addr, uint8 value) const;
+
 	private:
 		MappedReaderArray m_cpuRead{};
 		MappedWriterArray m_cpuWrite{};

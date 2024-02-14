@@ -107,4 +107,9 @@ namespace Nes
 		m_cpuWrite[addr].func(m_cpuWrite[addr].ctx, addr, value);
 		Logger::Trace(TraceMemoryWrite{.addr = addr, .wrote = value});
 	}
+
+	void Mmu::WriteChr8(addr16 addr, uint8 value) const
+	{
+		m_ppuWrite[addr].func(m_ppuWrite[addr].ctx, addr, value);
+	}
 }
