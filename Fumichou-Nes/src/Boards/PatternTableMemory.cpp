@@ -17,8 +17,8 @@ public:
 	static void Initialize(const PatternTableMemory& self)
 	{
 		const uint32 tilesCount = self.m_bytes.size() / tileByteSize_0x10;
-		self.m_cache.image = Image(Size(tilesCount, 1) * tilePixelSize_8);
-		self.m_cache.texture = DynamicTexture(self.m_cache.image, TextureFormat::R16G16_Unorm);
+		self.m_cache.image = Image(Size(tilesCount, 1) * tilePixelSize_8, ColorF(0, 1));
+		self.m_cache.texture = DynamicTexture(self.m_cache.image, TextureFormat::R8G8B8A8_Unorm);
 		if (self.m_cache.texture.isEmpty())
 		{
 			Logger::Abort(U"Failed to create Texture for Pattern Table");

@@ -5,6 +5,7 @@
 #include "GuiForward.h"
 #include "GuiStatus.h"
 #include "GuiMapping.h"
+#include "GuiPatternTable.h"
 #include "GuiTrace.h"
 #include "WidgetTabBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -32,10 +33,18 @@ struct GuiController::Impl
 		GuiMapping mapping{};
 	} m_left;
 
+	struct
+	{
+		GuiPatternTable patternTable{};
+	} m_bottom;
+
 	void Update()
 	{
-		const int sideWidth = getToml<int>(U"sideWidth");
+		const int screenMargin = getToml<int>(U"screenMargin");
 		const auto sideBg = getToml<ColorF>(U"sideBg");
+
+		constexpr auto screenSize = Nes::Display_256x240 * 2 + Nes::Display_256x240 / 2;
+		const auto [sideWidth, sideHeight] = (Scene::Size() - screenSize) / 2 - Point::One() * screenMargin;
 
 		// 右領域更新
 		{
@@ -71,6 +80,14 @@ struct GuiController::Impl
 				break;
 			default: break;
 			}
+		}
+
+		{
+			// 下側領域
+			Transformer2D t{Mat3x2::Translate(sideWidth, Scene::Size().y - sideHeight), TransformCursor::Yes};
+			auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
+			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			m_bottom.patternTable.Update(available);
 		}
 
 		auto&& nes = Nes::HwFrame::Instance();
