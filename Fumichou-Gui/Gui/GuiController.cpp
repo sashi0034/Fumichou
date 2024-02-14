@@ -73,10 +73,10 @@ struct GuiController::Impl
 			}
 		}
 
-		// アボートメッセージ
 		auto&& nes = Nes::HwFrame::Instance();
 		if (const auto abort = nes.GetAbort())
 		{
+			// アボートメッセージ
 			(void)FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what()).drawAt(Scene::Center(), ColorRed);
 		}
 	}

@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
+    <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
     <ClCompile Include="src\Boards\BoardNrom.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="include\HwFrame.h" />
     <ClInclude Include="include\Ppu.h" />
     <ClInclude Include="include\Util.h" />
+    <ClInclude Include="src\Boards\PatternTableMemory.h" />
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />
     <ClInclude Include="src\HardwareConstants.h" />
