@@ -41,7 +41,7 @@ struct GuiPatternTable::Impl
 		for (int y = 0; y < lineSize; ++y)
 		{
 			const auto leftCenter = Vec2{0, -m_offsetY + (y + 0.5) * lineHeight * scale};
-			font(Format(y * lineColumn)).draw(Arg::leftCenter = leftCenter);
+			font(U"{:03X}"_fmt(y * lineColumn)).draw(Arg::leftCenter = leftCenter);
 			const auto lineRect = patternTable(lineW * y, 0, lineW, 8)
 			                      .scaled(scale)
 			                      .draw(Arg::leftCenter = leftCenter.withX(lineLeft));
