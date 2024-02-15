@@ -34,4 +34,14 @@ namespace Nes
 	{
 		return U"OP";
 	}
+
+	String TraceCpuInterrupt::Stringify() const
+	{
+		return U"{:04X} | {}"_fmt(pc, StringifyInterrupt(interrupt));
+	}
+
+	StringView TraceCpuInterrupt::Tag()
+	{
+		return U"INT";
+	}
 }

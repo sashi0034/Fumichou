@@ -110,6 +110,8 @@ namespace Nes
 
 	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)
 	{
+		Logger::Trace(TraceCpuInterrupt{.pc = self.m_regs.pc, .interrupt = interrupt});
+
 		CpuStatus8 status{};
 		status.Carry().Set(self.m_flags.c);
 		status.Zero().Set(self.m_flags.z);

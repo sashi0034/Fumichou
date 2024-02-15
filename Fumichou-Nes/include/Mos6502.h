@@ -11,6 +11,8 @@ namespace Nes
 		IRQ,
 	};
 
+	StringView StringifyInterrupt(InterruptKind interruptKind);
+
 	// https://www.nesdev.org/wiki/CPU_registers
 	struct CpuRegs
 	{

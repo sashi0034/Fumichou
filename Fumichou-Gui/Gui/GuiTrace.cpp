@@ -129,6 +129,7 @@ private:
 			table[U"OP"] = ColorGreen.lerp(Palette::Lightgray, 0.3);
 			table[U"RD"] = ColorBlue.lerp(Palette::Lightgray, 0.3);
 			table[U"ST"] = ColorOrange.lerp(Palette::Lightgray, 0.3);
+			table[U"INT"] = ColorPurple.lerp(Palette::Lightgray, 0.3);
 			return table;
 		}();
 		auto&& color = table.find(message.data());

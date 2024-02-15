@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
+#include "Mos6502.h"
 
 namespace Nes
 {
@@ -37,20 +38,22 @@ namespace Nes
 		static StringView Tag();
 	};
 
+	struct TraceCpuInterrupt
+	{
+		addr16 pc;
+		InterruptKind interrupt;
+
+		String Stringify() const;
+		static StringView Tag();
+	};
+
 	using TraceLogType = std::variant<
 		TraceEmpty,
 		TraceMemoryRead,
 		TraceMemoryWrite,
-		TraceCpuOperation
+		TraceCpuOperation,
+		TraceCpuInterrupt
 	>;
 
 	constexpr size_t TraceLogSize = sizeof(TraceLogType);
-
-	// class TraceLogTag
-	// {
-	// public:
-	// 	StringView operator()(const TraceMemoryRead&) const { return U"RD"; }
-	// 	StringView operator()(const TraceMemoryWrite&) const { return U"ST"; }
-	// 	StringView operator()(const TraceCpuOperation&) const { return U"OP"; }
-	// };
 }
