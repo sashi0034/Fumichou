@@ -4,6 +4,7 @@
 #include "Hardware.h"
 #include "Ppu_In.h"
 #include "Ppu_In_Io.h"
+#include "Ppu_In_Mm.h"
 
 struct Nes::Mmu::In::Impl
 {
@@ -11,6 +12,9 @@ struct Nes::Mmu::In::Impl
 	{
 		mapCpuRead(hw, hw.GetMmu().m_cpuRead);
 		mapCpuWrite(hw, hw.GetMmu().m_cpuWrite);
+
+		mapPpuRead(hw, hw.GetMmu().m_ppuRead);
+		mapPpuWrite(hw, hw.GetMmu().m_ppuWrite);
 	}
 
 private:
@@ -121,6 +125,22 @@ private:
 		for (const auto addr : Range(0x8000, 0xFFFF))
 		{
 			cpuWrite[addr] = hw.GetCartridge().GetBoard().MapWritePrg(addr);
+		}
+	}
+
+	static void mapPpuRead(const Hardware& hw, MappedReaderArray& ppuRead)
+	{
+		for (const auto addr : Range(0x0000, 0x3FFF))
+		{
+			ppuRead[addr] = Ppu::In::Mm::MapReadChr(hw, addr);
+		}
+	}
+
+	static void mapPpuWrite(Hardware& hw, MappedWriterArray& ppuWrite)
+	{
+		for (const auto addr : Range(0x0000, 0x3FFF))
+		{
+			ppuWrite[addr] = Ppu::In::Mm::MapWriteChr(hw, addr);
 		}
 	}
 };

@@ -54,7 +54,7 @@ namespace
 				if (addr != 0)
 				{
 					texts.push_back(MappingDesc{
-						.addrRange = U"[{:04X}, {:04X}]"_fmt(currentStart, addr - 1),
+						.addrRange = U"[{:04X}, {:04X}]"_fmt(currentStart, addr - (addr < 0xFFFF ? 1 : 0)),
 						.desc = currentDesc.data(),
 						.descColor = color
 					});

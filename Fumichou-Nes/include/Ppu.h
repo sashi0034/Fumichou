@@ -109,6 +109,8 @@ namespace Nes
 		class In;
 
 	private:
+		std::array<uint8, 4096> m_nameTable{};
+		std::array<uint8, 32> m_palettes{};
 		std::array<OamData, 64> m_oam{};
 		PpuCycle m_lineCycles{}; // [0, 341)
 		uint32 m_scanLine{};

@@ -7,6 +7,7 @@ namespace Nes
 	{
 	public:
 		class Io;
+		class Mm;
 		static void Step(Hardware& hw, PpuCycle cycle);
 
 	private:
