@@ -233,7 +233,7 @@ namespace Nes
 				.func = [](void* ctx, addr16, uint8 value)
 				{
 					auto& hw = *static_cast<Hardware*>(ctx);
-					hw.GetMmu().WritePrg8(hw.GetPpu().m_unstable.vramAddr, value);
+					hw.GetMmu().WriteChr8(hw.GetPpu().m_unstable.vramAddr, value);
 					const auto inc = hw.GetPpu().m_regs.control.VramIncrementMode() ? 32 : 1;
 					hw.GetPpu().m_unstable.vramAddr = hw.GetPpu().m_unstable.vramAddr + inc;
 				}
