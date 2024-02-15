@@ -28,32 +28,35 @@ namespace
 	{
 		using Drawer::operator();
 
+		void drawTextLine(int y, const String& text) const
+		{
+			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
+			font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
+		};
+
 		void operator ()(EmulationView& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-			auto draw = [&](int y, const String& text)
-			{
-				font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
-			};
 			auto&& frame = Nes::HwFrame::Instance();
-			draw(0, U"Frame={}"_fmt(frame.GetFrameCount()));
-			draw(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
+			drawTextLine(0, U"Frame={}"_fmt(frame.GetFrameCount()));
+			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
 			if (self.stoppingCheck.Update({
 				.availableRect = LineRect().movedBy(0, 3 * LineHeight),
 				.toggle = self.isPaused,
-				.text = U"Pause Emulation",
+				.text = U"Pause Emulation (F9)",
 				.textColor = Palette::Darkgray,
-			}))
+			}) || KeyF9.down())
 			{
+				if (KeyF9.down()) self.isPaused = not self.isPaused;
 				frame.SetPaused(self.isPaused);
 			}
 
 			if (self.stepCycleButton.Update({
 				.availableRect = LineRect().movedBy(0, 4 * LineHeight),
 				.emojiIcon = U"▶️"_emoji,
-				.text = U"Step 1 Cycle",
+				.text = U"Step 1 Cycle (F10)",
 				.textColor = Palette::Darkgray,
-			}))
+			}) || KeyF10.down())
 			{
 				frame.StepOneCycle();
 			}
@@ -71,10 +74,18 @@ namespace
 
 		void operator ()(CpuView) const
 		{
-			auto&& cpu = Nes::HwFrame::Instance().GetHw().GetMos6502();
-			const String text = U"PC=${:04X}"_fmt(cpu.GetRegs().pc);
-			FontAsset(FontKeys::ZxProto_20_Bitmap)(text)
-				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
+			auto& cpu = Nes::HwFrame::Instance().GetHw().GetMos6502();
+			auto& regs = cpu.GetRegs();
+			auto& flags = cpu.GetFlags();
+			drawTextLine(0, U"PC={:04X} SP={:02X}"_fmt(regs.pc, regs.sp));
+			drawTextLine(1, U"A={:02X} X={:02X} Y={:02X}"_fmt(regs.a, regs.x, regs.y));
+			drawTextLine(2, U"C={} Z={} I={} D={} V={} N={}"_fmt(
+				             static_cast<uint8>(flags.c),
+				             static_cast<uint8>(flags.z),
+				             static_cast<uint8>(flags.i),
+				             static_cast<uint8>(flags.d),
+				             static_cast<uint8>(flags.d),
+				             static_cast<uint8>(flags.n)));
 		}
 	};
 
@@ -99,6 +110,8 @@ namespace
 		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(CpuView());
+		texts.push_back(std::monostate{});
+		texts.push_back(std::monostate{});
 	}
 }
 

@@ -51,7 +51,7 @@ void Main()
 
 	FontKeys::Register();
 
-	auto args = System::GetCommandLineArgs();
+	const auto args = System::GetCommandLineArgs();
 
 	FilePath romPath = args.size() >= 2 ? args[1] : U"";
 	if (not FileSystem::Exists(romPath))

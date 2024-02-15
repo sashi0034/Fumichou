@@ -68,13 +68,14 @@ struct Nes::HwFrame::Impl
 	// 1サイクル実行
 	void StepCycle()
 	{
-		// CPU実行
-		const CpuCycle cpuCycle = Mos6502::In::Step(m_hardware);
-
-		// PPU実行
-		Ppu::In::Step(m_hardware, cpuCycle * 3);
-
-		m_cycleCount += cpuCycle;
+		try
+		{
+			stepCycleInternal();
+		}
+		catch (const EmulationAbort& abort)
+		{
+			m_abort = abort;
+		}
 	}
 
 private:
@@ -83,8 +84,19 @@ private:
 		const auto endCycle = m_cycleCount + CpuCyclesPerFrame_29781;
 		while (m_cycleCount < endCycle)
 		{
-			StepCycle();
+			stepCycleInternal();
 		}
+	}
+
+	void stepCycleInternal()
+	{
+		// CPU実行
+		const CpuCycle cpuCycle = Mos6502::In::Step(m_hardware);
+
+		// PPU実行
+		Ppu::In::Step(m_hardware, cpuCycle * 3);
+
+		m_cycleCount += cpuCycle;
 	}
 };
 
