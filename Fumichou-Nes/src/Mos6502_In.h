@@ -11,12 +11,13 @@ namespace Nes
 		static void Reset(Hardware& hw);
 		static CpuCycle Step(Hardware& hw);
 
-		// マスク不可割り込み
-		static void Nmi(Mos6502& self, const Mmu& mmu);
+		static void RequestNmi(Mos6502& self);
 
 		class Op;
 
 	private:
+		static void handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt);
+
 		static void pushStack8(Mos6502& self, const Mmu& mmu, uint8 value);
 		static void pushStack16(Mos6502& self, const Mmu& mmu, uint16 value);
 

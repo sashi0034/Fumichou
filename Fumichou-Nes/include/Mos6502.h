@@ -3,6 +3,14 @@
 
 namespace Nes
 {
+	enum class InterruptKind
+	{
+		None = 0,
+		NMI,
+		BRK,
+		IRQ,
+	};
+
 	// https://www.nesdev.org/wiki/CPU_registers
 	struct CpuRegs
 	{
@@ -33,6 +41,7 @@ namespace Nes
 		const CpuFlags& GetFlags() const { return m_flags; }
 
 	private:
+		InterruptKind m_pendingInterrupt{InterruptKind::None};
 		CpuRegs m_regs{};
 		CpuFlags m_flags{};
 	};

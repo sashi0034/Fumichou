@@ -40,7 +40,7 @@ private:
 			if (ppu.m_regs.control.NmiEnabled())
 			{
 				// NMI割り込み
-				Mos6502::In::Nmi(hw.GetMos6502(), hw.GetMmu());
+				Mos6502::In::RequestNmi(hw.GetMos6502());
 			}
 			break;
 		}

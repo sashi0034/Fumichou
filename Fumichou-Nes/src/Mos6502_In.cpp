@@ -6,7 +6,35 @@
 #include "Mos6502Forward.h"
 #include "Mos6502Instruction.h"
 
-class Nes::Mos6502::In::Impl
+namespace
+{
+	using namespace Nes;
+
+	class CpuStatus8
+	{
+	public:
+		CpuStatus8(uint8 value = 0) : m_value(value) { return; }
+		operator uint8() const { return m_value; }
+
+		auto Carry() { return BitAccess<0>(m_value); }
+		auto Zero() { return BitAccess<1>(m_value); }
+		auto Interrupt() { return BitAccess<2>(m_value); }
+		auto Decimal() { return BitAccess<3>(m_value); }
+		auto Break() { return BitAccess<4>(m_value); }
+		auto Unused() { return BitAccess<5>(m_value); }
+		auto Overflow() { return BitAccess<6>(m_value); }
+		auto Negative() { return BitAccess<7>(m_value); }
+
+	private:
+		uint8 m_value{};
+	};
+
+	constexpr addr16 NmiVector_0xFFFA = 0xFFFA;
+	constexpr addr16 ResetVector_0xFFFC = 0xFFFC;
+	constexpr addr16 IrqVector_0xFFFE = 0xFFFE;
+}
+
+class Mos6502::In::Impl
 {
 public:
 	static void Reset(Hardware& hw)
@@ -24,6 +52,14 @@ public:
 	{
 		auto&& mos6502 = hw.GetMos6502();
 		auto&& mmu = hw.GetMmu();
+
+		if (mos6502.m_pendingInterrupt == InterruptKind::NMI)
+		{
+			// マスク不可割り込み
+			handleInterrupt(mos6502, mmu, InterruptKind::NMI);
+			mos6502.m_pendingInterrupt = InterruptKind::None;
+			return 7;
+		}
 
 		// 命令フェッチ
 		const uint8 fetchedOpcode = mmu.ReadPrg8(mos6502.GetRegs().pc);
@@ -67,9 +103,31 @@ namespace Nes
 		return Impl::Step(hw);
 	}
 
-	void Mos6502::In::Nmi(Mos6502& self, const Mmu& mmu)
+	void Mos6502::In::RequestNmi(Mos6502& self)
 	{
-		// TODO
+		self.m_pendingInterrupt = InterruptKind::NMI;
+	}
+
+	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)
+	{
+		CpuStatus8 status{};
+		status.Carry().Set(self.m_flags.c);
+		status.Zero().Set(self.m_flags.z);
+		status.Interrupt().Set(self.m_flags.i);
+		status.Decimal().Set(self.m_flags.d);
+		status.Break().Set(interrupt == InterruptKind::BRK);
+		status.Unused().Set(true);
+		status.Overflow().Set(self.m_flags.v);
+		status.Negative().Set(self.m_flags.n);
+
+		pushStack16(self, mmu, self.m_regs.pc);
+		pushStack8(self, mmu, status);
+
+		self.m_flags.i = true;
+
+		self.m_regs.pc = mmu.ReadPrg16(interrupt == InterruptKind::NMI
+			                               ? NmiVector_0xFFFA
+			                               : IrqVector_0xFFFE);
 	}
 
 	void Mos6502::In::pushStack8(Mos6502& self, const Mmu& mmu, uint8 value)
