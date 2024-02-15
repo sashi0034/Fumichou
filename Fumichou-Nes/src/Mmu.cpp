@@ -108,6 +108,12 @@ namespace Nes
 		Logger::Trace(TraceMemoryWrite{.addr = addr, .wrote = value});
 	}
 
+	uint8 Mmu::ReadChr8(addr16 addr) const
+	{
+		const uint8 value = m_ppuRead[addr].func(m_ppuRead[addr].ctx, addr);
+		return value;
+	}
+
 	void Mmu::WriteChr8(addr16 addr, uint8 value) const
 	{
 		m_ppuWrite[addr].func(m_ppuWrite[addr].ctx, addr, value);

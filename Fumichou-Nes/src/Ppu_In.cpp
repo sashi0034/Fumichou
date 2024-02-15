@@ -62,6 +62,60 @@ namespace Nes
 		{
 		case 0x2000:
 			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+		case 0x2001:
+			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+		case 0x2002:
+			return MappedRead{
+				.desc = isMirror ? mirrorDesc : U"PPU Status Register"_sv,
+				.ctx = &ppu,
+				.func = [](const void* ctx, addr16)
+				{
+					auto& ppu = *static_cast<const Ppu*>(ctx);
+					const uint8 temp = (ppu.m_unstable.status & 0xE0) | (ppu.m_unstable.openBus & 0x1F);
+					ppu.m_unstable.status.VBlank().Set(false);
+					ppu.m_unstable.writeToggle = false;
+					return temp;
+				}
+			};
+		case 0x2003:
+			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+		case 0x2004:
+			return MappedRead{
+				.desc = isMirror ? mirrorDesc : U"OAM Data Port"_sv,
+				.ctx = &ppu,
+				.func = [](const void* ctx, addr16)
+				{
+					auto& ppu = *static_cast<const Ppu*>(ctx);
+					return reinterpret_cast<const uint8*>(ppu.m_oam.data())[ppu.m_regs.OamAddr];
+				}
+			};
+		case 0x2005:
+			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+		case 0x2006:
+			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+		case 0x2007:
+			return MappedRead{
+				.desc = isMirror ? mirrorDesc : U"PPU Data Port"_sv,
+				.ctx = &hw,
+				.func = [](const void* ctx, addr16)
+				{
+					// FIXME: 要検証
+					auto& hw = *static_cast<const Hardware*>(ctx);
+					auto& ppu = hw.GetPpu();
+
+					uint8 data = hw.GetMmu().ReadChr8(ppu.m_unstable.vramAddr);
+
+					if (ppu.m_unstable.vramAddr < 0x3F00)
+					{
+						std::swap(data, ppu.m_unstable.openBus);
+					}
+
+					const uint8 inc = PpuControl8(ppu.m_regs.control).VramIncrementMode() ? 32 : 1;
+					ppu.m_unstable.vramAddr = ppu.m_unstable.vramAddr + inc;
+
+					return data;
+				}
+			};
 		default: break;
 		}
 
@@ -159,7 +213,7 @@ namespace Nes
 					{
 						// 2回目の書き込み
 						ppu.m_regs.tempAddr = SetBits<0, 7, uint16>(ppu.m_regs.tempAddr, value);
-						ppu.m_regs.vramAddr = ppu.m_regs.tempAddr;
+						ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;
 						ppu.m_unstable.writeToggle = false;
 					}
 				}
@@ -171,9 +225,9 @@ namespace Nes
 				.func = [](void* ctx, addr16, uint8 value)
 				{
 					auto& hw = *static_cast<Hardware*>(ctx);
-					hw.GetMmu().WritePrg8(hw.GetPpu().m_regs.vramAddr, value);
+					hw.GetMmu().WritePrg8(hw.GetPpu().m_unstable.vramAddr, value);
 					const auto inc = hw.GetPpu().m_regs.control.VramIncrementMode() ? 32 : 1;
-					hw.GetPpu().m_regs.vramAddr = hw.GetPpu().m_regs.vramAddr + inc;
+					hw.GetPpu().m_unstable.vramAddr = hw.GetPpu().m_unstable.vramAddr + inc;
 				}
 			};
 		default:

@@ -44,6 +44,17 @@ namespace Nes
 		PpuStatus8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
+		// [0, 4] 未使用
+
+		// スキャンラインで8スプライト以上検出されたか (ハードウェアバグあり)
+		auto SprOverflow() { return BitAccess<5>(m_value); }
+
+		// スプライト0とBGが不透明部分で重なったか
+		auto SprZeroHit() { return BitAccess<6>(m_value); }
+
+		// 垂直同期が始まったか
+		auto VBlank() { return BitAccess<7>(m_value); }
+
 	private:
 		uint8 m_value{};
 	};
@@ -71,14 +82,15 @@ namespace Nes
 		PpuMask8 mask; // $2001
 		uint8 OamAddr; // $2003
 		uint8 fineX;
-		PpuAddr16 vramAddr; // $2006
 		PpuAddr16 tempAddr;
 	};
 
 	struct PpuUnstableRegs
 	{
+		uint8 openBus;
 		PpuStatus8 status; // $2002
 		bool writeToggle;
+		PpuAddr16 vramAddr; // $2006
 	};
 
 	struct OamData

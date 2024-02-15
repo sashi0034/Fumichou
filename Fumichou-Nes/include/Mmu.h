@@ -50,6 +50,8 @@ namespace Nes
 
 		void WritePrg8(addr16 addr, uint8 value) const;
 
+		[[nodiscard]] uint8 ReadChr8(addr16 addr) const;
+
 		void WriteChr8(addr16 addr, uint8 value) const;
 
 	private:
