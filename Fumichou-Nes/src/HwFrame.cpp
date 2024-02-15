@@ -6,6 +6,7 @@
 #include "HardwareConstants.h"
 #include "Mmu_In.h"
 #include "Mos6502_In.h"
+#include "Ppu_In.h"
 
 struct Nes::HwFrame::Impl
 {
@@ -67,7 +68,13 @@ struct Nes::HwFrame::Impl
 	// 1サイクル実行
 	void StepCycle()
 	{
-		m_cycleCount += Mos6502::In::Step(m_hardware);
+		// CPU実行
+		const CpuCycle cpuCycle = Mos6502::In::Step(m_hardware);
+
+		// PPU実行
+		Ppu::In::Step(m_hardware, cpuCycle * 3);
+
+		m_cycleCount += cpuCycle;
 	}
 
 private:

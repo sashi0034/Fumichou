@@ -69,12 +69,12 @@ public:
 		}
 
 		Logger::Abort();
-		return MappedRead::Invalid();
+		return MappedRead::Invalid(MappingType::Cpu);
 	}
 
 	MappedWrite MapWritePrg(addr16 addr) override
 	{
-		return MappedWrite::Invalid();
+		return MappedWrite::Invalid(MappingType::Cpu);
 	}
 
 	MappedRead MapReadChr(addr16 addr) override
@@ -105,7 +105,7 @@ public:
 			};
 		}
 
-		return MappedWrite::Invalid();
+		return MappedWrite::Invalid(MappingType::Cpu);
 	}
 
 	[[nodiscard]] const Texture& PatternTableTexture() const override

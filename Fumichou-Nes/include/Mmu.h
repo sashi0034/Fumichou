@@ -4,6 +4,12 @@
 
 namespace Nes
 {
+	enum class MappingType
+	{
+		Cpu,
+		Ppu,
+	};
+
 	struct MappedRead
 	{
 		using func_type = uint8(*)(const void* ctx, addr16 addr);
@@ -12,9 +18,9 @@ namespace Nes
 		const void* ctx;
 		func_type func;
 
-		static MappedRead Unmapped();
-		static MappedRead Invalid();
-		static MappedRead Unsupported(StringView desc);
+		static MappedRead Unmapped(MappingType mapping);
+		static MappedRead Invalid(MappingType mapping);
+		static MappedRead Unsupported(MappingType mapping, StringView desc);
 	};
 
 	struct MappedWrite
@@ -25,9 +31,9 @@ namespace Nes
 		void* ctx;
 		func_type func;
 
-		static MappedWrite Unmapped();
-		static MappedWrite Invalid();
-		static MappedWrite Unsupported(StringView desc);
+		static MappedWrite Unmapped(MappingType mapping);
+		static MappedWrite Invalid(MappingType mapping);
+		static MappedWrite Unsupported(MappingType mapping, StringView desc);
 	};
 
 	using MappedReaderArray = std::array<MappedRead, AddrSize_0x10000>;

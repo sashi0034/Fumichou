@@ -69,9 +69,9 @@ namespace Nes
 		switch (0x2000 | (addr & 0x7))
 		{
 		case 0x2000:
-			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedRead::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2001:
-			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedRead::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2002:
 			return MappedRead{
 				.desc = isMirror ? mirrorDesc : U"PPU Status Register"_sv,
@@ -86,7 +86,7 @@ namespace Nes
 				}
 			};
 		case 0x2003:
-			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedRead::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2004:
 			return MappedRead{
 				.desc = isMirror ? mirrorDesc : U"OAM Data Port"_sv,
@@ -98,9 +98,9 @@ namespace Nes
 				}
 			};
 		case 0x2005:
-			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedRead::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2006:
-			return MappedRead::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedRead::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2007:
 			return MappedRead{
 				.desc = isMirror ? mirrorDesc : U"PPU Data Port"_sv,
@@ -127,7 +127,7 @@ namespace Nes
 		default: break;
 		}
 
-		return MappedRead::Invalid();
+		return MappedRead::Invalid(MappingType::Cpu);
 	}
 
 	MappedWrite Ppu::In::MapWritePrg(Hardware& hw, addr16 addr)
@@ -160,7 +160,7 @@ namespace Nes
 				}
 			};
 		case 0x2002:
-			return MappedWrite::Unsupported(isMirror ? mirrorDesc : unsupportedDesc);
+			return MappedWrite::Unsupported(MappingType::Cpu, isMirror ? mirrorDesc : unsupportedDesc);
 		case 0x2003:
 			return MappedWrite{
 				.desc = isMirror ? mirrorDesc : U"OAM Address Port"_sv,
@@ -242,6 +242,6 @@ namespace Nes
 			break;
 		}
 
-		return MappedWrite::Invalid();
+		return MappedWrite::Invalid(MappingType::Cpu);
 	}
 }

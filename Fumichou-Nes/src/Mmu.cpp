@@ -4,90 +4,127 @@
 #include "Hardware.h"
 #include "Logger.h"
 
+namespace
+{
+	using namespace Nes;
+
+	enum class MapAbort
+	{
+		Unmapped,
+		Invalid,
+		Unsupported,
+	};
+
+	template <MappingType mapping>
+	StringView getMappingName()
+	{
+		return mapping == MappingType::Cpu ? U"CPU"_sv : U"PPU"_sv;
+	}
+
+	template <MapAbort kind>
+	auto getAbortText()
+	{
+		return []
+		{
+			if constexpr (kind == MapAbort::Unmapped) return U"unsupported"_sv;
+			if constexpr (kind == MapAbort::Invalid) return U"inaccessible"_sv;
+			return U"unsupported"_sv;
+		}();
+	}
+
+	template <MappingType mapping, MapAbort kind>
+	uint8 abortRead(const void* ctx, addr16 addr)
+	{
+		const auto mappingName = getMappingName<mapping>();
+		const auto kindText = getAbortText<kind>();
+		Logger::Abort(U"${:04X} ({}) is Read-{}"_fmt(addr, mappingName, kindText));
+		return uint8();
+	}
+
+	template <MappingType mapping, MapAbort kind>
+	void abortWrite(void* ctx, addr16 addr, uint8)
+	{
+		const auto mappingName = getMappingName<mapping>();
+		const auto kindText = getAbortText<kind>();
+		Logger::Abort(U"${:04X} ({}) is Write-{}"_fmt(addr, mappingName, kindText));
+	}
+}
+
 namespace Nes
 {
-	MappedRead MappedRead::Unmapped()
+	MappedRead MappedRead::Unmapped(MappingType mapping)
 	{
 		return {
 			.desc = U"(Unmapped)",
 			.ctx = nullptr,
-			.func = [](const void* ctx, addr16 addr)
-			{
-				Logger::Abort(U"${:04X} is not Read-mapped"_fmt(addr));
-				return uint8();
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortRead<MappingType::Cpu, MapAbort::Unmapped>
+				        : abortRead<MappingType::Ppu, MapAbort::Unmapped>
 		};
 	}
 
-	MappedRead MappedRead::Invalid()
+	MappedRead MappedRead::Invalid(MappingType mapping)
 	{
 		return {
 			.desc = U"Invalid Access",
 			.ctx = nullptr,
-			.func = [](const void* ctx, addr16 addr)
-			{
-				Logger::Abort(U"${:04X} is not Read-accessable"_fmt(addr));
-				return uint8();
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortRead<MappingType::Cpu, MapAbort::Invalid>
+				        : abortRead<MappingType::Ppu, MapAbort::Invalid>,
 		};
 	}
 
-	MappedRead MappedRead::Unsupported(StringView desc)
+	MappedRead MappedRead::Unsupported(MappingType mapping, StringView desc)
 	{
 		return {
 			.desc = desc,
 			.ctx = nullptr,
-			.func = [](const void* ctx, addr16 addr)
-			{
-				Logger::Abort(U"${:04X} is not Read-supported"_fmt(addr));
-				return uint8();
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortRead<MappingType::Cpu, MapAbort::Unsupported>
+				        : abortRead<MappingType::Ppu, MapAbort::Unsupported>
 		};
 	}
 
-	MappedWrite MappedWrite::Unmapped()
+	MappedWrite MappedWrite::Unmapped(MappingType mapping)
 	{
 		return {
 			.desc = U"(Unmapped)",
 			.ctx = nullptr,
-			.func = [](void* ctx, addr16 addr, uint8 value)
-			{
-				Logger::Abort(U"${:04X} is not Write-mapped"_fmt(addr));
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortWrite<MappingType::Cpu, MapAbort::Unmapped>
+				        : abortWrite<MappingType::Ppu, MapAbort::Unmapped>,
 		};
 	}
 
-	MappedWrite MappedWrite::Invalid()
+	MappedWrite MappedWrite::Invalid(MappingType mapping)
 	{
 		return {
 			.desc = U"Invalid Access",
 			.ctx = nullptr,
-			.func = [](void* ctx, addr16 addr, uint8 value)
-			{
-				Logger::Abort(U"${:04X} is not Write-accessable"_fmt(addr));
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortWrite<MappingType::Cpu, MapAbort::Invalid>
+				        : abortWrite<MappingType::Ppu, MapAbort::Invalid>,
 		};
 	}
 
-	MappedWrite MappedWrite::Unsupported(StringView desc)
+	MappedWrite MappedWrite::Unsupported(MappingType mapping, StringView desc)
 	{
 		return {
 			.desc = desc,
 			.ctx = nullptr,
-			.func = [](void* ctx, addr16 addr, uint8 value)
-			{
-				Logger::Abort(U"${:04X} is not Write-supported"_fmt(addr));
-			},
+			.func = mapping == MappingType::Cpu
+				        ? abortWrite<MappingType::Cpu, MapAbort::Unsupported>
+				        : abortWrite<MappingType::Ppu, MapAbort::Unsupported>,
 		};
 	}
 
 	Mmu::Mmu()
 	{
-		m_cpuRead.fill(MappedRead::Unmapped());
-		m_cpuWrite.fill(MappedWrite::Unmapped());
+		m_cpuRead.fill(MappedRead::Unmapped(MappingType::Cpu));
+		m_cpuWrite.fill(MappedWrite::Unmapped(MappingType::Cpu));
 
-		m_ppuRead.fill(MappedRead::Unmapped());
-		m_ppuWrite.fill(MappedWrite::Unmapped());
+		m_ppuRead.fill(MappedRead::Unmapped(MappingType::Ppu));
+		m_ppuWrite.fill(MappedWrite::Unmapped(MappingType::Ppu));
 	}
 
 	uint8 Mmu::ReadPrg8(addr16 addr) const
