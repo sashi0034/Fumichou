@@ -23,6 +23,8 @@ namespace Gui
 			Vec2 leftCenter;
 			int rightmost;
 
+			RectF LineRect() const;
+
 			void operator()(std::monostate) const { return; }
 			void operator()(const HeaderText& text) const;
 			void operator()(const PlainText& text) const;

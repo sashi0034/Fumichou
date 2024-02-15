@@ -10,6 +10,14 @@ namespace Gui
 
 	constexpr int LineHeight = 24;
 
+	inline void EnsureRegisterEmoji(const Emoji& emoji)
+	{
+		if (not TextureAsset::IsRegistered(emoji.codePoints))
+		{
+			TextureAsset::Register(emoji.codePoints, emoji, TextureDesc::Mipped);
+		}
+	}
+
 	void RegisterGuiAddon();
 
 	void AcceptMouseCaptured();

@@ -15,6 +15,7 @@ struct Nes::HwFrame::Impl
 	Optional<EmulationAbort> m_abort{none};
 	uint64 m_frameCount{};
 	uint64 m_cycleCount{};
+	bool m_paused{};
 
 	Impl()
 	{
@@ -43,6 +44,7 @@ struct Nes::HwFrame::Impl
 	void ControlFrames()
 	{
 		if (m_abort.has_value()) return;
+		if (m_paused) return;
 
 		// TODO
 		try
@@ -113,5 +115,15 @@ namespace Nes
 	uint64 HwFrameView::GetCycleCount() const
 	{
 		return p_impl->m_cycleCount;
+	}
+
+	bool HwFrameView::IsPaused() const
+	{
+		return p_impl->m_paused;
+	}
+
+	void HwFrameView::SetPaused(bool paused)
+	{
+		p_impl->m_paused = paused;
 	}
 }

@@ -53,6 +53,11 @@ struct WidgetDocument0::Impl
 
 namespace Gui
 {
+	RectF Document::Drawer::LineRect() const
+	{
+		return RectF{Arg::leftCenter = leftCenter, SizeF(rightmost - leftCenter.x, LineHeight)};
+	}
+
 	void Document::Drawer::operator()(const HeaderText& text) const
 	{
 		FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text)

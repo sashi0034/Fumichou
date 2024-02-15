@@ -26,3 +26,6 @@ tabColor = "#484848"
 
 [WidgetDocument]
 leftMargin = 48
+
+[WidgetCheckBox]
+textLeft = 40

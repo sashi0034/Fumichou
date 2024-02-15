@@ -4,6 +4,7 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
+#include "WidgetCheckbox.h"
 #include "WidgetDocument.h"
 
 using namespace Gui;
@@ -12,6 +13,8 @@ namespace
 {
 	struct EmulationView
 	{
+		bool isPaused;
+		WidgetCheckbox stoppingCheck;
 	};
 
 	struct CpuView
@@ -22,7 +25,7 @@ namespace
 	{
 		using Drawer::operator();
 
-		void operator ()(EmulationView) const
+		void operator ()(EmulationView& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			auto draw = [&](int y, const String& text)
@@ -32,6 +35,15 @@ namespace
 			auto&& frame = Nes::HwFrame::Instance();
 			draw(0, U"Frame={}"_fmt(frame.GetFrameCount()));
 			draw(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
+			if (self.stoppingCheck.Update({
+				.availableRect = LineRect().movedBy(0, 2 * LineHeight),
+				.toggle = self.isPaused,
+				.text = U"Pause Emulation",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				frame.SetPaused(self.isPaused);
+			}
 		}
 
 		void operator ()(CpuView) const
@@ -53,6 +65,7 @@ namespace
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(EmulationView());
+		texts.push_back(std::monostate{});
 		texts.push_back(std::monostate{});
 
 		texts.push_back(Document::HeaderText(U"CPU Status"));
