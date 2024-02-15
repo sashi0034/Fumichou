@@ -50,6 +50,7 @@ struct Nes::HwFrame::Impl
 		StepFrame();
 	}
 
+	// 1フレーム実行
 	void StepFrame()
 	{
 		try
@@ -63,6 +64,7 @@ struct Nes::HwFrame::Impl
 		}
 	}
 
+	// 1サイクル実行
 	void StepCycle()
 	{
 		m_cycleCount += Mos6502::In::Step(m_hardware);

@@ -3,6 +3,7 @@
 
 #include "Hardware.h"
 #include "Logger.h"
+#include "Mos6502_In.h"
 
 using namespace Nes;
 
@@ -33,10 +34,17 @@ public:
 private:
 	static void beginScanLine(Hardware& hw, uint32 scanLine)
 	{
+		auto& ppu = hw.GetPpu();
 		switch (scanLine)
 		{
 		case 241: {
-			// TODO: VBLANKフラグとNMI割り込み
+			// 垂直同期フラグ
+			ppu.m_unstable.status.VBlank().Set(true);
+			if (ppu.m_regs.control.NmiEnabled())
+			{
+				// NMI割り込み
+				Mos6502::In::Nmi(hw.GetMos6502(), hw.GetMmu());
+			}
 			break;
 		}
 		default:

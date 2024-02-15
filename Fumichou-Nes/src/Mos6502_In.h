@@ -11,6 +11,9 @@ namespace Nes
 		static void Reset(Hardware& hw);
 		static CpuCycle Step(Hardware& hw);
 
+		// マスク不可割り込み
+		static void Nmi(Mos6502& self, const Mmu& mmu);
+
 		class Op;
 
 	private:
