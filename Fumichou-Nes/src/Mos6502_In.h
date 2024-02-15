@@ -5,6 +5,25 @@ namespace Nes
 {
 	class Mmu;
 
+	class CpuStatus8
+	{
+	public:
+		CpuStatus8(uint8 value = 0) : m_value(value) { return; }
+		operator uint8() const { return m_value; }
+
+		auto Carry() { return BitAccess<0>(m_value); }
+		auto Zero() { return BitAccess<1>(m_value); }
+		auto Interrupt() { return BitAccess<2>(m_value); }
+		auto Decimal() { return BitAccess<3>(m_value); }
+		auto Break() { return BitAccess<4>(m_value); }
+		auto Unused() { return BitAccess<5>(m_value); }
+		auto Overflow() { return BitAccess<6>(m_value); }
+		auto Negative() { return BitAccess<7>(m_value); }
+
+	private:
+		uint8 m_value{};
+	};
+
 	class Mos6502::In
 	{
 	public:

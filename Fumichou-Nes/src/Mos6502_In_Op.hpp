@@ -251,9 +251,19 @@ public:
 		Logger::Abort();
 	}
 
+	// 割り込みから戻る
 	static void RTI(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		CpuStatus8 status = popStack8(mos6502, args.mmu);
+		mos6502.m_regs.pc = popStack16(mos6502, args.mmu);
+
+		mos6502.m_flags.n = status.Negative();
+		mos6502.m_flags.v = status.Overflow();
+		mos6502.m_flags.d = status.Decimal();
+		mos6502.m_flags.i = status.Interrupt();
+		mos6502.m_flags.z = status.Zero();
+		mos6502.m_flags.c = status.Carry();
 	}
 
 	static void RTS(const Mos6502OpArgs& args)
