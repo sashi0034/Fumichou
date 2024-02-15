@@ -13,6 +13,8 @@ struct Nes::HwFrame::Impl
 
 	Hardware m_hardware{};
 	Optional<EmulationAbort> m_abort{none};
+	uint64 m_frameCount{};
+	uint64 m_cycleCount{};
 
 	Impl()
 	{
@@ -46,6 +48,7 @@ struct Nes::HwFrame::Impl
 		try
 		{
 			emulateFrame();
+			m_frameCount++;
 		}
 		catch (const EmulationAbort& abort)
 		{
@@ -56,10 +59,10 @@ struct Nes::HwFrame::Impl
 private:
 	void emulateFrame()
 	{
-		CpuCycle cpuCycle{};
-		while (cpuCycle < CpuCyclesPerFrame)
+		const auto endCycle = m_cycleCount + CpuCyclesPerFrame_29781;
+		while (m_cycleCount < endCycle)
 		{
-			cpuCycle += Mos6502::In::Step(m_hardware);
+			m_cycleCount += Mos6502::In::Step(m_hardware);
 		}
 	}
 };
@@ -100,5 +103,15 @@ namespace Nes
 	const Hardware& HwFrameView::GetHw() const
 	{
 		return p_impl->m_hardware;
+	}
+
+	uint64 HwFrameView::GetFrameCount() const
+	{
+		return p_impl->m_frameCount;
+	}
+
+	uint64 HwFrameView::GetCycleCount() const
+	{
+		return p_impl->m_cycleCount;
 	}
 }

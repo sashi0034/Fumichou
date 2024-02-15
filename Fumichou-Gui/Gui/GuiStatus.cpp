@@ -2,6 +2,7 @@
 #include "GuiStatus.h"
 
 #include "FontKeys.h"
+#include "GuiForward.h"
 #include "HwFrame.h"
 #include "WidgetDocument.h"
 
@@ -9,6 +10,10 @@ using namespace Gui;
 
 namespace
 {
+	struct EmulationView
+	{
+	};
+
 	struct CpuView
 	{
 	};
@@ -17,19 +22,39 @@ namespace
 	{
 		using Drawer::operator();
 
+		void operator ()(EmulationView) const
+		{
+			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
+			auto draw = [&](int y, const String& text)
+			{
+				font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
+			};
+			auto&& frame = Nes::HwFrame::Instance();
+			draw(0, U"Frame={}"_fmt(frame.GetFrameCount()));
+			draw(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
+		}
+
 		void operator ()(CpuView) const
 		{
 			auto&& cpu = Nes::HwFrame::Instance().GetHw().GetMos6502();
-			const String text = U"PC={:04X}"_fmt(cpu.GetRegs().pc);
+			const String text = U"PC=${:04X}"_fmt(cpu.GetRegs().pc);
 			FontAsset(FontKeys::ZxProto_20_Bitmap)(text)
 				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
 		}
 	};
 
-	using StatusDocumentData = DocumentData<StatusDraw, CpuView>;
+	using StatusDocumentData = DocumentData<
+		StatusDraw,
+		EmulationView,
+		CpuView>;
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
+		texts.push_back(Document::HeaderText(U"Emulation Status"));
+		texts.push_back(std::monostate{});
+		texts.push_back(EmulationView());
+		texts.push_back(std::monostate{});
+
 		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(CpuView());

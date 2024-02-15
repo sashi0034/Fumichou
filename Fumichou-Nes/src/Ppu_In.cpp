@@ -175,7 +175,7 @@ namespace Nes
 			};
 		case 0x2005:
 			return MappedWrite{
-				.desc = isMirror ? mirrorDesc : U"PPU Scrolling Position Register"_sv,
+				.desc = isMirror ? mirrorDesc : U"PPU Scrolling Position"_sv,
 				.ctx = &ppu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
