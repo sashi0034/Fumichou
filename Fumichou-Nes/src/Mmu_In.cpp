@@ -2,6 +2,7 @@
 #include "Mmu_In.h"
 
 #include "Hardware.h"
+#include "Ppu_In.h"
 
 struct Nes::Mmu::In::Impl
 {
@@ -40,6 +41,11 @@ private:
 					return ram.GetInternalRam()[addr & 0x7FF];
 				},
 			};
+		}
+
+		for (const auto addr : Range(0x2000, 0x3FFF))
+		{
+			cpuRead[addr] = Ppu::In::MapReadPrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
@@ -90,6 +96,11 @@ private:
 					ram.GetInternalRam()[addr & 0x7FF] = value;
 				},
 			};
+		}
+
+		for (const auto addr : Range(0x2000, 0x3FFF))
+		{
+			cpuWrite[addr] = Ppu::In::MapWritePrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
