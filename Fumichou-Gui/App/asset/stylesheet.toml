@@ -29,3 +29,6 @@ leftMargin = 48
 
 [WidgetCheckBox]
 textLeft = 40
+
+[WidgetButton]
+textLeft = 40

@@ -27,10 +27,15 @@ namespace Nes
 		HwFrameView(HwFrame::Impl* impl);
 		[[nodiscard]] Optional<EmulationAbort> GetAbort() const;
 		[[nodiscard]] const Hardware& GetHw() const;
+
 		[[nodiscard]] uint64 GetFrameCount() const;
 		[[nodiscard]] uint64 GetCycleCount() const;
+
 		[[nodiscard]] bool IsPaused() const;
 		void SetPaused(bool paused);
+
+		void StepOneCycle();
+		void StepOneFrame();
 
 	private:
 		HwFrame::Impl* p_impl;

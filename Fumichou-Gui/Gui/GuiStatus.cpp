@@ -4,6 +4,7 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
+#include "WidgetButton.h"
 #include "WidgetCheckbox.h"
 #include "WidgetDocument.h"
 
@@ -15,6 +16,8 @@ namespace
 	{
 		bool isPaused;
 		WidgetCheckbox stoppingCheck;
+		WidgetButton stepCycleButton;
+		WidgetButton stepFrameButton;
 	};
 
 	struct CpuView
@@ -36,13 +39,33 @@ namespace
 			draw(0, U"Frame={}"_fmt(frame.GetFrameCount()));
 			draw(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
 			if (self.stoppingCheck.Update({
-				.availableRect = LineRect().movedBy(0, 2 * LineHeight),
+				.availableRect = LineRect().movedBy(0, 3 * LineHeight),
 				.toggle = self.isPaused,
 				.text = U"Pause Emulation",
 				.textColor = Palette::Darkgray,
 			}))
 			{
 				frame.SetPaused(self.isPaused);
+			}
+
+			if (self.stepCycleButton.Update({
+				.availableRect = LineRect().movedBy(0, 4 * LineHeight),
+				.emojiIcon = U"▶️"_emoji,
+				.text = U"Step 1 Cycle",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				frame.StepOneCycle();
+			}
+
+			if (self.stepFrameButton.Update({
+				.availableRect = LineRect().movedBy(0, 5 * LineHeight),
+				.emojiIcon = U"⏩"_emoji,
+				.text = U"Step 1 Frame",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				frame.StepOneFrame();
 			}
 		}
 
@@ -67,6 +90,11 @@ namespace
 		texts.push_back(EmulationView());
 		texts.push_back(std::monostate{});
 		texts.push_back(std::monostate{});
+		texts.push_back(std::monostate{});
+		texts.push_back(std::monostate{});
+		texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});

@@ -47,6 +47,11 @@ struct Nes::HwFrame::Impl
 		if (m_paused) return;
 
 		// TODO
+		StepFrame();
+	}
+
+	void StepFrame()
+	{
 		try
 		{
 			emulateFrame();
@@ -58,13 +63,18 @@ struct Nes::HwFrame::Impl
 		}
 	}
 
+	void StepCycle()
+	{
+		m_cycleCount += Mos6502::In::Step(m_hardware);
+	}
+
 private:
 	void emulateFrame()
 	{
 		const auto endCycle = m_cycleCount + CpuCyclesPerFrame_29781;
 		while (m_cycleCount < endCycle)
 		{
-			m_cycleCount += Mos6502::In::Step(m_hardware);
+			StepCycle();
 		}
 	}
 };
@@ -125,5 +135,15 @@ namespace Nes
 	void HwFrameView::SetPaused(bool paused)
 	{
 		p_impl->m_paused = paused;
+	}
+
+	void HwFrameView::StepOneCycle()
+	{
+		p_impl->StepCycle();
+	}
+
+	void HwFrameView::StepOneFrame()
+	{
+		p_impl->StepFrame();
 	}
 }
