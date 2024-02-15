@@ -3,6 +3,7 @@
 
 #include "Hardware.h"
 #include "Ppu_In.h"
+#include "Ppu_In_Io.h"
 
 struct Nes::Mmu::In::Impl
 {
@@ -45,7 +46,7 @@ private:
 
 		for (const auto addr : Range(0x2000, 0x3FFF))
 		{
-			cpuRead[addr] = Ppu::In::MapReadPrg(hw, addr);
+			cpuRead[addr] = Ppu::In::Io::MapReadPrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
@@ -100,7 +101,7 @@ private:
 
 		for (const auto addr : Range(0x2000, 0x3FFF))
 		{
-			cpuWrite[addr] = Ppu::In::MapWritePrg(hw, addr);
+			cpuWrite[addr] = Ppu::In::Io::MapWritePrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
