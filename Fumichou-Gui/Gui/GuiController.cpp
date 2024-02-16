@@ -5,6 +5,7 @@
 #include "GuiForward.h"
 #include "GuiStatus.h"
 #include "GuiMapping.h"
+#include "GuiNametable.h"
 #include "GuiPatternTable.h"
 #include "GuiTrace.h"
 #include "WidgetTabBar.h"
@@ -23,7 +24,13 @@ namespace
 
 struct GuiController::Impl
 {
-	GuiTrace m_trace{};
+	struct
+	{
+		WidgetTabBar tab{};
+		int tabIndex{};
+		GuiTrace trace{};
+		GuiNametable nametable{};
+	} m_right;
 
 	struct
 	{
@@ -47,17 +54,35 @@ struct GuiController::Impl
 		constexpr auto screenSize = Nes::Display_256x240 * 3; // + Nes::Display_256x240 / 2;
 		const auto [sideWidth, sideHeight] = (Scene::Size() - screenSize) / 2 - Point::One() * screenMargin;
 
+		constexpr int tabHeight = LineHeight * 1;
+
 		// 右領域更新
 		{
-			Transformer2D t{Mat3x2::Translate(Scene::Size().x - sideWidth, 0), TransformCursor::Yes};
 			const auto available = Point(sideWidth, Scene::Size().y);
-			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
-			m_trace.Update(available.withY(available.y - LineHeight));
+			static const std::array tabNames = {U"Trace"_s, U"Nametable"_s};
+			const auto rightX = Scene::Size().x - sideWidth;
+			(void)Rect(available).moveBy(rightX, 0).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			m_right.tab.Update({
+				.availableRect = Rect(available.withY(tabHeight)).moveBy(rightX, 0),
+				.currentIndex = m_right.tabIndex,
+				.tabNames = tabNames,
+			});
+			Transformer2D t{Mat3x2::Translate(rightX, tabHeight), TransformCursor::Yes};
+			const auto contentAvailable = available.withY(available.y - tabHeight - LineHeight);
+			switch (m_right.tabIndex)
+			{
+			case 0:
+				m_right.trace.Update(contentAvailable);
+				break;
+			case 1:
+				m_right.nametable.Update(contentAvailable);
+				break;
+			default: break;;
+			}
 		}
 
 		// 左領域更新
 		{
-			constexpr int tabHeight = LineHeight * 1;
 			auto available = Size{sideWidth, Scene::Size().y};
 
 			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);

@@ -7,6 +7,10 @@ smallMargin = 8
 tagLeft = 96
 messageLeft = 160
 
+[GuiNametable]
+addressLeft = 80
+dataLeft = 160
+
 [GuiMapping]
 descLeft = 220
 

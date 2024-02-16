@@ -108,6 +108,9 @@ namespace Nes
 	public:
 		class In;
 
+		const std::array<addr16, 4>& GetNametableOffset() const { return m_nametableOffset; }
+		const std::array<uint8, 4096>& GetNametableData() const { return m_nametableData; };
+
 	private:
 		NameTableMirror m_mirroring{};
 		std::array<addr16, 4> m_nametableOffset{};
