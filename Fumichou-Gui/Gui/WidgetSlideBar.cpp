@@ -30,7 +30,12 @@ struct WidgetSlideBar::Impl
 
 	void Update(const update_args& args)
 	{
-		if (args.maxIndex - args.minIndex <= args.pageSize) return;
+		if (args.maxIndex - args.minIndex <= args.pageSize)
+		{
+			// ページがスクロールせずに収まるとき
+			args.currentIndex.get() = args.minIndex;
+			return;
+		}
 
 		const int minHeight = getToml<int>(U"minHeight");
 		const double tabSize = minHeight; // TODO: 少ない要素では大きく
@@ -108,12 +113,12 @@ namespace Gui
 		};
 	}
 
-	void WidgetSlideBar::UpdateVertical(const update_args& args)
+	void WidgetSlideBar::UpdateVertical(update_args args)
 	{
 		p_impl->Update(args);
 	}
 
-	void WidgetSlideBar::UpdateVerticalInverted(update_args&& args)
+	void WidgetSlideBar::UpdateVerticalInverted(update_args args)
 	{
 		const auto center = args.availableRect.center();
 		args.availableRect.rotate90At(center, 2);
@@ -121,7 +126,7 @@ namespace Gui
 		p_impl->Update(args);
 	}
 
-	void WidgetSlideBar::UpdateHorizontal(update_args&& args)
+	void WidgetSlideBar::UpdateHorizontal(update_args args)
 	{
 		const auto center = args.availableRect.center();
 		args.availableRect.rotate90At(center);

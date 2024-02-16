@@ -28,7 +28,7 @@ struct WidgetDocument0::Impl
 		const double leftMargin = getToml<int>(U"leftMargin");
 
 		int indexTail = 0;
-		for (double y = 0; y <= availableRegion.y; y += LineHeight)
+		for (int y = 0; y < availableRegion.y - LineHeight; y += LineHeight)
 		{
 			const int index = indexTail + m_headIndex;
 			if (index < m_data->Size())
@@ -41,7 +41,17 @@ struct WidgetDocument0::Impl
 			indexTail++;
 		}
 
-		m_verticalSlider.UpdateVertical({
+		// インデックス移動
+		if (RectF(availableRegion).intersects(Cursor::PosF()))
+		{
+			const int step = indexTail / 16;
+			const auto wheel = Mouse::Wheel();
+			if (wheel < 0) m_headIndex -= step;
+			else if (wheel > 0) m_headIndex += step;
+		}
+
+		// 垂直バー
+		m_verticalSlider.UpdateVerticalInverted({
 			.availableRect = WidgetSlideBar::AvailableAtLeftCenter(availableRegion),
 			.currentIndex = m_headIndex,
 			.minIndex = 0,

@@ -20,9 +20,9 @@ namespace Gui
 			int pageSize;
 		};
 
-		void UpdateVertical(const update_args& args);
-		void UpdateVerticalInverted(update_args&& args);
-		void UpdateHorizontal(update_args&& args);
+		void UpdateVertical(update_args args);
+		void UpdateVerticalInverted(update_args args);
+		void UpdateHorizontal(update_args args);
 
 		RectF GetTab() const;
 
