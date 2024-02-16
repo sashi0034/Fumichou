@@ -161,6 +161,7 @@
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />
     <ClInclude Include="src\HardwareConstants.h" />
+    <ClInclude Include="src\PaletteColors.h" />
     <ClInclude Include="src\Ppu_In.h" />
     <ClInclude Include="src\Ppu_In_Io.h" />
     <ClInclude Include="src\Ppu_In_Mm.h" />

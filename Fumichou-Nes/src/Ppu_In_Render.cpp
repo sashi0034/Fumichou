@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "Ppu_In_Render.h"
 
+#include "PaletteColors.h"
+
 using namespace Nes;
 
 namespace
@@ -30,6 +32,11 @@ public:
 			{
 				const uint16 addr = x + y * 32;
 				const uint8 id = ppu.m_nametableData[addr]; // mmu.ReadChr8(addr);
+				const uint8 attrIndex = 0x3C0 | (addr & 0xC00) | ((addr >> 4) & 0x38) | ((addr >> 2) & 0x7);
+				const uint8 attribute = ppu.m_nametableData[attrIndex];
+				const uint8 shift = ((addr >> 4) & 4) | (addr & 2);
+				const uint8 paletteIndex = ((attribute >> shift) & 0x3) << 2;
+				const uint8 colorIndex = ppu.m_palettes[paletteIndex];
 				(void)patternTable(id * tile_8, 0, tile_8, tile_8).draw(Point{x, y} * tile_8);
 			}
 		}
