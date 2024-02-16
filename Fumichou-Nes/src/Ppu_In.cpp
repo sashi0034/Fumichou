@@ -91,4 +91,24 @@ namespace Nes
 			Logger::Abort();
 		}
 	}
+
+	uint8 Ppu::In::readPalette(const Ppu& ppu, uint8 paletteIndex)
+	{
+		// TODO: 最適化
+		if (paletteIndex == 0x0010 || paletteIndex == 0x0014 || paletteIndex == 0x0018 || paletteIndex == 0x001C)
+		{
+			paletteIndex -= 0x0010;
+		}
+		return ppu.m_palettes[paletteIndex];
+	}
+
+	void Ppu::In::writePalette(Ppu& ppu, uint8 paletteIndex, uint8 value)
+	{
+		// TODO: 最適化
+		if (paletteIndex == 0x0010 || paletteIndex == 0x0014 || paletteIndex == 0x0018 || paletteIndex == 0x001C)
+		{
+			paletteIndex -= 0x0010;
+		}
+		ppu.m_palettes[paletteIndex] = value;
+	}
 }

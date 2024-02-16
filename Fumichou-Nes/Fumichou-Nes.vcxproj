@@ -148,6 +148,7 @@
     <ClInclude Include="include\Cartridge.h" />
     <ClInclude Include="include\BoardBase.h" />
     <ClInclude Include="include\LogReader.h" />
+    <ClInclude Include="include\ShaderKeys.h" />
     <ClInclude Include="include\RomData.h" />
     <ClInclude Include="include\Forward.h" />
     <ClInclude Include="include\Hardware.h" />
@@ -179,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\.gitignore" />
+    <None Include="App\shader-nes\bg_render.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\Test\" />

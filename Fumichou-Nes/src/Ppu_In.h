@@ -12,6 +12,9 @@ namespace Nes
 		static void UpdateMirroring(Ppu& ppu, NameTableMirror mirror);
 
 	private:
+		static uint8 readPalette(const Ppu& ppu, uint8 paletteIndex);
+		static void writePalette(Ppu& ppu, uint8 paletteIndex, uint8 value);
+
 		class Renderer;
 		class Impl;
 	};

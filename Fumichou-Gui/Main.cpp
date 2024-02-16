@@ -9,6 +9,7 @@
 
 #include "FontKeys.h"
 #include "HwFrame.h"
+#include "ShaderKeys.h"
 #include "Gui/GuiController.h"
 #include "Gui/GuiForward.h"
 #include "Gui/GuiIni.h"
@@ -50,6 +51,8 @@ void Main()
 	Gui::RegisterGuiAddon();
 
 	FontKeys::Register();
+
+	for (auto& key : Nes::PixelShaderKeys::All) PixelShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
 
 	const auto args = System::GetCommandLineArgs();
 

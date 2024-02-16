@@ -2,12 +2,23 @@
 #include "Ppu_In_Render.h"
 
 #include "PaletteColors.h"
+#include "ShaderKeys.h"
 
 using namespace Nes;
 
 namespace
 {
 	constexpr uint8 tile_8 = 8;
+
+	struct CbPaletteColors
+	{
+		Float4 colors[64];
+	};
+
+	struct CbPaletteIndex
+	{
+		uint32 palette[4];
+	};
 }
 
 class Ppu::In::Renderer::Impl
@@ -15,6 +26,15 @@ class Ppu::In::Renderer::Impl
 public:
 	static void Render(const render_args& args)
 	{
+		static ConstantBuffer<CbPaletteColors> cbPaletteColors = []()
+		{
+			ConstantBuffer<CbPaletteColors> cb{};
+			for (int i = 0; i < PaletteColors.size(); ++i) cb->colors[i] = PaletteColors[i].toFloat4();
+			return cb;
+		}();
+		Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
+		const ScopedCustomShader2D shader{PixelShaderAsset(PixelShaderKeys::bg_render)};
+
 		const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
 
 		auto& ppu = args.ppu.get();
@@ -36,7 +56,12 @@ public:
 				const uint8 attribute = ppu.m_nametableData[attrIndex];
 				const uint8 shift = ((addr >> 4) & 4) | (addr & 2);
 				const uint8 paletteIndex = ((attribute >> shift) & 0x3) << 2;
-				const uint8 colorIndex = ppu.m_palettes[paletteIndex];
+				ConstantBuffer<CbPaletteIndex> cb{};
+				cb->palette[0] = readPalette(ppu, paletteIndex + 0);
+				cb->palette[1] = readPalette(ppu, paletteIndex + 1);
+				cb->palette[2] = readPalette(ppu, paletteIndex + 2);
+				cb->palette[3] = readPalette(ppu, paletteIndex + 3);
+				Graphics2D::SetPSConstantBuffer(2, cb);
 				(void)patternTable(id * tile_8, 0, tile_8, tile_8).draw(Point{x, y} * tile_8);
 			}
 		}

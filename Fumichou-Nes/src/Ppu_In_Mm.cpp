@@ -69,11 +69,7 @@ namespace Nes
 				{
 					auto& ppu = *static_cast<Ppu*>(ctx);
 					addr &= 0x001F;
-					if (addr == 0x0010 || addr == 0x0014 || addr == 0x0018 || addr == 0x001C)
-					{
-						addr -= 0x0010;
-					}
-					ppu.m_palettes[addr] = value;
+					writePalette(ppu, addr, value);
 				}
 			};
 		}
