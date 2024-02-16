@@ -27,7 +27,9 @@ public:
 
 	static void AND(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		mos6502.m_regs.a &= args.mmu.get().ReadPrg8(args.srcAddr);
+		setZN(mos6502, mos6502.m_regs.a);
 	}
 
 	static void ASL(const Mos6502OpArgs& args)
@@ -212,12 +214,16 @@ public:
 
 	static void EOR(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		mos6502.m_regs.a ^= args.mmu.get().ReadPrg8(args.srcAddr);
+		setZN(mos6502, mos6502.m_regs.a);
 	}
 
 	static void ORA(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		mos6502.m_regs.a |= args.mmu.get().ReadPrg8(args.srcAddr);
+		setZN(mos6502, mos6502.m_regs.a);
 	}
 
 	static void PHA(const Mos6502OpArgs& args)
