@@ -46,6 +46,7 @@ public:
 		// BG描画
 		constexpr int w_32 = DisplayWidth_256 / tile_8;
 		constexpr int h_30 = DisplayHeight_240 / tile_8;
+		static ConstantBuffer<CbPaletteIndex> cbPaletteIndex{};
 		for (int16 y = 0; y < h_30; ++y)
 		{
 			for (int16 x = 0; x < w_32; ++x)
@@ -56,12 +57,11 @@ public:
 				const uint8 attribute = ppu.m_nametableData[attrIndex];
 				const uint8 shift = ((addr >> 4) & 4) | (addr & 2);
 				const uint8 paletteIndex = ((attribute >> shift) & 0x3) << 2;
-				ConstantBuffer<CbPaletteIndex> cb{};
-				cb->palette[0] = readPalette(ppu, paletteIndex + 0);
-				cb->palette[1] = readPalette(ppu, paletteIndex + 1);
-				cb->palette[2] = readPalette(ppu, paletteIndex + 2);
-				cb->palette[3] = readPalette(ppu, paletteIndex + 3);
-				Graphics2D::SetPSConstantBuffer(2, cb);
+				cbPaletteIndex->palette[0] = readPalette(ppu, paletteIndex + 0);
+				cbPaletteIndex->palette[1] = readPalette(ppu, paletteIndex + 1);
+				cbPaletteIndex->palette[2] = readPalette(ppu, paletteIndex + 2);
+				cbPaletteIndex->palette[3] = readPalette(ppu, paletteIndex + 3);
+				Graphics2D::SetPSConstantBuffer(2, cbPaletteIndex);
 				(void)patternTable(id * tile_8, 0, tile_8, tile_8).draw(Point{x, y} * tile_8);
 			}
 		}
