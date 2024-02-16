@@ -35,6 +35,8 @@ struct Nes::HwFrame::Impl
 			return false;
 		}
 
+		Ppu::In::UpdateMirroring(m_hardware.GetPpu(), m_hardware.GetCartridge().GetRomData().GetNameTableMirror());
+
 		Mmu::In::MapWholeAddr(m_hardware);
 
 		Mos6502::In::Reset(m_hardware);

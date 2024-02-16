@@ -5,10 +5,35 @@
 
 // https://www.nesdev.org/wiki/PPU_memory_map
 
-namespace
+using namespace Nes;
+
+class Ppu::In::Mm::Impl
 {
-	using namespace Nes;
-}
+public:
+	template <int table>
+	static MappedWrite mapWriteNametable(Ppu& ppu, bool isMirror)
+	{
+		constexpr std::array<StringView, 4> desc{
+			U"Nametable #0", U"Nametable #1", U"Nametable #2", U"Nametable #3"
+		};
+		const static std::array<String, 4> mirrorDesc = [desc]()
+		{
+			std::array<String, 4> mirror{};
+			for (int i = 0; i < mirror.size(); ++i) mirror[i] = U"Mirror of " + desc[i];
+			return mirror;
+		}();
+		return MappedWrite{
+			.desc = isMirror ? mirrorDesc[table] : desc[table],
+			.ctx = &ppu,
+			.func = [](void* ctx, addr16 addr, uint8 value)
+			{
+				auto& ppu = *static_cast<Ppu*>(ctx);
+				addr &= 0x0FFF;
+				ppu.m_nametableData[addr + ppu.m_nametableOffset[table]] = value;
+			}
+		};
+	}
+};
 
 namespace Nes
 {
@@ -20,6 +45,19 @@ namespace Nes
 	MappedWrite Ppu::In::Mm::MapWriteChr(Hardware& hw, addr16 addr)
 	{
 		auto& ppu = hw.GetPpu();
+
+		if (AddrRange<addr16>(0x2000, 0x3EFF).IsBetween(addr))
+		{
+			const bool isMirror = addr >= 0x3000;
+			switch ((addr & 0xFFF) / 0x400)
+			{
+			case 0: return Impl::mapWriteNametable<0>(ppu, isMirror);
+			case 1: return Impl::mapWriteNametable<1>(ppu, isMirror);
+			case 2: return Impl::mapWriteNametable<2>(ppu, isMirror);
+			case 3: return Impl::mapWriteNametable<3>(ppu, isMirror);
+			default: break;
+			}
+		}
 
 		if (AddrRange<addr16>(0x3F00, 0x3FFF).IsBetween(addr))
 		{

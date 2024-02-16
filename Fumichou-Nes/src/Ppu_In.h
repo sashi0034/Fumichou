@@ -9,6 +9,7 @@ namespace Nes
 		class Io;
 		class Mm;
 		static void Step(Hardware& hw, PpuCycle cycle);
+		static void UpdateMirroring(Ppu& ppu, NameTableMirror mirror);
 
 	private:
 		class Impl;

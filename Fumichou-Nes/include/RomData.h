@@ -4,15 +4,6 @@
 
 namespace Nes
 {
-	// https://www.nesdev.org/wiki/Mirroring#Nametable_Mirroring
-	enum class NameTableMirror
-	{
-		Horizontal,
-		Vertical,
-		SingleScreen,
-		FourScreen,
-	};
-
 	class MapperNumber8 : public EnumValue<uint8>
 	{
 		using EnumValue::EnumValue;

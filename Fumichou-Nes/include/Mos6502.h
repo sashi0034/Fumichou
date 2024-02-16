@@ -3,7 +3,7 @@
 
 namespace Nes
 {
-	enum class InterruptKind
+	enum class InterruptKind : uint8
 	{
 		None = 0,
 		NMI,

@@ -2,6 +2,7 @@
 #include "Ppu_In.h"
 
 #include "Hardware.h"
+#include "Logger.h"
 #include "Mos6502_In.h"
 
 using namespace Nes;
@@ -55,5 +56,31 @@ namespace Nes
 	void Ppu::In::Step(Hardware& hw, PpuCycle cycle)
 	{
 		Impl::Step(hw, cycle);
+	}
+
+	// https://www.nesdev.org/wiki/Mirroring
+	void Ppu::In::UpdateMirroring(Ppu& ppu, NameTableMirror mirror)
+	{
+		ppu.m_mirroring = mirror;
+		switch (mirror)
+		{
+		case NameTableMirror::Horizontal:
+			ppu.m_nametableOffset = {0x000, 0x000, 0x400, 0x400};
+			break;
+		case NameTableMirror::Vertical:
+			ppu.m_nametableOffset = {0x000, 0x400, 0x000, 0x400};
+			break;
+		case NameTableMirror::SingleLower:
+			ppu.m_nametableOffset = {0x000, 0x000, 0x000, 0x000};
+			break;
+		case NameTableMirror::SingleHigher:
+			ppu.m_nametableOffset = {0x400, 0x400, 0x400, 0x400};
+			break;
+		case NameTableMirror::FourScreen:
+			ppu.m_nametableOffset = {0x000, 0x400, 0x800, 0xC00};
+			break;
+		default: ;
+			Logger::Abort();
+		}
 	}
 }

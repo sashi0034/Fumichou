@@ -24,6 +24,16 @@ namespace Nes
 	constexpr uint32 DisplayHeight_240 = 240;
 	constexpr Size Display_256x240{DisplayWidth_256, DisplayHeight_240};
 
+	// https://www.nesdev.org/wiki/Mirroring#Nametable_Mirroring
+	enum class NameTableMirror
+	{
+		Horizontal,
+		Vertical,
+		SingleLower,
+		SingleHigher,
+		FourScreen,
+	};
+
 	class EmulationAbort final : public Error
 	{
 	public:

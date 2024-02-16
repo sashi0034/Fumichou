@@ -109,7 +109,9 @@ namespace Nes
 		class In;
 
 	private:
-		std::array<uint8, 4096> m_nameTable{};
+		NameTableMirror m_mirroring{};
+		std::array<addr16, 4> m_nametableOffset{};
+		std::array<uint8, 4096> m_nametableData{};
 		std::array<uint8, 32> m_palettes{};
 		std::array<OamData, 64> m_oam{};
 		PpuCycle m_lineCycles{}; // [0, 341)
