@@ -4,6 +4,7 @@
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
+#include "Ppu_In_Render.h"
 
 using namespace Nes;
 
@@ -43,6 +44,13 @@ private:
 				// NMI割り込み
 				Mos6502::In::RequestNmi(hw.GetMos6502());
 			}
+
+			// ディスプレイ描画
+			Renderer::Render({
+				.ppu = hw.GetPpu(),
+				.mmu = hw.GetMmu(),
+				.board = hw.GetCartridge().GetBoard()
+			});
 			break;
 		}
 		default:

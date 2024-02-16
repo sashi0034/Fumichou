@@ -125,6 +125,7 @@
     <ClCompile Include="src\Ppu_In.cpp" />
     <ClCompile Include="src\Ppu_In_Io.cpp" />
     <ClCompile Include="src\Ppu_In_Mm.cpp" />
+    <ClCompile Include="src\Ppu_In_Render.cpp" />
     <ClCompile Include="src\TraceLog.cpp" />
     <ClCompile Include="src\Mmu_In.cpp" />
     <ClCompile Include="src\Mos6502Addressing.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="src\Ppu_In.h" />
     <ClInclude Include="src\Ppu_In_Io.h" />
     <ClInclude Include="src\Ppu_In_Mm.h" />
+    <ClInclude Include="src\Ppu_In_Render.h" />
     <ClInclude Include="src\TraceLog.h" />
     <ClInclude Include="src\Mmu_In.h" />
     <ClInclude Include="src\Mos6502Addressing.h" />

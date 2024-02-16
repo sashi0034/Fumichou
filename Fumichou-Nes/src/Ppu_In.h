@@ -12,6 +12,7 @@ namespace Nes
 		static void UpdateMirroring(Ppu& ppu, NameTableMirror mirror);
 
 	private:
+		class Renderer;
 		class Impl;
 	};
 }

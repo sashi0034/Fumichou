@@ -120,6 +120,13 @@ struct GuiController::Impl
 		}
 
 		auto&& nes = Nes::HwFrame::Instance();
+
+		{
+			// 画面描画
+			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
+			nes.GetHw().GetPpu().GetVideo().texture.resized(screenSize).drawAt(Scene::Center());
+		}
+
 		if (const auto abort = nes.GetAbort())
 		{
 			// アボートメッセージ
