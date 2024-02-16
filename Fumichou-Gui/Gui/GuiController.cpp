@@ -50,9 +50,9 @@ struct GuiController::Impl
 		// 右領域更新
 		{
 			Transformer2D t{Mat3x2::Translate(Scene::Size().x - sideWidth, 0), TransformCursor::Yes};
-			const auto available = Scene::Size().withX(sideWidth);
+			const auto available = Point(sideWidth, Scene::Size().y);
 			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
-			m_trace.Update(available);
+			m_trace.Update(available.withY(available.y - LineHeight));
 		}
 
 		// 左領域更新

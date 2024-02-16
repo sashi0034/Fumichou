@@ -31,7 +31,7 @@ struct GuiTrace::Impl
 	void Update(const SizeF& availableRegion)
 	{
 		constexpr int lineHeight = LineHeight;
-		const Transformer2D t{Mat3x2::Translate(0, lineHeight), TransformCursor::Yes};
+		// const Transformer2D t{Mat3x2::Translate(0, lineHeight), TransformCursor::Yes};
 		updateBody({availableRegion.x, availableRegion.y - lineHeight});
 	}
 
@@ -86,7 +86,7 @@ private:
 
 		m_horizontalSlider.UpdateHorizontal({
 			.availableRect = RectF{
-				Arg::topCenter = Vec2{availableRegion.x / 2, -lineHeight},
+				Arg::topLeft = Vec2{0, availableRegion.y},
 				SizeF{availableRegion.x, lineHeight}
 			},
 			.currentIndex = m_pageHead,
