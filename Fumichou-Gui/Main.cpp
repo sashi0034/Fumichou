@@ -21,7 +21,7 @@ namespace
 	{
 #if	 SIV3D_PLATFORM(WINDOWS)
 		const auto hWnd = static_cast<HWND>(Platform::Windows::Window::GetHWND());
-		enum { DWMWA_USE_IMMERSIVE_DARK_MODE = 20 };
+		constexpr DWORD DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 		constexpr BOOL DARK_MODE = true;
 		DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &DARK_MODE, sizeof(DARK_MODE));
 #endif
