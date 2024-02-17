@@ -28,7 +28,7 @@ public:
 			.func = [](void* ctx, addr16 addr, uint8 value)
 			{
 				auto& ppu = *static_cast<Ppu*>(ctx);
-				addr &= 0x0FFF;
+				addr &= 0x03FF;
 				ppu.m_nametableData[addr + ppu.m_nametableOffset[table]] = value;
 			}
 		};
