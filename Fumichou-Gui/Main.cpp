@@ -13,6 +13,7 @@
 #include "Gui/GuiController.h"
 #include "Gui/GuiForward.h"
 #include "Gui/GuiIni.h"
+#include "Util/ShaderReloader.h"
 #include "Util/TomlStyleSheet.h"
 #include "Util\Utils.h"
 
@@ -54,6 +55,10 @@ void Main()
 
 	for (auto& key : Nes::ShaderKeys::AllPS) PixelShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
 	for (auto& key : Nes::ShaderKeys::AllVS) VertexShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
+
+#ifdef _DEBUG
+	Util::RegisterShaderReloaderAddon();
+#endif
 
 	const auto args = System::GetCommandLineArgs();
 
