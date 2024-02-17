@@ -92,6 +92,15 @@ namespace Nes
 		}
 	}
 
+	void Ppu::In::applyPaletteMirror(Ppu& ppu)
+	{
+		constexpr uint16 mirror = 0x0010;
+		ppu.m_palettes[0x0010] = ppu.m_palettes[0x0010 - mirror];
+		ppu.m_palettes[0x0014] = ppu.m_palettes[0x0014 - mirror];
+		ppu.m_palettes[0x0018] = ppu.m_palettes[0x0018 - mirror];
+		ppu.m_palettes[0x001C] = ppu.m_palettes[0x001C - mirror];
+	}
+
 	uint8 Ppu::In::readPalette(const Ppu& ppu, uint8 paletteIndex)
 	{
 		// TODO: 最適化

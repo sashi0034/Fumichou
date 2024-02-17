@@ -12,13 +12,13 @@ namespace
 
 	struct CbPaletteColors
 	{
-		Float4 colors[64];
+		Float4 paletteColors[64];
 	};
 
-	struct CbPaletteIndex
-	{
-		uint32 palette[4];
-	};
+	// struct CbPaletteIndex
+	// {
+	// 	uint32 palette[4];
+	// };
 
 	struct CbBgData
 	{
@@ -36,7 +36,7 @@ public:
 		static ConstantBuffer<CbPaletteColors> cbPaletteColors = []()
 		{
 			ConstantBuffer<CbPaletteColors> cb{};
-			for (int i = 0; i < PaletteColors.size(); ++i) cb->colors[i] = PaletteColors[i].toFloat4();
+			for (int i = 0; i < PaletteColors.size(); ++i) cb->paletteColors[i] = PaletteColors[i].toFloat4();
 			return cb;
 		}();
 		Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
@@ -52,6 +52,9 @@ public:
 		auto& ppu = args.ppu.get();
 		auto& mmu = args.mmu.get();
 		const ScopedRenderTarget2D renderTarget2D{ppu.m_video.texture};
+
+		// PPUパレットのミラー領域を埋める
+		applyPaletteMirror(ppu);
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 
@@ -71,7 +74,8 @@ public:
 		cbBgData->patternTableSize[1] = patternTable.height();
 		std::memcpy(&cbBgData->nametable, ppu.m_nametableData.data(), sizeof(cbBgData->nametable));
 		std::memcpy(&cbBgData->palettes, ppu.m_palettes.data(), sizeof(cbBgData->palettes));
-		Graphics2D::SetPSConstantBuffer(1, cbBgData);
+
+		Graphics2D::SetPSConstantBuffer(2, cbBgData);
 		// Graphics2D::SetPSTexture(0, patternTable);
 		// // Graphics2D::DrawTriangles(w_32 * h_30 * 2);
 		// Graphics2D::DrawTriangles(1);
