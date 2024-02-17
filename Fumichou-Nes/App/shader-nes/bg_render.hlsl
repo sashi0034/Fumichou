@@ -31,13 +31,13 @@ cbuffer PSConstants2D : register(b0)
 cbuffer CbPaletteColors : register(b1)
 {
     float4 g_paletteColors[64];
+    uint4 g_paletteIndexes[2]; // 32B
 }
 
 cbuffer CbBgData : register(b2)
 {
     uint2 g_patternTableSize;
     uint4 g_nametable[256]; // 4KiB
-    uint4 g_palettes[2]; // 32B
 }
 
 #define W_256 256
@@ -55,11 +55,6 @@ float4 PS(s3d::PSInput input) : SV_TARGET
 
     const uint addr = tileCoarse.x + tileCoarse.y * 32;
 
-    // const uint16_t addr = 1;
-    // const uint addr = 0;
-    // const uint tileId = ((g_nametable[addr / 16][(addr % 16) / 4]) >> 8) & 0xFF;
-    // const uint tileId = (g_nametable[addr / 16][(addr % 16) / 4] >> ((addr % 4) * 8)) & 0xFF;
-    // const uint tileId = (g_nametable[addr >> 4][(addr & 0xF) >> 2] >> ((addr & 0x3) << 3)) & 0xFF;
     const uint tileId = FROM_UINT8ARRAY(g_nametable, addr);
 
     const uint attrAddr = 0x3C0 | (addr & 0xC00) | ((addr >> 4) & 0x38) | ((addr >> 2) & 0x7);
@@ -72,11 +67,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     const float4 tileColor = g_patternTableTexture.Sample(g_sampler0, tileUV);
     const uint paletteIndex = paletteIdBase + tileColor.r + tileColor.g * 2;
 
-    const float4 outputColor = g_paletteColors[FROM_UINT8ARRAY(g_palettes, paletteIndex)];
-
-    // outputColor = g_colors[paletteId];
-    // outputColor.r = tileId / 255.0;
-    // outputColor.g = tileId / 255.0;
+    const float4 outputColor = g_paletteColors[FROM_UINT8ARRAY(g_paletteIndexes, paletteIndex)];
 
     return outputColor;
 }
