@@ -53,8 +53,8 @@ public:
 		// BG描画
 		static ConstantBuffer<CbBgData> cbBgData{};
 
-		static TimeProfiler profiler{U"PPU Rendering"};
-		profiler.begin(U"BG");
+		// static TimeProfiler profiler{U"PPU Rendering"};
+		// profiler.begin(U"BG");
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		cbBgData->patternTableSize[0] = patternTable.width();
@@ -64,8 +64,8 @@ public:
 		Graphics2D::SetPSConstantBuffer(2, cbBgData);
 		(void)patternTable.resized(Display_256x240).draw();
 
-		profiler.end(U"BG");
-		profiler.console();
+		// profiler.end(U"BG");
+		// profiler.console();
 	}
 };
 

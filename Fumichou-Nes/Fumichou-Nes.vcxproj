@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
+    <ClCompile Include="src\Apu.cpp" />
     <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
@@ -146,6 +147,7 @@
     <None Include="App\shader-nes\bg_rendering.hlsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Apu.h" />
     <ClInclude Include="include\Cartridge.h" />
     <ClInclude Include="include\BoardBase.h" />
     <ClInclude Include="include\LogReader.h" />
