@@ -52,7 +52,8 @@ void Main()
 
 	FontKeys::Register();
 
-	for (auto& key : Nes::PixelShaderKeys::All) PixelShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
+	for (auto& key : Nes::ShaderKeys::AllPS) PixelShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
+	for (auto& key : Nes::ShaderKeys::AllVS) VertexShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
 
 	const auto args = System::GetCommandLineArgs();
 
