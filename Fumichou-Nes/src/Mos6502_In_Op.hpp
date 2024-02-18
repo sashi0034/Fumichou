@@ -49,7 +49,8 @@ public:
 
 	static void BRK(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		args.mos6502.get().m_regs.pc++;
+		handleInterrupt(args.mos6502, args.mmu, InterruptKind::BRK);
 	}
 
 	static void BCC(const Mos6502OpArgs& args)
