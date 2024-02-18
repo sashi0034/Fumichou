@@ -12,7 +12,7 @@ public:
 	{
 		for (uint8 button = 0; button < 8; ++button)
 		{
-			self.m_states[player] |= (self.m_controllers[player][button].pressed() << player);
+			self.m_states[player] |= (self.m_controllers[player][button].pressed() << button);
 		}
 	}
 
