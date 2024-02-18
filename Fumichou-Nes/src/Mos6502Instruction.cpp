@@ -33,11 +33,11 @@ namespace
 		set[0x39] = {&op::AND, &addr::AbsoluteY, U"AND ABS,Y"};
 		set[0x21] = {&op::AND, &addr::IndirectX, U"AND IND,X"};
 		set[0x31] = {&op::AND, &addr::IndirectY, U"AND IND,Y"};
-		set[0x0A] = {&op::ASL, &addr::Accumulator, U"ASL ACC"};
-		set[0x06] = {&op::ASL, &addr::ZeroPage, U"ASL ZP"};
-		set[0x16] = {&op::ASL, &addr::ZeroPageX, U"ASL ZP,X"};
-		set[0x0E] = {&op::ASL, &addr::Absolute, U"ASL ABS"};
-		set[0x1E] = {&op::ASL, &addr::AbsoluteX, U"ASL ABS,X"};
+		set[0x0A] = {&op::ASL<true>, &addr::Accumulator, U"ASL ACC"};
+		set[0x06] = {&op::ASL<false>, &addr::ZeroPage, U"ASL ZP"};
+		set[0x16] = {&op::ASL<false>, &addr::ZeroPageX, U"ASL ZP,X"};
+		set[0x0E] = {&op::ASL<false>, &addr::Absolute, U"ASL ABS"};
+		set[0x1E] = {&op::ASL<false>, &addr::AbsoluteX, U"ASL ABS,X"};
 		set[0x24] = {&op::BIT, &addr::ZeroPage, U"BIT ZP"};
 		set[0x2C] = {&op::BIT, &addr::Absolute, U"BIT ABS"};
 		set[0x00] = {&op::BRK, &addr::Implied, U"BRK IMP"};

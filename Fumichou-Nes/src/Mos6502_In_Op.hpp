@@ -32,9 +32,10 @@ public:
 		setZN(mos6502, mos6502.m_regs.a);
 	}
 
+	template <bool acc>
 	static void ASL(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		shiftLeft<acc, false>(args);
 	}
 
 	static void BIT(const Mos6502OpArgs& args)
@@ -205,19 +206,7 @@ public:
 	template <bool acc>
 	static void LSR(const Mos6502OpArgs& args)
 	{
-		auto& mos6502 = args.mos6502.get();
-		auto& mmu = args.mmu.get();
-
-		uint8 data;
-		if constexpr (acc) data = mos6502.m_regs.a;
-		else data = mmu.ReadPrg8(args.srcAddr);
-
-		mos6502.m_flags.c = data & 1;
-		data >>= 1;
-		setZN(mos6502, data);
-
-		if constexpr (acc) mos6502.m_regs.a = data;
-		else mmu.WritePrg8(args.srcAddr, data);
+		shiftRight<acc, false>(args);
 	}
 
 	static void NOP(const Mos6502OpArgs& args)
@@ -263,39 +252,13 @@ public:
 	template <bool acc>
 	static void ROL(const Mos6502OpArgs& args)
 	{
-		auto& mos6502 = args.mos6502.get();
-		auto& mmu = args.mmu.get();
-
-		uint8 data;
-		if constexpr (acc) data = mos6502.m_regs.a;
-		else data = mmu.ReadPrg8(args.srcAddr);
-
-		const bool prevC = mos6502.m_flags.c;
-		mos6502.m_flags.c = data & 0x80;
-		data = (data << 1) | prevC;
-		setZN(mos6502, data);
-
-		if constexpr (acc) mos6502.m_regs.a = data;
-		else mmu.WritePrg8(args.srcAddr, data);
+		shiftLeft<acc, true>(args);
 	}
 
 	template <bool acc>
 	static void ROR(const Mos6502OpArgs& args)
 	{
-		auto& mos6502 = args.mos6502.get();
-		auto& mmu = args.mmu.get();
-
-		addr16 data;
-		if constexpr (acc) data = mos6502.m_regs.a;
-		else data = mmu.ReadPrg8(args.srcAddr);
-
-		const bool prevC = mos6502.m_flags.c;
-		mos6502.m_flags.c = mos6502.m_regs.a & 0b1;
-		data = (data >> 1) | (prevC << 7);
-		setZN(mos6502, data);
-
-		if constexpr (acc) mos6502.m_regs.a = data;
-		else mmu.WritePrg8(args.srcAddr, data);
+		shiftRight<acc, true>(args);
 	}
 
 	// 割り込みから戻る
@@ -413,5 +376,45 @@ private:
 	{
 		args.consumedCycles += 1 + args.pageBoundary; // 分岐すると {1, 2} サイクル遅れる
 		args.mos6502.get().m_regs.pc = args.srcAddr;
+	}
+
+	template <bool acc, bool rotate>
+	static void shiftLeft(const Mos6502OpArgs& args)
+	{
+		auto& mos6502 = args.mos6502.get();
+		auto& mmu = args.mmu.get();
+
+		uint8 data;
+		if constexpr (acc) data = mos6502.m_regs.a;
+		else data = mmu.ReadPrg8(args.srcAddr);
+
+		const bool prevC = mos6502.m_flags.c;
+		mos6502.m_flags.c = data & 0x80;
+		data = data << 1;
+		if constexpr (rotate) data |= prevC;
+		setZN(mos6502, data);
+
+		if constexpr (acc) mos6502.m_regs.a = data;
+		else mmu.WritePrg8(args.srcAddr, data);
+	}
+
+	template <bool acc, bool rotate>
+	static void shiftRight(const Mos6502OpArgs& args)
+	{
+		auto& mos6502 = args.mos6502.get();
+		auto& mmu = args.mmu.get();
+
+		uint8 data;
+		if constexpr (acc) data = mos6502.m_regs.a;
+		else data = mmu.ReadPrg8(args.srcAddr);
+
+		const bool prevC = mos6502.m_flags.c;
+		mos6502.m_flags.c = data & 1;
+		data >>= 1;
+		if constexpr (rotate) data |= prevC << 7;
+		setZN(mos6502, data);
+
+		if constexpr (acc) mos6502.m_regs.a = data;
+		else mmu.WritePrg8(args.srcAddr, data);
 	}
 };
