@@ -130,7 +130,9 @@ struct GuiController::Impl
 		if (const auto abort = nes.GetAbort())
 		{
 			// アボートメッセージ
-			(void)FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what()).drawAt(Scene::Center(), ColorRed);
+			auto abortText = FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what());
+			(void)abortText.regionAt(Scene::Center()).stretched(4).rounded(2).draw(ColorF(ColorRed, 0.9));
+			(void)abortText.drawAt(Scene::Center(), Palette::White);
 		}
 	}
 };
