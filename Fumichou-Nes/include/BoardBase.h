@@ -21,7 +21,7 @@ namespace Nes
 		[[nodiscard]] virtual MappedRead MapReadChr(addr16 addr) = 0;
 		[[nodiscard]] virtual MappedWrite MapPrgWriteChr(addr16 addr) = 0;
 
-		[[nodiscard]] virtual const Texture& PatternTableTexture() const = 0;
+		[[nodiscard]] virtual const s3d::Texture& PatternTableTexture() const = 0;
 
 	protected:
 		RomData m_rom{};

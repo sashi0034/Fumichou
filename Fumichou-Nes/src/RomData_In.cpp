@@ -13,9 +13,9 @@
 
 namespace Nes
 {
-	bool RomData::In::LoadRomFile(RomData& self, FilePathView romPath)
+	bool RomData::In::LoadRomFile(RomData& self, s3d::FilePathView romPath)
 	{
-		BinaryReader reader{romPath};
+		s3d::BinaryReader reader{romPath};
 		if (not reader.isOpen())
 		{
 			Logger::Error(fmt::format(U"Could not open {}", romPath));

@@ -105,7 +105,7 @@ namespace Nes
 
 	struct VideoDisplay
 	{
-		RenderTexture texture;
+		s3d::RenderTexture texture;
 	};
 
 	class Ppu

@@ -108,7 +108,7 @@ public:
 		return MappedWrite::Invalid(MappingType::Cpu);
 	}
 
-	[[nodiscard]] const Texture& PatternTableTexture() const override
+	[[nodiscard]] const s3d::Texture& PatternTableTexture() const override
 	{
 		return m_patternTable.Texture();
 	}

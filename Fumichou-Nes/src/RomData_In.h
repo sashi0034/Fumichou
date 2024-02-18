@@ -6,6 +6,6 @@ namespace Nes
 	class RomData::In
 	{
 	public:
-		static bool LoadRomFile(RomData& self, FilePathView romPath);
+		static bool LoadRomFile(RomData& self, s3d::FilePathView romPath);
 	};
 }

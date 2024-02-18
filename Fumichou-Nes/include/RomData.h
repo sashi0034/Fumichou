@@ -9,11 +9,11 @@ namespace Nes
 		using EnumValue::EnumValue;
 	};
 
-	class PrgRom : public Array<uint8>
+	class PrgRom : public s3d::Array<uint8>
 	{
 	};
 
-	class ChrRom : public Array<uint8>
+	class ChrRom : public s3d::Array<uint8>
 	{
 	};
 

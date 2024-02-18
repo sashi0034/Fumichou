@@ -4,6 +4,8 @@
 #include "Hardware.h"
 #include "Logger.h"
 
+using namespace Nes;
+
 namespace
 {
 	constexpr StringView mirrorDesc = U"Mirrors of PPU Register";

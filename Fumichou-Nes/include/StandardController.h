@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Forward.h"
 
 namespace Nes
 {
@@ -22,7 +23,7 @@ namespace Nes
 	{
 	public:
 		StandardController();
-		using input_array = std::array<InputGroup, 8>;
+		using input_array = std::array<s3d::InputGroup, 8>;
 		class In;
 
 	private:

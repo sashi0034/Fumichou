@@ -7,7 +7,7 @@
 
 struct Nes::Cartridge::In::Impl
 {
-	static bool LoadRomFile(Cartridge& self, FilePathView romPath)
+	static bool LoadRomFile(Cartridge& self, s3d::FilePathView romPath)
 	{
 		auto rom = RomData();
 		if (not RomData::In::LoadRomFile(rom, romPath)) return false;
@@ -39,7 +39,7 @@ private:
 
 namespace Nes
 {
-	bool Cartridge::In::LoadRomFile(Cartridge& self, FilePathView romPath)
+	bool Cartridge::In::LoadRomFile(Cartridge& self, s3d::FilePathView romPath)
 	{
 		return Impl::LoadRomFile(self, romPath);
 	}

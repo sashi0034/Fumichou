@@ -17,8 +17,8 @@ public:
 	static void Initialize(const PatternTableMemory& self)
 	{
 		const uint32 tilesCount = self.m_bytes.size() / tileByteSize_0x10;
-		self.m_cache.image = Image(Size(tilesCount, 1) * tilePixelSize_8, ColorF(0, 1));
-		self.m_cache.texture = DynamicTexture(self.m_cache.image, TextureFormat::R8G8B8A8_Unorm);
+		self.m_cache.image = s3d::Image(s3d::Size(tilesCount, 1) * tilePixelSize_8, s3d::ColorF(0, 1));
+		self.m_cache.texture = s3d::DynamicTexture(self.m_cache.image, s3d::TextureFormat::R8G8B8A8_Unorm);
 		if (self.m_cache.texture.isEmpty())
 		{
 			Logger::Abort(U"Failed to create Texture for Pattern Table");
@@ -50,7 +50,7 @@ private:
 			{
 				const bool bit0 = self.m_bytes[offsetBytes + v + 0x0] & (1 << (7 - u));
 				const bool bit1 = self.m_bytes[offsetBytes + v + 0x8] & (1 << (7 - u));
-				auto& pixel = self.m_cache.image[Point(offsetU + u, v)];
+				auto& pixel = self.m_cache.image[s3d::Point(offsetU + u, v)];
 				pixel.setR(bit0 * 0xFF);
 				pixel.setG(bit1 * 0xFF);
 			}
@@ -72,7 +72,7 @@ namespace Nes
 		Impl::Initialize(*this);
 	}
 
-	const Texture& PatternTableMemory::Texture() const
+	const s3d::Texture& PatternTableMemory::Texture() const
 	{
 		if (not m_cache.refreshed)
 		{

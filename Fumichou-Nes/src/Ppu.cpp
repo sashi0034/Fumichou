@@ -7,6 +7,6 @@ namespace Nes
 {
 	Ppu::Ppu()
 	{
-		m_video.texture = RenderTexture(Display_256x240);
+		m_video.texture = s3d::RenderTexture(Display_256x240);
 	}
 }

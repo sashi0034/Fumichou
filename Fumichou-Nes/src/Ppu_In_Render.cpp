@@ -12,7 +12,7 @@ namespace
 
 	struct CbPaletteColors
 	{
-		Float4 paletteColors[64];
+		s3d::Float4 paletteColors[64];
 		uint32 paletteIndexes[4 * 2];
 	};
 
@@ -31,27 +31,27 @@ public:
 		auto& ppu = args.ppu.get();
 		auto& mmu = args.mmu.get();
 
-		const ScopedCustomShader2D shader{PixelShaderAsset(ShaderKeys::bg_render)};
+		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
 
-		const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
+		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
 
-		const ScopedRenderTarget2D renderTarget2D{ppu.m_video.texture};
+		const s3d::ScopedRenderTarget2D renderTarget2D{ppu.m_video.texture};
 
 		// パレット登録
-		static ConstantBuffer<CbPaletteColors> cbPaletteColors = []()
+		static s3d::ConstantBuffer<CbPaletteColors> cbPaletteColors = []()
 		{
-			ConstantBuffer<CbPaletteColors> cb{};
+			s3d::ConstantBuffer<CbPaletteColors> cb{};
 			for (int i = 0; i < PaletteColors.size(); ++i) cb->paletteColors[i] = PaletteColors[i].toFloat4();
 			return cb;
 		}();
 		std::memcpy(&cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(cbPaletteColors->paletteIndexes));
-		Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
+		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
 
 		// PPUパレットのミラー領域を埋める
 		applyPaletteMirror(ppu);
 
 		// BG描画
-		static ConstantBuffer<CbBgData> cbBgData{};
+		static s3d::ConstantBuffer<CbBgData> cbBgData{};
 
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
@@ -61,7 +61,7 @@ public:
 		cbBgData->patternTableSize[1] = patternTable.height();
 		std::memcpy(&cbBgData->nametable, ppu.m_nametableData.data(), sizeof(cbBgData->nametable));
 
-		Graphics2D::SetPSConstantBuffer(2, cbBgData);
+		s3d::Graphics2D::SetPSConstantBuffer(2, cbBgData);
 		(void)patternTable.resized(Display_256x240).draw();
 
 		// profiler.end(U"BG");

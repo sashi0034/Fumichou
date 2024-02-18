@@ -58,9 +58,9 @@ namespace Nes
 	void Logger::Abort(const std::source_location& location)
 	{
 		const String message = U"Aborted at {} ({}) {}"_fmt(
-			Unicode::Widen(location.file_name()),
+			s3d::Unicode::Widen(location.file_name()),
 			location.line(),
-			Unicode::Widen(location.function_name()));
+			s3d::Unicode::Widen(location.function_name()));
 		Abort(message);
 	}
 

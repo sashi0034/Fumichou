@@ -13,7 +13,7 @@ struct Nes::HwFrame::Impl
 	inline static Impl* s_instance = nullptr;
 
 	Hardware m_hardware{};
-	Optional<EmulationAbort> m_abort{none};
+	s3d::Optional<EmulationAbort> m_abort{s3d::none};
 	uint64 m_frameCount{};
 	uint64 m_cycleCount{};
 	bool m_paused{};
@@ -28,7 +28,7 @@ struct Nes::HwFrame::Impl
 		if (s_instance == this) s_instance = nullptr;
 	}
 
-	bool StartRomFile(FilePathView romPath)
+	bool StartRomFile(s3d::FilePathView romPath)
 	{
 		if (not Cartridge::In::LoadRomFile(m_hardware.GetCartridge(), romPath))
 		{
@@ -109,7 +109,7 @@ namespace Nes
 	{
 	}
 
-	bool HwFrame::StartRomFile(FilePathView romPath)
+	bool HwFrame::StartRomFile(s3d::FilePathView romPath)
 	{
 		return p_impl->StartRomFile(romPath);
 	}
@@ -130,7 +130,7 @@ namespace Nes
 	{
 	}
 
-	Optional<EmulationAbort> HwFrameView::GetAbort() const
+	s3d::Optional<EmulationAbort> HwFrameView::GetAbort() const
 	{
 		return p_impl->m_abort;
 	}

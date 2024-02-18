@@ -63,8 +63,8 @@ namespace Nes::Util
 		static_assert(std::is_integral<Wire>::value);
 		if constexpr (sizeof(Wire) == 8) // 64-bit
 		{
-			const uint32 hi = *reinterpret_cast<const uint32*>(&span[offset + 0]);
-			const uint32 lo = *reinterpret_cast<const uint32*>(&span[offset + 4]);
+			const uint32_t hi = *reinterpret_cast<const uint32_t*>(&span[offset + 0]);
+			const uint32_t lo = *reinterpret_cast<const uint32_t*>(&span[offset + 4]);
 			Wire result = (static_cast<Wire>(hi) << 32) | static_cast<Wire>(lo);
 			return result;
 		}
@@ -101,11 +101,11 @@ namespace Nes::Util
 		static_assert(std::is_integral<Wire>::value);
 		if constexpr (sizeof(Wire) == 8) // 64-bit
 		{
-			const uint32 hi = value >> 32;
-			const uint32 lo = value;
+			const uint32_t hi = value >> 32;
+			const uint32_t lo = value;
 
-			*reinterpret_cast<uint32*>(&span[offset + 0]) = hi;
-			*reinterpret_cast<uint32*>(&span[offset + 4]) = lo;
+			*reinterpret_cast<uint32_t*>(&span[offset + 0]) = hi;
+			*reinterpret_cast<uint32_t*>(&span[offset + 4]) = lo;
 		}
 		else
 		{
@@ -147,7 +147,7 @@ namespace Nes::Util
 		T value;
 	};
 
-	template <typename T = uint32>
+	template <typename T = uint32_t>
 	class AddrRange
 	{
 		static_assert(std::is_integral<T>::value);
