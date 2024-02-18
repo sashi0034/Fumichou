@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Mmu_In.h"
 
+#include "Apu_In_Io.h"
 #include "Hardware.h"
 #include "Ppu_In.h"
 #include "Ppu_In_Io.h"
@@ -51,6 +52,11 @@ private:
 		for (const auto addr : Range(0x2000, 0x3FFF))
 		{
 			cpuRead[addr] = Ppu::In::Io::MapReadPrg(hw, addr);
+		}
+
+		for (const auto addr : Range(0x4000, 0x4017))
+		{
+			// cpuRead[addr] = Apu::In::Io::MapReadPrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
@@ -106,6 +112,11 @@ private:
 		for (const auto addr : Range(0x2000, 0x3FFF))
 		{
 			cpuWrite[addr] = Ppu::In::Io::MapWritePrg(hw, addr);
+		}
+
+		for (const auto addr : Range(0x4000, 0x4017))
+		{
+			cpuWrite[addr] = Apu::In::Io::MapWritePrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))

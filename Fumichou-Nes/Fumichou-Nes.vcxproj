@@ -119,6 +119,8 @@
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
     <ClCompile Include="src\Apu.cpp" />
+    <ClCompile Include="src\Apu_In.cpp" />
+    <ClCompile Include="src\Apu_In_Io.cpp" />
     <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
@@ -127,6 +129,7 @@
     <ClCompile Include="src\Ppu_In_Io.cpp" />
     <ClCompile Include="src\Ppu_In_Mm.cpp" />
     <ClCompile Include="src\Ppu_In_Render.cpp" />
+    <ClCompile Include="src\StandardController.cpp" />
     <ClCompile Include="src\TraceLog.cpp" />
     <ClCompile Include="src\Mmu_In.cpp" />
     <ClCompile Include="src\Mos6502Addressing.cpp" />
@@ -160,7 +163,10 @@
     <ClInclude Include="include\Mos6502.h" />
     <ClInclude Include="include\HwFrame.h" />
     <ClInclude Include="include\Ppu.h" />
+    <ClInclude Include="include\StandardController.h" />
     <ClInclude Include="include\Util.h" />
+    <ClInclude Include="src\Apu_In.h" />
+    <ClInclude Include="src\Apu_In_Io.h" />
     <ClInclude Include="src\Boards\PatternTableMemory.h" />
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />

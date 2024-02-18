@@ -2,11 +2,8 @@
 
 namespace Nes
 {
-	class Apu
+	class StandardController
 	{
 	public:
-		class In;
-
-	private:
 	};
 }

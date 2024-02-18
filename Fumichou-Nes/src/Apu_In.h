@@ -1,12 +1,12 @@
 ﻿#pragma once
 
+#include "Apu.h"
+
 namespace Nes
 {
-	class Apu
+	class Apu::In
 	{
 	public:
-		class In;
-
-	private:
+		class Io;
 	};
 }
