@@ -5,6 +5,7 @@
 #include "Mmu.h"
 #include "Mos6502.h"
 #include "Ppu.h"
+#include "StandardController.h"
 
 namespace Nes
 {
@@ -29,6 +30,9 @@ namespace Nes
 		Apu& GetApu() { return m_apu; }
 		const Apu& GetApu() const { return m_apu; }
 
+		StandardController& GetController() { return m_controller; }
+		const StandardController& GetController() const { return m_controller; }
+
 	private:
 		Mmu m_mmu{};
 		Ram m_ram{};
@@ -36,5 +40,6 @@ namespace Nes
 		Mos6502 m_mos6502{};
 		Ppu m_ppu{};
 		Apu m_apu{};
+		StandardController m_controller{};
 	};
 }

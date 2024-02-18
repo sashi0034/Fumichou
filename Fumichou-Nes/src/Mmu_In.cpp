@@ -6,6 +6,8 @@
 #include "Ppu_In.h"
 #include "Ppu_In_Io.h"
 #include "Ppu_In_Mm.h"
+#include "StandardController.h"
+#include "StandardController_In.h"
 
 struct Nes::Mmu::In::Impl
 {
@@ -54,9 +56,9 @@ private:
 			cpuRead[addr] = Ppu::In::Io::MapReadPrg(hw, addr);
 		}
 
-		for (const auto addr : Range(0x4000, 0x4017))
+		for (const auto addr : Range(0x4016, 0x4017))
 		{
-			// cpuRead[addr] = Apu::In::Io::MapReadPrg(hw, addr);
+			cpuRead[addr] = StandardController::In::MapReadPrg(hw.GetController(), addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
@@ -116,7 +118,10 @@ private:
 
 		for (const auto addr : Range(0x4000, 0x4017))
 		{
-			cpuWrite[addr] = Apu::In::Io::MapWritePrg(hw, addr);
+			if (addr == 0x4016)
+				cpuWrite[addr] = StandardController::In::MapWritePrg_0x4016(hw.GetController());
+			else
+				cpuWrite[addr] = Apu::In::Io::MapWritePrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))
