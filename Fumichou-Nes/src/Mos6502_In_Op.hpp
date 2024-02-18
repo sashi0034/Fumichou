@@ -238,7 +238,17 @@ public:
 
 	static void PHP(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		const auto& flags = args.mos6502.get().m_flags;
+		CpuStatus8 status{};
+		status.Negative().Set(flags.n);
+		status.Overflow().Set(flags.v);
+		status.Break().Set(true);
+		status.Unused().Set(true);
+		status.Decimal().Set(flags.d);
+		status.Interrupt().Set(flags.i);
+		status.Zero().Set(flags.z);
+		status.Carry().Set(flags.c);
+		pushStack8(args.mos6502, args.mmu, status);
 	}
 
 	static void PLA(const Mos6502OpArgs& args)
@@ -249,7 +259,14 @@ public:
 
 	static void PLP(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		CpuStatus8 status = popStack8(args.mos6502, args.mmu);
+		auto& flags = args.mos6502.get().m_flags;
+		flags.n = status.Negative();
+		flags.v = status.Overflow();
+		flags.d = status.Decimal();
+		flags.i = status.Interrupt();
+		flags.z = status.Zero();
+		flags.c = status.Carry();
 	}
 
 	template <bool acc>
