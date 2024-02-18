@@ -40,7 +40,11 @@ public:
 
 	static void BIT(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		const uint8 data = args.mmu.get().ReadPrg8(args.srcAddr);
+		mos6502.m_flags.z = not(mos6502.m_regs.a & data);
+		mos6502.m_flags.v = data & 0x40;
+		mos6502.m_flags.n = data & 0x80;
 	}
 
 	static void BRK(const Mos6502OpArgs& args)
@@ -211,7 +215,6 @@ public:
 
 	static void NOP(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
 	}
 
 	static void EOR(const Mos6502OpArgs& args)
