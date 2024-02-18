@@ -202,9 +202,22 @@ public:
 		args.consumedCycles += args.pageBoundary;
 	}
 
+	template <bool acc>
 	static void LSR(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		auto& mmu = args.mmu.get();
+
+		uint8 data;
+		if constexpr (acc) data = mos6502.m_regs.a;
+		else data = mmu.ReadPrg8(args.srcAddr);
+
+		mos6502.m_flags.c = data & 1;
+		data >>= 1;
+		setZN(mos6502, data);
+
+		if constexpr (acc) mos6502.m_regs.a = data;
+		else mmu.WritePrg8(args.srcAddr, data);
 	}
 
 	static void NOP(const Mos6502OpArgs& args)
@@ -247,14 +260,42 @@ public:
 		Logger::Abort();
 	}
 
+	template <bool acc>
 	static void ROL(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		auto& mmu = args.mmu.get();
+
+		uint8 data;
+		if constexpr (acc) data = mos6502.m_regs.a;
+		else data = mmu.ReadPrg8(args.srcAddr);
+
+		const bool prevC = mos6502.m_flags.c;
+		mos6502.m_flags.c = data & 0x80;
+		data = (data << 1) | prevC;
+		setZN(mos6502, data);
+
+		if constexpr (acc) mos6502.m_regs.a = data;
+		else mmu.WritePrg8(args.srcAddr, data);
 	}
 
+	template <bool acc>
 	static void ROR(const Mos6502OpArgs& args)
 	{
-		Logger::Abort();
+		auto& mos6502 = args.mos6502.get();
+		auto& mmu = args.mmu.get();
+
+		addr16 data;
+		if constexpr (acc) data = mos6502.m_regs.a;
+		else data = mmu.ReadPrg8(args.srcAddr);
+
+		const bool prevC = mos6502.m_flags.c;
+		mos6502.m_flags.c = mos6502.m_regs.a & 0b1;
+		data = (data >> 1) | (prevC << 7);
+		setZN(mos6502, data);
+
+		if constexpr (acc) mos6502.m_regs.a = data;
+		else mmu.WritePrg8(args.srcAddr, data);
 	}
 
 	// 割り込みから戻る
