@@ -11,12 +11,21 @@ namespace
 
 	using InstructionSet = std::array<Mos6502Instruction, 256>;
 
+	constexpr Mos6502Instruction invalidInstruction = {
+		.operation = [](auto) { return; },
+		.addressing = [](auto) { return addr16(); },
+		.desc = U"INVALID"_sv
+	};
+
 	consteval InstructionSet createSet()
 	{
 		// https://www.makingnesgames.com/Instruction_Set.html
 		InstructionSet set{};
+		set.fill(invalidInstruction);
+
 		using op = Mos6502::In::Op;
 		namespace addr = Mos6502Addressing;
+
 		set[0x69] = {&op::ADC, &addr::Immediate, U"ADC IMM"};
 		set[0x65] = {&op::ADC, &addr::ZeroPage, U"ADC ZP"};
 		set[0x75] = {&op::ADC, &addr::ZeroPageX, U"ADC ZP,X"};
