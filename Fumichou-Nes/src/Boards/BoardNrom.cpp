@@ -23,7 +23,7 @@ public:
 		else m_patternTable = PatternTableMemory(m_rom.GetChr());
 	}
 
-	MappedRead MapReadPrg(addr16 addr) override
+	MappedRead MapReadPrg(addr16 addr) const override
 	{
 		if (m_oneBank)
 		{
@@ -77,7 +77,7 @@ public:
 		return MappedWrite::Invalid(MappingType::Cpu);
 	}
 
-	MappedRead MapReadChr(addr16 addr) override
+	MappedRead MapReadChr(addr16 addr) const override
 	{
 		return MappedRead{
 			.desc = hasChrRam() ? U"CHR-RAM"_sv : U"CHR-ROM"_sv,

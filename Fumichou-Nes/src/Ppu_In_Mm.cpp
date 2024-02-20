@@ -39,6 +39,11 @@ namespace Nes
 {
 	MappedRead Ppu::In::Mm::MapReadChr(const Hardware& hw, addr16 addr)
 	{
+		if (AddrRange<addr16>(0x0000, 0x1FFF).IsBetween(addr))
+		{
+			return hw.GetCartridge().GetBoard().MapReadChr(addr);
+		}
+
 		return MappedRead::Invalid(MappingType::Ppu);
 	}
 
