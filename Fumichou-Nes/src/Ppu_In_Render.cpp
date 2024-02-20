@@ -21,7 +21,8 @@ namespace
 		struct
 		{
 			uint32 patternTableSize[2];
-			uint32 padding_0x40[2];
+			uint32 pageOffset;
+			uint32 padding_0x60[1];
 		} ppu;
 
 		uint32 nametable[4 * 256];
@@ -60,6 +61,8 @@ public:
 
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
+
+		cbBgData->ppu.pageOffset = 0x100 * ppu.m_regs.control.SecondBgPattern();
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		cbBgData->ppu.patternTableSize[0] = patternTable.width();

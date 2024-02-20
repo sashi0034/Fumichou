@@ -39,7 +39,8 @@ cbuffer CbBgData : register(b2)
     struct
     {
         uint2 patternTableSize;
-        uint2 padding_0x40;
+        uint pageOffset;
+        uint padding_0x60;
     } g_ppu;
 
     uint4 g_nametable[256]; // 4KiB
@@ -60,7 +61,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
 
     const uint addr = tileCoarse.x + tileCoarse.y * 32;
 
-    const uint tileId = FROM_UINT8ARRAY(g_nametable, addr);
+    const uint tileId = g_ppu.pageOffset + FROM_UINT8ARRAY(g_nametable, addr);
 
     const uint attrAddr = 0x3C0 | (addr & 0xC00) | ((addr >> 4) & 0x38) | ((addr >> 2) & 0x7);
     const uint attribute = FROM_UINT8ARRAY(g_nametable, attrAddr);
