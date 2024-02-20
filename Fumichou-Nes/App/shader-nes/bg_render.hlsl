@@ -36,7 +36,12 @@ cbuffer CbPaletteColors : register(b1)
 
 cbuffer CbBgData : register(b2)
 {
-    uint2 g_patternTableSize;
+    struct
+    {
+        uint2 patternTableSize;
+        uint2 padding_0x40;
+    } g_ppu;
+
     uint4 g_nametable[256]; // 4KiB
 }
 
@@ -63,7 +68,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     const uint shift = ((addr >> 4) & 4) | (addr & 2);
     const uint paletteIdBase = ((attribute >> shift) & 0x3) << 2;
 
-    const float2 tileUV = float2(uint2(tileId * TILE_8, 0) + tileFine) / g_patternTableSize;
+    const float2 tileUV = float2(uint2(tileId * TILE_8, 0) + tileFine) / g_ppu.patternTableSize;
     const float4 tileColor = g_patternTableTexture.Sample(g_sampler0, tileUV);
     const uint paletteIndex = paletteIdBase + tileColor.r + tileColor.g * 2;
 

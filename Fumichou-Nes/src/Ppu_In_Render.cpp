@@ -18,7 +18,12 @@ namespace
 
 	struct CbBgData
 	{
-		uint32 patternTableSize[4];
+		struct
+		{
+			uint32 patternTableSize[2];
+			uint32 padding_0x40[2];
+		} ppu;
+
 		uint32 nametable[4 * 256];
 	};
 }
@@ -57,8 +62,8 @@ public:
 		// profiler.begin(U"BG");
 
 		auto& patternTable = args.board.get().PatternTableTexture();
-		cbBgData->patternTableSize[0] = patternTable.width();
-		cbBgData->patternTableSize[1] = patternTable.height();
+		cbBgData->ppu.patternTableSize[0] = patternTable.width();
+		cbBgData->ppu.patternTableSize[1] = patternTable.height();
 		std::memcpy(&cbBgData->nametable, ppu.m_nametableData.data(), sizeof(cbBgData->nametable));
 
 		s3d::Graphics2D::SetPSConstantBuffer(2, cbBgData);
