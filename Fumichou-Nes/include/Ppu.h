@@ -101,7 +101,7 @@ namespace Nes
 		uint8 x;
 	};
 
-	static_assert(sizeof(OamData) == 4);
+	static_assert(sizeof(std::array<OamData, 64>) == sizeof(std::array<uint8, 256>));
 
 	struct VideoDisplay
 	{
@@ -125,7 +125,13 @@ namespace Nes
 		std::array<addr16, 4> m_nametableOffset{};
 		std::array<uint8, 4096> m_nametableData{};
 		std::array<uint8, 32> m_palettes{};
-		std::array<OamData, 64> m_oam{};
+
+		union
+		{
+			std::array<OamData, 64> data;
+			std::array<uint8, 256> bytes;
+		} m_oam{};
+
 		PpuCycle m_lineCycles{}; // [0, 341)
 		uint32 m_scanLine{};
 		PpuRegs m_regs{};

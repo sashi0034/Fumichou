@@ -42,6 +42,14 @@ public:
 			return 7;
 		}
 
+		if (mos6502.m_dmaCycles > 0)
+		{
+			// DMA転送中
+			const CpuCycle cycles = mos6502.m_dmaCycles;
+			mos6502.m_dmaCycles = 0;
+			return cycles;
+		}
+
 		// 命令フェッチ
 		const uint8 fetchedOpcode = mmu.ReadPrg8(mos6502.GetRegs().pc);
 		auto&& fetchedInstr = GetMos6502Instruction(fetchedOpcode);
@@ -87,6 +95,11 @@ namespace Nes
 	void Mos6502::In::RequestNmi(Mos6502& self)
 	{
 		self.m_pendingInterrupt = InterruptKind::NMI;
+	}
+
+	void Mos6502::In::StartDmaCycles(Mos6502& self)
+	{
+		self.m_dmaCycles += 513; // FIXME: 514のときもある
 	}
 
 	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)

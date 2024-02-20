@@ -46,5 +46,6 @@ namespace Nes
 		InterruptKind m_pendingInterrupt{InterruptKind::None};
 		CpuRegs m_regs{};
 		CpuFlags m_flags{};
+		CpuCycle m_dmaCycles{};
 	};
 }

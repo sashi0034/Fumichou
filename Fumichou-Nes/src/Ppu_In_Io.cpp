@@ -3,6 +3,7 @@
 
 #include "Hardware.h"
 #include "Logger.h"
+#include "Mos6502_In.h"
 
 using namespace Nes;
 
@@ -48,7 +49,7 @@ namespace Nes
 				.func = [](const void* ctx, addr16)
 				{
 					auto& ppu = *static_cast<const Ppu*>(ctx);
-					return reinterpret_cast<const uint8*>(ppu.m_oam.data())[ppu.m_regs.OamAddr];
+					return ppu.m_oam.bytes[ppu.m_regs.OamAddr];
 				}
 			};
 		case 0x2005:
@@ -132,7 +133,8 @@ namespace Nes
 				.func = [](void* ctx, addr16, uint8 value)
 				{
 					auto& ppu = *static_cast<Ppu*>(ctx);
-					reinterpret_cast<uint8*>(ppu.m_oam.data())[ppu.m_regs.OamAddr] = value;
+					ppu.m_oam.bytes[ppu.m_regs.OamAddr] = value;
+					ppu.m_regs.OamAddr++; // FIXME: 違うかも
 				}
 			};
 		case 0x2005:
@@ -201,7 +203,23 @@ namespace Nes
 
 	MappedWrite Ppu::In::Io::MapWritePrg_0x4014(Hardware& hw)
 	{
-		// TODO: DMA
-		return MappedWrite::Invalid(MappingType::Cpu);
+		// https://www.nesdev.org/wiki/DMA
+		return MappedWrite{
+			.desc = U"OAM DMA"_sv,
+			.ctx = &hw,
+			.func = [](void* ctx, addr16, uint8 value)
+			{
+				auto& hw = *static_cast<Hardware*>(ctx);
+
+				Mos6502::In::StartDmaCycles(hw.GetMos6502());
+
+				const addr16 high = value << 8;
+				const uint16 oamAddr = hw.GetPpu().m_regs.OamAddr; // FIXME: いらないかも
+				for (uint16 low = 0; low < 256; ++low)
+				{
+					hw.GetPpu().m_oam.bytes[(oamAddr + low) & 0xFF] = hw.GetMmu().ReadPrg8(high | low);
+				}
+			}
+		};
 	}
 }
