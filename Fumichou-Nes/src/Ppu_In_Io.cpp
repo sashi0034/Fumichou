@@ -198,4 +198,10 @@ namespace Nes
 
 		return MappedWrite::Invalid(MappingType::Cpu);
 	}
+
+	MappedWrite Ppu::In::Io::MapWritePrg_0x4014(Hardware& hw)
+	{
+		// TODO: DMA
+		return MappedWrite::Invalid(MappingType::Cpu);
+	}
 }

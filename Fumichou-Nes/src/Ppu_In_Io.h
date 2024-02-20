@@ -10,5 +10,6 @@ namespace Nes
 	public:
 		static MappedRead MapReadPrg(const Hardware& hw, addr16 addr);
 		static MappedWrite MapWritePrg(Hardware& hw, addr16 addr);
+		static MappedWrite MapWritePrg_0x4014(Hardware& hw);
 	};
 }

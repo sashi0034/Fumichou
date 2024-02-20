@@ -118,7 +118,9 @@ private:
 
 		for (const auto addr : Range(0x4000, 0x4017))
 		{
-			if (addr == 0x4016)
+			if (addr == 0x4014)
+				cpuWrite[addr] = Ppu::In::Io::MapWritePrg_0x4014(hw);
+			else if (addr == 0x4016 || addr == 0x4017)
 				cpuWrite[addr] = StandardController::In::MapWritePrg_0x4016(hw.GetController());
 			else
 				cpuWrite[addr] = Apu::In::Io::MapWritePrg(hw, addr);
