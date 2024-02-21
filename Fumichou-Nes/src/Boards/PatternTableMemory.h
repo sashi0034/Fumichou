@@ -11,6 +11,7 @@ namespace Nes
 		PatternTableMemory(std::span<const uint8> data);
 		PatternTableMemory(size_t size);
 
+		const s3d::Image& Image() const;
 		const s3d::Texture& Texture() const;
 
 		uint8 Read8(addr16 addr) const { return m_bytes[addr]; }
@@ -23,9 +24,10 @@ namespace Nes
 
 		struct Cache
 		{
+			bool refreshedImage{};
+			bool refreshedTexture{};
 			s3d::Image image{};
 			s3d::DynamicTexture texture{};
-			bool refreshed{};
 		} mutable m_cache;
 	};
 }

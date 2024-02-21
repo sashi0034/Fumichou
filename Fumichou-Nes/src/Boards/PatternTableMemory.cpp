@@ -25,19 +25,27 @@ public:
 		}
 	}
 
-	static void RefreshTexture(const PatternTableMemory& self)
+	static void CheckRefreshImage(const PatternTableMemory& self)
+	{
+		if (not self.m_cache.refreshedImage)
+		{
+			// キャッシュが古くなったので更新
+			refreshImage(self);
+			self.m_cache.refreshedImage = true;
+			self.m_cache.refreshedTexture = false;
+		}
+	}
+
+private:
+	static void refreshImage(const PatternTableMemory& self)
 	{
 		const uint32 tilesCount = self.m_bytes.size() / tileByteSize_0x10;
 		for (uint32 id = 0; id < tilesCount; ++id)
 		{
 			refreshTileImage(self, id);
 		}
-
-		// テクスチャに反映
-		self.m_cache.texture.fill(self.m_cache.image);
 	}
 
-private:
 	static void refreshTileImage(const PatternTableMemory& self, uint32 id)
 	{
 		const uint32 offsetU = id * tilePixelSize_8;
@@ -72,21 +80,30 @@ namespace Nes
 		Impl::Initialize(*this);
 	}
 
+	const s3d::Image& PatternTableMemory::Image() const
+	{
+		Impl::CheckRefreshImage(*this);
+		return m_cache.image;
+	}
+
 	const s3d::Texture& PatternTableMemory::Texture() const
 	{
-		if (not m_cache.refreshed)
+		Impl::CheckRefreshImage(*this);
+
+		if (not m_cache.refreshedTexture)
 		{
-			// キャッシュが古くなったので更新
-			Impl::RefreshTexture(*this);
-			m_cache.refreshed = true;
+			// テクスチャに反映
+			m_cache.texture.fill(m_cache.image);
+			m_cache.refreshedTexture = true;
 		}
+
 		return m_cache.texture;
 	}
 
 	void PatternTableMemory::Write8(addr16 addr, uint8 value)
 	{
 		m_bytes[addr] = value;
-		m_cache.refreshed = false;
+		m_cache.refreshedImage = false;
 		// TODO: 更新対象をメモ
 	}
 }
