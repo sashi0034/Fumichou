@@ -4,7 +4,7 @@
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
-#include "Ppu_In_Render.h"
+#include "Ppu_Renderer.h"
 
 using namespace Nes;
 
@@ -45,8 +45,11 @@ private:
 				Mos6502::In::RequestNmi(hw.GetMos6502());
 			}
 
+			// PPUパレットのミラー領域を埋める
+			ApplyPaletteMirror(ppu);
+
 			// ディスプレイ描画
-			Renderer::Render({
+			ppu.m_renderer->Render({
 				.ppu = hw.GetPpu(),
 				.mmu = hw.GetMmu(),
 				.board = hw.GetCartridge().GetBoard()
@@ -92,7 +95,7 @@ namespace Nes
 		}
 	}
 
-	void Ppu::In::applyPaletteMirror(Ppu& ppu)
+	void Ppu::In::ApplyPaletteMirror(Ppu& ppu)
 	{
 		constexpr uint16 mirror = 0x0010;
 		ppu.m_palettes[0x0010] = ppu.m_palettes[0x0010 - mirror];

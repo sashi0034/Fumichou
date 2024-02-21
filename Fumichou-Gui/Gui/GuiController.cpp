@@ -124,7 +124,7 @@ struct GuiController::Impl
 		{
 			// 画面描画
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
-			nes.GetHw().GetPpu().GetVideo().texture.resized(screenSize).drawAt(Scene::Center());
+			nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
 		}
 
 		if (const auto abort = nes.GetAbort())

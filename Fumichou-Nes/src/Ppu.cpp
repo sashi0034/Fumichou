@@ -1,12 +1,19 @@
 ﻿#include "stdafx.h"
 #include "Ppu.h"
 
+#include "Ppu_Renderer.h"
+
 using namespace Nes;
 
 namespace Nes
 {
-	Ppu::Ppu()
+	Ppu::Ppu() :
+		m_renderer(IRenderer::Create())
 	{
-		m_video.texture = s3d::RenderTexture(Display_256x240);
+	}
+
+	const s3d::Texture& Ppu::GetVideo() const
+	{
+		return m_renderer->GetVideoTexture();
 	}
 }

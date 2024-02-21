@@ -10,13 +10,12 @@ namespace Nes
 		class Mm;
 		static void Step(Hardware& hw, PpuCycle cycle);
 		static void UpdateMirroring(Ppu& ppu, NameTableMirror mirror);
+		static void ApplyPaletteMirror(Ppu& ppu);
 
 	private:
-		static void applyPaletteMirror(Ppu& ppu);
 		static uint8 readPalette(const Ppu& ppu, uint8 paletteIndex);
 		static void writePalette(Ppu& ppu, uint8 paletteIndex, uint8 value);
 
-		class Renderer;
 		class Impl;
 	};
 }

@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
-#include "Ppu_In_Render.h"
+#include "Ppu_Renderer.h"
 
+#include "BoardBase.h"
 #include "PaletteColors.h"
+#include "Ppu_In.h"
 #include "ShaderKeys.h"
 
 using namespace Nes;
@@ -29,29 +31,37 @@ namespace
 	};
 }
 
-class Ppu::In::Renderer::Impl
+class Ppu::IRenderer::Hle : public IRenderer
 {
 public:
-	static void Render(const render_args& args)
+	s3d::RenderTexture m_videoTexture{Display_256x240};
+	s3d::ConstantBuffer<CbPaletteColors> cbPaletteColors{};
+	s3d::ConstantBuffer<CbBgData> cbBgData{};
+
+	Hle()
+	{
+		for (int i = 0; i < PaletteColors.size(); ++i)
+		{
+			cbPaletteColors->paletteColors[i] = PaletteColors[i].toFloat4();
+		}
+	}
+
+	~Hle() override = default;
+
+	const s3d::Texture& GetVideoTexture() const override
+	{
+		return m_videoTexture;
+	}
+
+	void Render(const render_args& args) override
 	{
 		auto& ppu = args.ppu.get();
-		auto& mmu = args.mmu.get();
 
 		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
 
-		const s3d::ScopedRenderTarget2D renderTarget2D{ppu.m_video.texture};
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture};
 
 		// パレット登録
-		static s3d::ConstantBuffer<CbPaletteColors> cbPaletteColors = []()
-		{
-			s3d::ConstantBuffer<CbPaletteColors> cb{};
-			for (int i = 0; i < PaletteColors.size(); ++i) cb->paletteColors[i] = PaletteColors[i].toFloat4();
-			return cb;
-		}();
-
-		// PPUパレットのミラー領域を埋める
-		applyPaletteMirror(ppu);
-
 		std::memcpy(&cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(cbPaletteColors->paletteIndexes));
 		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
 
@@ -63,16 +73,14 @@ public:
 	}
 
 private:
-	static void renderBg(const render_args& args, Ppu& ppu)
+	void renderBg(const render_args& args, const Ppu& ppu)
 	{
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
-
-		static s3d::ConstantBuffer<CbBgData> cbBgData{};
 
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
 
-		cbBgData->ppu.pageOffset = 0x100 * ppu.m_regs.control.SecondBgPattern();
+		cbBgData->ppu.pageOffset = 0x100 * PpuControl8(ppu.m_regs.control).SecondBgPattern();
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		cbBgData->ppu.patternTableSize[0] = patternTable.width();
@@ -86,13 +94,15 @@ private:
 		// profiler.console();
 	}
 
-	static void renderSprites(const render_args& args, Ppu& ppu)
+	void renderSprites(const render_args& args, const Ppu& ppu)
 	{
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
 		auto& patternTable = args.board.get().PatternTableTexture();
 
-		const uint16 sprPage = ppu.m_regs.control.SecondSprPatter() << 8;
-		for (uint8 i = 0; i < 64; ++i)
+		const uint16 sprPage = PpuControl8(ppu.m_regs.control).SecondSprPatter() << 8;
+
+		// アドレス降順から描画開始
+		for (int i = 63; i >= 0; --i)
 		{
 			auto&& spr = ppu.m_oam.data[i];
 			const s3d::Point pos = s3d::Point(spr.x, spr.y + 1);
@@ -112,8 +122,8 @@ private:
 
 namespace Nes
 {
-	void Ppu::In::Renderer::Render(const render_args& args)
+	std::unique_ptr<Ppu::IRenderer> Ppu::IRenderer::Create()
 	{
-		Impl::Render(args);
+		return std::make_unique<Hle>();
 	}
 }

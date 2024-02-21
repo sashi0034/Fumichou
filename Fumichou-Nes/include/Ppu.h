@@ -103,11 +103,6 @@ namespace Nes
 
 	static_assert(sizeof(std::array<OamData, 64>) == sizeof(std::array<uint8, 256>));
 
-	struct VideoDisplay
-	{
-		s3d::RenderTexture texture;
-	};
-
 	class Ppu
 	{
 	public:
@@ -115,12 +110,14 @@ namespace Nes
 
 		Ppu();
 
-		const VideoDisplay& GetVideo() const { return m_video; };
+		const s3d::Texture& GetVideo() const;
 		const std::array<addr16, 4>& GetNametableOffset() const { return m_nametableOffset; }
 		const std::array<uint8, 4096>& GetNametableData() const { return m_nametableData; };
 
 	private:
-		VideoDisplay m_video{};
+		class IRenderer;
+		std::shared_ptr<IRenderer> m_renderer;
+
 		NameTableMirror m_mirroring{};
 		std::array<addr16, 4> m_nametableOffset{};
 		std::array<uint8, 4096> m_nametableData{};
