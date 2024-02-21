@@ -2,6 +2,7 @@
 #include "GuiPatternTable.h"
 
 #include "FontKeys.h"
+#include "GuiForward.h"
 #include "HwFrame.h"
 #include "WidgetSlideBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -21,6 +22,7 @@ struct GuiPatternTable::Impl
 {
 	int m_offsetY{};
 	WidgetSlideBar m_slider{};
+	bool m_showGrid{};
 
 	void Update(const Size& availableRegion)
 	{
@@ -48,9 +50,29 @@ struct GuiPatternTable::Impl
 			// (void)rect.bottom().movedBy(0, 1).draw(ColorBlue);
 		}
 
+		if (m_showGrid)
+		{
+			// グリッド表示
+			const double grid_thickness = getToml<double>(U"grid_thickness");
+			for (int y = 1; y < lineSize; ++y)
+			{
+				const auto by = -m_offsetY + y * lineHeight * scale;
+				(void)Line(lineLeft, by, availableRegion.x - sliderMargin, by)
+					.draw(grid_thickness, Palette::Darkslateblue);
+			}
+			for (int x = 1; x < lineColumn; ++x)
+			{
+				const auto rx = lineLeft + x * 8 * scale;
+				(void)Line(rx, 0, rx, availableRegion.y)
+					.draw(grid_thickness, x % 4 == 0 ? Palette::Blue : Palette::Darkslateblue);
+			}
+		}
+
 		// インデックス移動
+		bool mouseIntersects{};
 		if (RectF(availableRegion).intersects(Cursor::PosF()))
 		{
+			mouseIntersects = true;
 			const int step = static_cast<int>(lineHeight * scale);
 			const auto wheel = Mouse::Wheel();
 			int amount{};
@@ -67,6 +89,13 @@ struct GuiPatternTable::Impl
 			.maxIndex = static_cast<int>(lineSize * lineHeight * scale),
 			.pageSize = availableRegion.y - 1
 		});
+
+		if (mouseIntersects && not IsMouseCaptured() && MouseL.down())
+		{
+			// グリッド表示切り替え
+			AcceptMouseCaptured();
+			m_showGrid = not m_showGrid;
+		}
 	}
 };
 
