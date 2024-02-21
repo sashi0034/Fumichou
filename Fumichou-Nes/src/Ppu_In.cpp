@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "Ppu_In.h"
 
+#include <Siv3D/Console.hpp>
+
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
@@ -12,6 +14,8 @@ namespace
 {
 	constexpr PpuCycle cyclesPerLine_341 = 341;
 	constexpr int maxLines_262 = 262;
+
+	constexpr uint8 tile_8 = 8;
 }
 
 class Ppu::In::Impl
@@ -19,46 +23,102 @@ class Ppu::In::Impl
 public:
 	static void Step(Hardware& hw, PpuCycle cycle)
 	{
-		auto&& ppu = hw.GetPpu();
+		auto& ppu = hw.GetPpu();
 		ppu.m_lineCycles += cycle;
+
+		if (ppu.m_sprZeroScan && ppu.m_oam.sprites[0].x > ppu.m_lineCycles)
+		{
+			// スプライト0ヒットをチェック
+			checkSprZeroHit(hw, ppu);
+			ppu.m_sprZeroScan = false;
+		}
+
 		if (ppu.m_lineCycles >= cyclesPerLine_341)
 		{
+			reachedLineEnd(hw, ppu, ppu.m_scanLine);
+
 			ppu.m_lineCycles -= cycle;
 			ppu.m_scanLine = (ppu.m_scanLine + 1) % maxLines_262;
-
-			beginScanLine(hw, ppu.m_scanLine);
 		}
 	}
 
 private:
-	static void beginScanLine(Hardware& hw, uint32 scanLine)
+	static void reachedLineEnd(Hardware& hw, Ppu& ppu, uint32 line)
 	{
-		auto& ppu = hw.GetPpu();
-		switch (scanLine)
+		if (line < 240)
 		{
-		case 241: {
-			// 垂直同期フラグ
-			ppu.m_unstable.status.VBlank().Set(true);
-			if (ppu.m_regs.control.NmiEnabled())
-			{
-				// NMI割り込み
-				Mos6502::In::RequestNmi(hw.GetMos6502());
-			}
+			// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
+			if (ppu.m_sprZeroScan) checkSprZeroHit(hw, ppu);
 
-			// PPUパレットのミラー領域を埋める
-			ApplyPaletteMirror(ppu);
+			// スプライト0ヒットを検出するラインかチェック
+			const auto spr0 = ppu.m_oam.sprites[0];
+			ppu.m_sprZeroScan = spr0.y <= line && line <= spr0.y + 7;
+		}
+		else if (line == 240)
+		{
+			// 垂直同期
+			beginVerticalBlank(hw, ppu);
+		}
+	}
 
-			// ディスプレイ描画
-			ppu.m_renderer->Render({
-				.ppu = hw.GetPpu(),
-				.mmu = hw.GetMmu(),
-				.board = hw.GetCartridge().GetBoard()
-			});
+	static void checkSprZeroHit(Hardware& hw, Ppu& ppu)
+	{
+		// TODO: 8x16の対応?
+
+		auto&& spr0 = ppu.m_oam.sprites[0];
+		const auto scanLine = ppu.m_scanLine;
+
+		// R, G にパターンデータを格納している
+		auto&& patternTable = hw.GetCartridge().GetBoard().PatternTableImage();
+
+		const uint16 bgPageOffset = ppu.m_regs.control.SecondBgPattern() << 8;
+
+		for (uint8 x = 0; x < 8; ++x)
+		{
+			// スプライトチェック
+			const auto& sprPixel = patternTable[s3d::Point(spr0.tile * tile_8 + x, scanLine - (spr0.y + 1))];
+			const bool sprYes = sprPixel.r || sprPixel.g;
+			if (sprYes == false) continue;
+
+			// BGチェック
+			// TODO: スクロール対応
+			const auto screenPos = s3d::Point(spr0.x + x, scanLine);
+			const auto tileCoarse = screenPos / tile_8;
+			const auto tileFine = screenPos - tileCoarse * tile_8;
+
+			const auto addr = tileCoarse.x + tileCoarse.y * 32;
+			const uint32 tileId = bgPageOffset + ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 8]];
+			const auto tileUV = s3d::Point(tileId * tile_8, 0) + tileFine;
+			const auto bgPixel = patternTable[tileUV];
+			const bool bgYes = bgPixel.r || bgPixel.g;
+			if (bgYes == false) continue;
+
+			// ヒット
+			ppu.m_unstable.status.SprZeroHit().Set(true);
+			s3d::Console.writeln(U"Hit at: " + s3d::Format(screenPos));
 			break;
 		}
-		default:
-			break;
+	}
+
+	static void beginVerticalBlank(Hardware& hw, Ppu& ppu)
+	{
+		// 垂直同期フラグ
+		ppu.m_unstable.status.VBlank().Set(true);
+		if (ppu.m_regs.control.NmiEnabled())
+		{
+			// NMI割り込み
+			Mos6502::In::RequestNmi(hw.GetMos6502());
 		}
+
+		// 描画用にPPUパレットのミラー領域を埋める
+		ApplyPaletteMirror(ppu);
+
+		// ディスプレイ描画
+		ppu.m_renderer->Render({
+			.ppu = hw.GetPpu(),
+			.mmu = hw.GetMmu(),
+			.board = hw.GetCartridge().GetBoard()
+		});
 	}
 };
 

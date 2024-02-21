@@ -80,7 +80,7 @@ private:
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
 
-		cbBgData->ppu.pageOffset = 0x100 * PpuControl8(ppu.m_regs.control).SecondBgPattern();
+		cbBgData->ppu.pageOffset =  PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		cbBgData->ppu.patternTableSize[0] = patternTable.width();
@@ -104,7 +104,7 @@ private:
 		// アドレス降順から描画開始
 		for (int i = 63; i >= 0; --i)
 		{
-			auto&& spr = ppu.m_oam.data[i];
+			auto&& spr = ppu.m_oam.sprites[i];
 			const s3d::Point pos = s3d::Point(spr.x, spr.y + 1);
 			const uint8 paletteIdBase = 0x10 | (GetBits<0, 1>(spr.attribute) << 2);
 			const bool behindBg = GetBits<5>(spr.attribute); // TODO

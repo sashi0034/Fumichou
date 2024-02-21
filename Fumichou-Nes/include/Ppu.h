@@ -125,12 +125,13 @@ namespace Nes
 
 		union
 		{
-			std::array<OamData, 64> data;
+			std::array<OamData, 64> sprites;
 			std::array<uint8, 256> bytes;
 		} m_oam{};
 
 		PpuCycle m_lineCycles{}; // [0, 341)
 		uint32 m_scanLine{};
+		bool m_sprZeroScan{};
 		PpuRegs m_regs{};
 		mutable PpuUnstableRegs m_unstable{};
 	};
