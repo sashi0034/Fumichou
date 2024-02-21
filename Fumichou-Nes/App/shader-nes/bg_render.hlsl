@@ -60,7 +60,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     const uint2 tileCoarse = screenPos / TILE_8;
     const uint2 tileFine = screenPos - tileCoarse * TILE_8;
 
-    const uint addr = tileCoarse.x + tileCoarse.y * 32;
+    const uint addr = tileCoarse.x + tileCoarse.y * 32 + (tileCoarse.y >= 30 ? (64 + 0x400) : 0); // TODO: 改良
 
     const uint tileId = g_ppu.pageOffset + FROM_UINT8ARRAY(g_nametable, addr);
 
