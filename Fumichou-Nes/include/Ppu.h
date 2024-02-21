@@ -96,7 +96,7 @@ namespace Nes
 	struct OamData
 	{
 		uint8 y;
-		uint8 index;
+		uint8 tile;
 		uint8 attribute;
 		uint8 x;
 	};

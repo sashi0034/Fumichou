@@ -37,8 +37,6 @@ public:
 		auto& ppu = args.ppu.get();
 		auto& mmu = args.mmu.get();
 
-		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
-
 		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
 
 		const s3d::ScopedRenderTarget2D renderTarget2D{ppu.m_video.texture};
@@ -58,6 +56,17 @@ public:
 		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
 
 		// BG描画
+		renderBg(args, ppu);
+
+		// スプライト描画
+		renderSprites(args, ppu);
+	}
+
+private:
+	static void renderBg(const render_args& args, Ppu& ppu)
+	{
+		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
+
 		static s3d::ConstantBuffer<CbBgData> cbBgData{};
 
 		// static TimeProfiler profiler{U"PPU Rendering"};
@@ -75,6 +84,29 @@ public:
 
 		// profiler.end(U"BG");
 		// profiler.console();
+	}
+
+	static void renderSprites(const render_args& args, Ppu& ppu)
+	{
+		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
+		auto& patternTable = args.board.get().PatternTableTexture();
+
+		const uint16 sprPage = ppu.m_regs.control.SecondSprPatter() << 8;
+		for (uint8 i = 0; i < 64; ++i)
+		{
+			auto&& spr = ppu.m_oam.data[i];
+			const s3d::Point pos = s3d::Point(spr.x, spr.y + 1);
+			const uint8 paletteIdBase = 0x10 | (GetBits<0, 1>(spr.attribute) << 2);
+			const bool behindBg = GetBits<5>(spr.attribute); // TODO
+			const bool flipH = GetBits<6>(spr.attribute);
+			const bool flipV = GetBits<7>(spr.attribute);
+
+			// RにパレットIDを渡して描画
+			patternTable(s3d::Rect(s3d::Point(sprPage | spr.tile, 0) * tile_8, tile_8, tile_8))
+				.mirrored(flipH)
+				.flipped(flipV)
+				.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
+		}
 	}
 };
 

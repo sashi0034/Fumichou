@@ -149,6 +149,7 @@
     </ClCompile>
     <None Include=".editorconfig" />
     <None Include="App\shader-nes\bg_rendering.hlsl" />
+    <None Include="App\shader-nes\sprite_render.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Apu.h" />

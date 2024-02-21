@@ -5,15 +5,15 @@ namespace Nes
 	namespace ShaderKeys
 	{
 		constexpr constexpr inline StringView bg_render = U"shader-nes/bg_render";
-		constexpr constexpr inline StringView bg_rendering = U"shader-nes/bg_rendering";
+		constexpr constexpr inline StringView sprite_render = U"shader-nes/sprite_render";
 
 		constexpr inline std::array AllPS = {
 			bg_render,
-			bg_rendering
+			sprite_render
 		};
 
 		constexpr inline std::array AllVS = {
-			bg_rendering
+			U""_sv // TODO
 		};
 	}
 }
