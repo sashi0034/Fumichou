@@ -44,13 +44,13 @@ struct WidgetButton::Impl
 			.draw(Arg::leftCenter = args.availableRect.leftCenter().movedBy(textLeft, 0), args.textColor);
 		const auto lineRect = textRect.movedBy(-textLeft / 2, 0).stretched(textLeft / 2, 0);
 
-		if (not IsMouseCaptured() && lineRect.intersects(Cursor::Pos()))
+		if (not IsClickCaptured() && lineRect.intersects(Cursor::Pos()))
 		{
 			// マウスが選択領域内に入っているとき
 			(void)lineRect.stretched(2).rounded(4).drawFrame(1, Palette::Darkgray);
 			if (MouseL.down())
 			{
-				AcceptMouseCaptured();
+				AcceptClickCaptured();
 				m_pressedReaction = 0.1;
 				m_pressedRect = lineRect;
 				return true;

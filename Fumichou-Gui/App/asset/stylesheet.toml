@@ -19,7 +19,7 @@ lineLeft = 40
 lineColumn = 32
 lineHeight = 8
 sliderMargin = 24
-grid_thickness = 2.5
+grid_thickness = 3
 
 [WidgetTabBar]
 plainColor = "#323232"

@@ -53,7 +53,7 @@ struct GuiPatternTable::Impl
 		if (m_showGrid)
 		{
 			// グリッド表示
-			const double grid_thickness = getToml<double>(U"grid_thickness");
+			const auto grid_thickness = getToml<int>(U"grid_thickness");
 			for (int y = 1; y < lineSize; ++y)
 			{
 				const auto by = -m_offsetY + y * lineHeight * scale;
@@ -90,10 +90,10 @@ struct GuiPatternTable::Impl
 			.pageSize = availableRegion.y - 1
 		});
 
-		if (mouseIntersects && not IsMouseCaptured() && MouseL.down())
+		if (mouseIntersects && not IsClickCaptured() && MouseL.down())
 		{
 			// グリッド表示切り替え
-			AcceptMouseCaptured();
+			AcceptClickCaptured();
 			m_showGrid = not m_showGrid;
 		}
 	}

@@ -41,9 +41,9 @@ struct WidgetTabBar::Impl
 			(void)font(args.tabNames[i]).drawAt(rect.center());
 
 			// タブ切り替え
-			if (not IsMouseCaptured() && hovered && MouseL.down())
+			if (not IsClickCaptured() && hovered && MouseL.down())
 			{
-				AcceptMouseCaptured();
+				AcceptClickCaptured();
 				args.currentIndex.get() = i;
 			}
 

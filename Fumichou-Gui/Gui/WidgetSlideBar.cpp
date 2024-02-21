@@ -69,7 +69,7 @@ struct WidgetSlideBar::Impl
 			// ドラッグ中
 			if (MouseL.pressed())
 			{
-				AcceptMouseCaptured();
+				AcceptClickCaptured();
 				const auto newY = Cursor::PosF().y + m_dragging.offset;
 				const auto rate = (newY - bottomY) / (topY - bottomY);
 				args.currentIndex.get() = minAvailableId + (maxAvailableId - minAvailableId) * rate;

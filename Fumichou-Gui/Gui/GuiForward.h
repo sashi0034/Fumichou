@@ -20,6 +20,6 @@ namespace Gui
 
 	void RegisterGuiAddon();
 
-	void AcceptMouseCaptured();
-	[[nodiscard]] bool IsMouseCaptured();
+	void AcceptClickCaptured();
+	[[nodiscard]] bool IsClickCaptured();
 }

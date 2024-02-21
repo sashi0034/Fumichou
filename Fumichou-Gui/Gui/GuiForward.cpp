@@ -3,7 +3,7 @@
 
 namespace
 {
-	bool s_mouseCaptured{};
+	bool s_clickCaptured{};
 
 	class GuiAddon : public IAddon
 	{
@@ -12,7 +12,7 @@ namespace
 
 		bool update() override
 		{
-			s_mouseCaptured = false;
+			s_clickCaptured = false;
 			return true;
 		}
 	};
@@ -23,12 +23,12 @@ void Gui::RegisterGuiAddon()
 	Addon::Register<GuiAddon>(U"GuiAddon");
 }
 
-void Gui::AcceptMouseCaptured()
+void Gui::AcceptClickCaptured()
 {
-	s_mouseCaptured = true;
+	s_clickCaptured = true;
 }
 
-bool Gui::IsMouseCaptured()
+bool Gui::IsClickCaptured()
 {
-	return s_mouseCaptured;
+	return s_clickCaptured;
 }

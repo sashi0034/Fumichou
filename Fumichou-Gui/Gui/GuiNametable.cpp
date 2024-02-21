@@ -101,14 +101,14 @@ private:
 		});
 
 		// フォーカス変更
-		if (not IsMouseCaptured() && MouseL.down())
+		if (not IsClickCaptured() && MouseL.down())
 		{
 			int index = rowIndex0;
 			for (int y = 0; y < availableRegion.y; y += LineHeight)
 			{
 				if (RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(LineHeight)).intersects(Cursor::Pos()))
 				{
-					AcceptMouseCaptured();
+					AcceptClickCaptured();
 					m_focusedIndex = index;
 					break;
 				}
