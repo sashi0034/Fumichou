@@ -47,8 +47,15 @@ private:
 	{
 		if (line < 240)
 		{
-			// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
-			if (ppu.m_sprZeroScan) checkSprZeroHit(hw, ppu);
+			if (ppu.m_sprZeroScan)
+			{
+				// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
+				checkSprZeroHit(hw, ppu);
+			}
+			else
+			{
+				ppu.m_unstable.status.SprZeroHit().Set(false);
+			}
 
 			// スプライト0ヒットを検出するラインかチェック
 			const auto spr0 = ppu.m_oam.sprites[0];
@@ -58,6 +65,7 @@ private:
 		{
 			// 垂直同期
 			beginVerticalBlank(hw, ppu);
+			ppu.m_sprZeroScan = false;
 		}
 	}
 
@@ -72,6 +80,11 @@ private:
 		auto&& patternTable = hw.GetCartridge().GetBoard().PatternTableImage();
 
 		const uint16 bgPageOffset = ppu.m_regs.control.SecondBgPattern() << 8;
+
+		// TODO
+		const auto scrollPos = s3d::Point(
+			ppu.m_regs.fineX | (ppu.m_unstable.vramAddr.CoarseX() << 3),
+			ppu.m_unstable.vramAddr.FineY() | (ppu.m_unstable.vramAddr.CoarseY() << 3));
 
 		for (uint8 x = 0; x < 8; ++x)
 		{
@@ -95,7 +108,7 @@ private:
 
 			// ヒット
 			ppu.m_unstable.status.SprZeroHit().Set(true);
-			s3d::Console.writeln(U"Hit at: " + s3d::Format(screenPos));
+			// s3d::Console.writeln(U"Hit at: " + s3d::Format(screenPos));
 			break;
 		}
 	}

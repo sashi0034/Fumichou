@@ -24,7 +24,7 @@ namespace
 		{
 			uint32 patternTableSize[2];
 			uint32 pageOffset;
-			uint32 padding_0x60[1];
+			uint32 scrollY;
 		} ppu;
 
 		uint32 nametable[4 * 256];
@@ -80,12 +80,26 @@ private:
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
 
-		cbBgData->ppu.pageOffset =  PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
+		PpuAddr16 tempAddr = ppu.m_regs.tempAddr;
+
+		cbBgData->ppu.pageOffset = PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
+		cbBgData->ppu.scrollY = tempAddr.FineY() | (tempAddr.CoarseY() << 3);
+		// s3d::Console.writeln(cbBgData->ppu.scrollY);
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		cbBgData->ppu.patternTableSize[0] = patternTable.width();
 		cbBgData->ppu.patternTableSize[1] = patternTable.height();
-		std::memcpy(&cbBgData->nametable, ppu.m_nametableData.data(), sizeof(cbBgData->nametable));
+
+		// ネームテーブル転送
+		constexpr int tableCount_4 = 4;
+		constexpr size_t tableQuarter_0x400 = sizeof(cbBgData->nametable) / tableCount_4;
+		for (uint8 i = 0; i < tableCount_4; ++i)
+		{
+			std::memcpy(
+				cbBgData->nametable + i * (tableQuarter_0x400 / sizeof(cbBgData->nametable)[0]),
+				ppu.m_nametableData.data() + ppu.m_nametableOffset[i],
+				sizeof(cbBgData->nametable) / tableCount_4);
+		}
 
 		s3d::Graphics2D::SetPSConstantBuffer(2, cbBgData);
 		(void)patternTable.resized(Display_256x240).draw();
