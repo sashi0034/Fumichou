@@ -50,8 +50,8 @@ private:
 		int indexTail = 0;
 		auto&& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
 		auto&& nt = Nes::HwFrame::Instance().GetHw().GetPpu().GetNametableData();
-		const uint16 addrBase =
-			0x2000 + ppu.GetNametableOffset()[m_tableIndex] + m_headIndexes[m_tableIndex] * columnSize;
+		const int tableBaseAddr = getTableBaseAddr(ppu);
+		const uint16 headAddr = tableBaseAddr + m_headIndexes[m_tableIndex] * columnSize;
 		const uint16 rowIndex0 = m_headIndexes[m_tableIndex] * columnSize + 0x400 * m_tableIndex;
 		uint16 rowIndex = rowIndex0;
 		const int dataLeft = getToml<int>(U"dataLeft");
@@ -69,14 +69,15 @@ private:
 				.draw(Arg::topLeft = Vec2{8, y}, Palette::Gray);
 
 			// 実際のアドレス
-			font(U"{:04X}"_fmt(addrBase + indexTail * columnSize))
+			font(tableBaseAddr != -1 ? U"{:04X}"_fmt(headAddr + indexTail * columnSize) : U"NONE")
 				.draw(Arg::topLeft = Vec2{addressLeft, y}, ColorOrange);
 
 			// データ
+			const auto dataColor = (rowIndex & 0x3FF) < 0x3C0 ? ColorGreen : ColorBlue; // パレット部分は色を変える
 			font(U"{:02X} {:02X} {:02X} {:02X}  {:02X} {:02X} {:02X} {:02X}"_fmt(
 					nt[rowIndex + 0], nt[rowIndex + 1], nt[rowIndex + 2], nt[rowIndex + 3],
 					nt[rowIndex + 4], nt[rowIndex + 5], nt[rowIndex + 6], nt[rowIndex + 7]))
-				.draw(Arg::topLeft = Vec2{dataLeft, y}, ColorGreen);
+				.draw(Arg::topLeft = Vec2{dataLeft, y}, dataColor);
 
 			indexTail++;
 			rowIndex += columnSize;
@@ -115,6 +116,17 @@ private:
 				index += columnSize;
 			}
 		}
+	}
+
+	//そのネームテーブルに実際にアクセス可能であるアドレス
+	int getTableBaseAddr(const Nes::Ppu& ppu) const
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if (0x400 * m_tableIndex == ppu.GetNametableOffset()[i]) return 0x2000 + 0x400 * i;
+		}
+
+		return -1;
 	}
 };
 
