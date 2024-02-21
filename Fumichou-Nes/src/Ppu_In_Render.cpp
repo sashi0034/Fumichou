@@ -50,11 +50,12 @@ public:
 			for (int i = 0; i < PaletteColors.size(); ++i) cb->paletteColors[i] = PaletteColors[i].toFloat4();
 			return cb;
 		}();
-		std::memcpy(&cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(cbPaletteColors->paletteIndexes));
-		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
 
 		// PPUパレットのミラー領域を埋める
 		applyPaletteMirror(ppu);
+
+		std::memcpy(&cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(cbPaletteColors->paletteIndexes));
+		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
 
 		// BG描画
 		static s3d::ConstantBuffer<CbBgData> cbBgData{};

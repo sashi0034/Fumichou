@@ -27,14 +27,13 @@ namespace Nes
 		case 0x400C:
 		case 0x400D:
 		case 0x400E:
+		case 0x400F:
 		case 0x4010:
 		case 0x4011:
 		case 0x4012:
 		case 0x4013:
-		case 0x4014:
+		// case 0x4014: // OAM DMA
 		case 0x4015:
-		// case 0x4016: // Controller
-		case 0x4017:
 			return MappedWrite{
 				.desc = U"APU (TODO)"_sv,
 				.ctx = &hw,
