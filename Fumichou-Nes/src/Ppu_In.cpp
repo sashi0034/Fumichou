@@ -1,8 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Ppu_In.h"
 
-#include <Siv3D/Console.hpp>
-
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
@@ -52,10 +50,6 @@ private:
 				// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
 				checkSprZeroHit(hw, ppu);
 			}
-			else
-			{
-				ppu.m_unstable.status.SprZeroHit().Set(false);
-			}
 
 			// スプライト0ヒットを検出するラインかチェック
 			const auto spr0 = ppu.m_oam.sprites[0];
@@ -66,6 +60,12 @@ private:
 			// 垂直同期
 			beginVerticalBlank(hw, ppu);
 			ppu.m_sprZeroScan = false;
+		}
+		else if (line == 260)
+		{
+			// 本来は261ライン最初で行う?
+			ppu.m_unstable.status.VBlank().Set(false);
+			ppu.m_unstable.status.SprZeroHit().Set(false);
 		}
 	}
 
