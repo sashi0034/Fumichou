@@ -53,18 +53,18 @@ struct GuiPatternTable::Impl
 		if (m_showGrid)
 		{
 			// グリッド表示
-			const auto grid_thickness = getToml<int>(U"grid_thickness");
+			const auto gridThickness = getToml<int>(U"gridThickness");
 			for (int y = 1; y < lineSize; ++y)
 			{
 				const auto by = -m_offsetY + y * lineHeight * scale;
 				(void)Line(lineLeft, by, availableRegion.x - sliderMargin, by)
-					.draw(grid_thickness, Palette::Darkslateblue);
+					.draw(gridThickness, Palette::Darkslateblue);
 			}
 			for (int x = 1; x < lineColumn; ++x)
 			{
 				const auto rx = lineLeft + x * 8 * scale;
 				(void)Line(rx, 0, rx, availableRegion.y)
-					.draw(grid_thickness, x % 4 == 0 ? Palette::Blue : Palette::Darkslateblue);
+					.draw(gridThickness, x % 4 == 0 ? Palette::Blue : Palette::Darkslateblue);
 			}
 		}
 

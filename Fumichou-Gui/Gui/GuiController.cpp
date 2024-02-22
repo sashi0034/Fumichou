@@ -43,12 +43,12 @@ struct GuiController::Impl
 	struct
 	{
 		GuiPatternTable patternTable{};
-	} m_bottom;
+	} m_top;
 
 	void Update()
 	{
 		const int screenMargin = getToml<int>(U"screenMargin");
-		const int smallMargin = getToml<int>(U"smallMargin");
+		// const int smallMargin = getToml<int>(U"smallMargin");
 		const auto sideBg = getToml<ColorF>(U"sideBg");
 
 		constexpr auto screenSize = Nes::Display_256x240 * 3; // + Nes::Display_256x240 / 2;
@@ -56,12 +56,15 @@ struct GuiController::Impl
 
 		constexpr int tabHeight = LineHeight * 1;
 
+		// 背景黒
+		(void)Rect(Scene::Size()).draw(sideBg);
+
 		// 右領域更新
 		{
 			const auto available = Point(sideWidth, Scene::Size().y);
 			static const std::array tabNames = {U"Trace"_s, U"Nametable"_s};
 			const auto rightX = Scene::Size().x - sideWidth;
-			(void)Rect(available).moveBy(rightX, 0).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			// (void)Rect(available).moveBy(rightX, 0).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
 			m_right.tab.Update({
 				.availableRect = Rect(available.withY(tabHeight)).moveBy(rightX, 0),
 				.currentIndex = m_right.tabIndex,
@@ -85,7 +88,7 @@ struct GuiController::Impl
 		{
 			auto available = Size{sideWidth, Scene::Size().y};
 
-			(void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			// (void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
 
 			static const std::array tabNames = {U"Status"_s, U"Mapping"_s};
 			m_left.tab.Update({
@@ -109,14 +112,25 @@ struct GuiController::Impl
 		}
 
 		{
-			// 下側領域
-			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
+			// 上側領域
+			const auto tl = Point(sideWidth, 0);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
 			// const auto bg = Rect(available.movedBy(0, smallMargin)).movedBy(tl.x, tl.y - smallMargin);
-			(void)Rect(available).moveBy(tl.x, tl.y).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			// (void)Rect(available).moveBy(tl.x, tl.y).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
 			const ScopedViewport2D viewport2D{tl, available};
 			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
-			m_bottom.patternTable.Update(available);
+			m_top.patternTable.Update(available);
+		}
+
+		{
+			// 下側領域
+			// const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
+			// const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
+			// // const auto bg = Rect(available.movedBy(0, smallMargin)).movedBy(tl.x, tl.y - smallMargin);
+			// (void)Rect(available).moveBy(tl.x, tl.y).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			// const ScopedViewport2D viewport2D{tl, available};
+			// const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			// m_bottom.patternTable.Update(available);
 		}
 
 		auto&& nes = Nes::HwFrame::Instance();
@@ -125,7 +139,7 @@ struct GuiController::Impl
 			// 画面描画
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
 			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
-			(void)rect.stretched(smallMargin).drawFrame(smallMargin, sideBg);
+			(void)rect.stretched(2).drawFrame(2, Palette::Black);
 		}
 
 		if (const auto abort = nes.GetAbort())
