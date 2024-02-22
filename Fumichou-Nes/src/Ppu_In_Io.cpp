@@ -69,7 +69,7 @@ namespace Nes
 
 					uint8 data = hw.GetMmu().ReadChr8(ppu.m_unstable.vramAddr);
 
-					if (ppu.m_unstable.vramAddr < 0x3F00)
+					if ((ppu.m_unstable.vramAddr & 0x3FFF) < 0x3F00)
 					{
 						std::swap(data, ppu.m_unstable.openBus);
 					}
@@ -155,9 +155,10 @@ namespace Nes
 					else
 					{
 						// 2回目の書き込み
+						ppu.m_renderer->SetScrollY(value);
 						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value));
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
-						ppu.m_renderer->SetScrollY(value);
+						ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;
 						ppu.m_unstable.writeToggle = false;
 					}
 				}
