@@ -55,7 +55,6 @@ public:
 
 	void SetScrollY(uint32 scrollY) override
 	{
-		s3d::Console.writeln(scrollY);
 		// FIXME: ラインごとにスクロール位置を記録する必要がありそう
 		m_cbBgData->ppu.scrollY = scrollY;
 	}

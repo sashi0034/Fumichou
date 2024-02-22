@@ -8,7 +8,15 @@
 #include "Mos6502_In.h"
 #include "Ppu_In.h"
 
-struct Nes::HwFrame::Impl
+using namespace Nes;
+
+namespace
+{
+	constexpr double fps_60 = 60.0;
+	constexpr double frameDeltaTime = 1 / fps_60;
+}
+
+struct HwFrame::Impl
 {
 	inline static Impl* s_instance = nullptr;
 
@@ -17,6 +25,7 @@ struct Nes::HwFrame::Impl
 	uint64 m_frameCount{};
 	uint64 m_cycleCount{};
 	bool m_paused{};
+	double m_controlledTime{};
 
 	Impl()
 	{
@@ -49,21 +58,28 @@ struct Nes::HwFrame::Impl
 		if (m_abort.has_value()) return;
 		if (m_paused) return;
 
-		// TODO
-		StepFrame();
+		// 60FPS制御
+		m_controlledTime += s3d::Scene::DeltaTime();
+		while (m_controlledTime >= frameDeltaTime)
+		{
+			m_controlledTime -= frameDeltaTime;
+			if (not StepFrame()) break;
+		}
 	}
 
 	// 1フレーム実行
-	void StepFrame()
+	bool StepFrame()
 	{
 		try
 		{
 			emulateFrame();
 			m_frameCount++;
+			return true;
 		}
 		catch (const EmulationAbort& abort)
 		{
 			m_abort = abort;
+			return false;
 		}
 	}
 
