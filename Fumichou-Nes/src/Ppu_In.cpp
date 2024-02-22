@@ -35,7 +35,7 @@ public:
 		{
 			reachedLineEnd(hw, ppu, ppu.m_scanLine);
 
-			ppu.m_lineCycles -= cycle;
+			ppu.m_lineCycles -= cyclesPerLine_341;
 			ppu.m_scanLine = (ppu.m_scanLine + 1) % maxLines_262;
 		}
 	}
