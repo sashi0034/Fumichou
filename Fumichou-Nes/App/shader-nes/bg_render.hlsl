@@ -56,11 +56,13 @@ cbuffer CbBgData : register(b2)
 float4 PS(s3d::PSInput input) : SV_TARGET
 {
     const uint2 scrollPos = uint2(0, g_ppu.scrollY);
-    const uint2 screenPos = scrollPos + input.uv * float2(W_256, H_240);
+    const uint2 screenPos0 = (scrollPos + input.uv * float2(W_256, H_240));
+    const uint2 screenPos = screenPos0 % (2 * uint2(W_256, H_240));
     const uint2 tileCoarse = screenPos / TILE_8;
     const uint2 tileFine = screenPos - tileCoarse * TILE_8;
 
-    const uint addr = tileCoarse.x + tileCoarse.y * 32 + (tileCoarse.y >= 30 ? (64 + 0x400) : 0); // TODO: 改良
+    const uint crossPage = ((tileCoarse.y + 2) >> 5) * 0x440; // Correct if Y is greater than 30
+    const uint addr = tileCoarse.x + tileCoarse.y * 32 + crossPage;
 
     const uint tileId = g_ppu.pageOffset + FROM_UINT8ARRAY(g_nametable, addr);
 

@@ -102,7 +102,7 @@ namespace Nes
 				{
 					auto& ppu = *static_cast<Ppu*>(ctx);
 					ppu.m_regs.control = value;
-					ppu.m_regs.tempAddr.NameTableAddr().Set(ppu.m_regs.control.BaseNameTableAddr());
+					ppu.m_regs.tempAddr.NameTableAddr().Set(ppu.m_regs.control.BaseNameTableAddrXY());
 				}
 			};
 		case 0x2001:
@@ -155,7 +155,8 @@ namespace Nes
 					else
 					{
 						// 2回目の書き込み
-						ppu.m_renderer->SetScrollY(value);
+						ppu.m_renderer->SetScrollY(
+							(ppu.m_regs.control.BaseNameTableAddrY() ? DisplayHeight_240 : 0) + value);
 						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value));
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
 						ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;

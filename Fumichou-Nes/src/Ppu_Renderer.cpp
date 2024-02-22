@@ -53,9 +53,16 @@ public:
 		return m_videoTexture;
 	}
 
-	void SetScrollY(uint8 scrollY) override
+	void SetScrollY(uint32 scrollY) override
 	{
+		s3d::Console.writeln(scrollY);
+		// FIXME: ラインごとにスクロール位置を記録する必要がありそう
 		m_cbBgData->ppu.scrollY = scrollY;
+	}
+
+	uint32 GetScrollY() const override
+	{
+		return m_cbBgData->ppu.scrollY;
 	}
 
 	void Render(const render_args& args) override

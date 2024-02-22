@@ -14,7 +14,9 @@ namespace Nes
 		PpuControl8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
-		auto BaseNameTableAddr() { return BitAccess<0, 1>(m_value); }
+		auto BaseNameTableAddrX() { return BitAccess<0>(m_value); }
+		auto BaseNameTableAddrY() { return BitAccess<1>(m_value); }
+		auto BaseNameTableAddrXY() { return BitAccess<0, 1>(m_value); }
 		auto VramIncrementMode() { return BitAccess<2>(m_value); }
 		auto SecondSprPatter() { return BitAccess<3>(m_value); }
 		auto SecondBgPattern() { return BitAccess<4>(m_value); }

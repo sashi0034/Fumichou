@@ -23,7 +23,8 @@ namespace Nes
 		virtual void Render(const render_args& args) = 0;
 
 		virtual const s3d::Texture& GetVideoTexture() const = 0;
-		virtual void SetScrollY(uint8 scrollY) = 0;
+		virtual void SetScrollY(uint32 scrollY) = 0;
+		virtual uint32 GetScrollY() const = 0;
 
 	private:
 		class Hle;

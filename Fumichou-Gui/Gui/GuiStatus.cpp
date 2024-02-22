@@ -24,6 +24,10 @@ namespace
 	{
 	};
 
+	struct PpuView
+	{
+	};
+
 	struct StatusDraw : Document::Drawer
 	{
 		using Drawer::operator();
@@ -86,6 +90,12 @@ namespace
 				             static_cast<uint8>(flags.d),
 				             static_cast<uint8>(flags.d),
 				             static_cast<uint8>(flags.n)));
+		}
+
+		void operator ()(PpuView) const
+		{
+			auto& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
+			// TODO
 		}
 	};
 

@@ -54,6 +54,11 @@ private:
 			// スプライト0ヒットを検出するラインかチェック
 			const auto spr0 = ppu.m_oam.sprites[0];
 			ppu.m_scanningSprZero = spr0.y <= line && line <= spr0.y + 7;
+
+			// VRAMアドレス加算
+			// const uint8 fineY = ppu.m_unstable.vramAddr.FineY();
+			// ppu.m_unstable.vramAddr.FineY().Set(fineY + 1);
+			// if (fineY == 7) ppu.m_unstable.vramAddr.CoarseY().Set(ppu.m_unstable.vramAddr.CoarseY() + 1);
 		}
 		else if (line == 240)
 		{
@@ -66,6 +71,11 @@ private:
 			// 本来は261ライン最初で行う?
 			ppu.m_unstable.status.VBlank().Set(false);
 			ppu.m_unstable.status.SprZeroHit().Set(false);
+		}
+		else if (line == 261)
+		{
+			// いる?
+			// ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;
 		}
 	}
 
