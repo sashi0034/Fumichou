@@ -4,6 +4,7 @@
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
+#include "Ppu_Renderer.h"
 
 using namespace Nes;
 
@@ -156,6 +157,7 @@ namespace Nes
 						// 2回目の書き込み
 						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value));
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
+						ppu.m_renderer->SetScrollY(value);
 						ppu.m_unstable.writeToggle = false;
 					}
 				}

@@ -24,11 +24,11 @@ public:
 		auto& ppu = hw.GetPpu();
 		ppu.m_lineCycles += cycle;
 
-		if (ppu.m_sprZeroScan && ppu.m_oam.sprites[0].x > ppu.m_lineCycles)
+		if (ppu.m_scanningSprZero && ppu.m_oam.sprites[0].x > ppu.m_lineCycles)
 		{
 			// スプライト0ヒットをチェック
 			checkSprZeroHit(hw, ppu);
-			ppu.m_sprZeroScan = false;
+			ppu.m_scanningSprZero = false;
 		}
 
 		if (ppu.m_lineCycles >= cyclesPerLine_341)
@@ -45,7 +45,7 @@ private:
 	{
 		if (line < 240)
 		{
-			if (ppu.m_sprZeroScan)
+			if (ppu.m_scanningSprZero)
 			{
 				// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
 				checkSprZeroHit(hw, ppu);
@@ -53,13 +53,13 @@ private:
 
 			// スプライト0ヒットを検出するラインかチェック
 			const auto spr0 = ppu.m_oam.sprites[0];
-			ppu.m_sprZeroScan = spr0.y <= line && line <= spr0.y + 7;
+			ppu.m_scanningSprZero = spr0.y <= line && line <= spr0.y + 7;
 		}
 		else if (line == 240)
 		{
 			// 垂直同期
 			beginVerticalBlank(hw, ppu);
-			ppu.m_sprZeroScan = false;
+			ppu.m_scanningSprZero = false;
 		}
 		else if (line == 260)
 		{

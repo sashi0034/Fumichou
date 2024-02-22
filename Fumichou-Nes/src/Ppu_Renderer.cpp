@@ -35,14 +35,14 @@ class Ppu::IRenderer::Hle : public IRenderer
 {
 public:
 	s3d::RenderTexture m_videoTexture{Display_256x240};
-	s3d::ConstantBuffer<CbPaletteColors> cbPaletteColors{};
-	s3d::ConstantBuffer<CbBgData> cbBgData{};
+	s3d::ConstantBuffer<CbPaletteColors> m_cbPaletteColors{};
+	s3d::ConstantBuffer<CbBgData> m_cbBgData{};
 
 	Hle()
 	{
 		for (int i = 0; i < PaletteColors.size(); ++i)
 		{
-			cbPaletteColors->paletteColors[i] = PaletteColors[i].toFloat4();
+			m_cbPaletteColors->paletteColors[i] = PaletteColors[i].toFloat4();
 		}
 	}
 
@@ -51,6 +51,11 @@ public:
 	const s3d::Texture& GetVideoTexture() const override
 	{
 		return m_videoTexture;
+	}
+
+	void SetScrollY(uint8 scrollY) override
+	{
+		m_cbBgData->ppu.scrollY = scrollY;
 	}
 
 	void Render(const render_args& args) override
@@ -62,8 +67,9 @@ public:
 		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture};
 
 		// パレット登録
-		std::memcpy(&cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(cbPaletteColors->paletteIndexes));
-		s3d::Graphics2D::SetPSConstantBuffer(1, cbPaletteColors);
+		std::memcpy(
+			&m_cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(m_cbPaletteColors->paletteIndexes));
+		s3d::Graphics2D::SetPSConstantBuffer(1, m_cbPaletteColors);
 
 		// BG描画
 		renderBg(args, ppu);
@@ -80,28 +86,26 @@ private:
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
 
-		PpuAddr16 tempAddr = ppu.m_regs.tempAddr;
-
-		cbBgData->ppu.pageOffset = PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
-		cbBgData->ppu.scrollY = tempAddr.FineY() | (tempAddr.CoarseY() << 3);
-		// s3d::Console.writeln(cbBgData->ppu.scrollY);
+		m_cbBgData->ppu.pageOffset = PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
+		// m_cbBgData->ppu.scrollY = tempAddr.FineY() | (tempAddr.CoarseY() << 3);
+		// s3d::Console.writeln(m_cbBgData->ppu.scrollY);
 
 		auto& patternTable = args.board.get().PatternTableTexture();
-		cbBgData->ppu.patternTableSize[0] = patternTable.width();
-		cbBgData->ppu.patternTableSize[1] = patternTable.height();
+		m_cbBgData->ppu.patternTableSize[0] = patternTable.width();
+		m_cbBgData->ppu.patternTableSize[1] = patternTable.height();
 
 		// ネームテーブル転送
 		constexpr int tableCount_4 = 4;
-		constexpr size_t tableQuarter_0x400 = sizeof(cbBgData->nametable) / tableCount_4;
+		constexpr size_t tableQuarter_0x400 = sizeof(m_cbBgData->nametable) / tableCount_4;
 		for (uint8 i = 0; i < tableCount_4; ++i)
 		{
 			std::memcpy(
-				cbBgData->nametable + i * (tableQuarter_0x400 / sizeof(cbBgData->nametable)[0]),
+				m_cbBgData->nametable + i * (tableQuarter_0x400 / sizeof(m_cbBgData->nametable)[0]),
 				ppu.m_nametableData.data() + ppu.m_nametableOffset[i],
-				sizeof(cbBgData->nametable) / tableCount_4);
+				sizeof(m_cbBgData->nametable) / tableCount_4);
 		}
 
-		s3d::Graphics2D::SetPSConstantBuffer(2, cbBgData);
+		s3d::Graphics2D::SetPSConstantBuffer(2, m_cbBgData);
 		(void)patternTable.resized(Display_256x240).draw();
 
 		// profiler.end(U"BG");

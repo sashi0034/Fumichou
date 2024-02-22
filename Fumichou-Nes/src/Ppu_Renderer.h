@@ -20,8 +20,10 @@ namespace Nes
 			std::reference_wrapper<const BoardBase> board;
 		};
 
-		virtual const s3d::Texture& GetVideoTexture() const = 0;
 		virtual void Render(const render_args& args) = 0;
+
+		virtual const s3d::Texture& GetVideoTexture() const = 0;
+		virtual void SetScrollY(uint8 scrollY) = 0;
 
 	private:
 		class Hle;
