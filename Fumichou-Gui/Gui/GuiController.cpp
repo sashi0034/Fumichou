@@ -112,8 +112,8 @@ struct GuiController::Impl
 			// 下側領域
 			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			const auto bg = Rect(available.movedBy(0, smallMargin)).movedBy(tl.x, tl.y - smallMargin);
-			(void)bg.rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
+			// const auto bg = Rect(available.movedBy(0, smallMargin)).movedBy(tl.x, tl.y - smallMargin);
+			(void)Rect(available).moveBy(tl.x, tl.y).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
 			const ScopedViewport2D viewport2D{tl, available};
 			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
 			m_bottom.patternTable.Update(available);
@@ -124,7 +124,8 @@ struct GuiController::Impl
 		{
 			// 画面描画
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
-			nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
+			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
+			(void)rect.stretched(smallMargin).drawFrame(smallMargin, sideBg);
 		}
 
 		if (const auto abort = nes.GetAbort())
