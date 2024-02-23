@@ -77,15 +77,27 @@ struct GuiScripting::Impl
 			indexTail++;
 		}
 
-		// カーソル描画
-		if (m_editing && Periodic::Square0_1(1.0s) != 0)
+		// 編集処理
+		if (m_editing)
 		{
-			const double cursorThickness = getToml<int>(U"cursorThickness");
-			const int y = m_edit.row - m_headIndex;
-			auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
-			double drawX = codeLeft;
-			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
-			(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
+			const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
+			if (newC != m_edit.column)
+			{
+				// 変更
+				m_edit.column = newC;
+				ApplySyntax(m_lines[m_edit.row]);
+			}
+
+			if (Periodic::Square0_1(1.0s) != 0)
+			{
+				// カーソル描画
+				const double cursorThickness = getToml<int>(U"cursorThickness");
+				const int y = m_edit.row - m_headIndex;
+				auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
+				double drawX = codeLeft;
+				for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
+				(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
+			}
 		}
 
 		// インデックス移動
