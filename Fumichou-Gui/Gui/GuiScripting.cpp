@@ -25,6 +25,7 @@ namespace
 		static constexpr std::array<ColorF, Syntax_count> colors = {
 			Palette::Gainsboro,
 			ColorGreen.lerp(ColorF(Palette::Dimgray), 0.1),
+			ColorOrange,
 		};
 
 		// penPos.y += font.height();

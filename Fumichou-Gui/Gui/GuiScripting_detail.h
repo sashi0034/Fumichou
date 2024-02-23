@@ -8,6 +8,7 @@ namespace Gui
 		{
 			Syntax_Plain = 0,
 			Syntax_Comment,
+			Syntax_Number,
 			Syntax_count,
 		};
 
