@@ -393,6 +393,8 @@ private:
 
 	void processEditWrap()
 	{
+		const auto indentSpace = m_lines[m_edit.row].code.substr(0, m_lines[m_edit.row].code.indexOfNot(U' '));
+
 		while (true)
 		{
 			// 改行処理
@@ -400,13 +402,13 @@ private:
 			if (wrapAt == String::npos) break;
 			m_lines[m_edit.row].code.remove_at(wrapAt);
 
-			auto newLine = LineCode{.code = m_lines[m_edit.row].code.substr(wrapAt)};
+			auto newLine = LineCode{.code = indentSpace + m_lines[m_edit.row].code.substr(wrapAt)};
 			m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
 
 			ApplySyntax(m_lines[m_edit.row]);
 
 			// 次行の処理へ
-			m_edit.column = 0;
+			m_edit.column = indentSpace.size();
 			m_edit.row++;
 			m_lines.insert(m_lines.begin() + m_edit.row, newLine);
 		}
