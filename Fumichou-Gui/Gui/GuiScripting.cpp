@@ -44,6 +44,16 @@ namespace
 		int row{};
 		int column{};
 	};
+
+	int getCodeLeft()
+	{
+		return getToml<int>(U"codeLeft");
+	}
+
+	FontAsset getFont()
+	{
+		return FontAsset(FontKeys::ZxProto_20_Bitmap);
+	}
 }
 
 struct GuiScripting::Impl
@@ -64,8 +74,8 @@ struct GuiScripting::Impl
 			loadScript();
 		}
 
-		auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-		const int codeLeft = getToml<int>(U"codeLeft");
+		auto&& font = getFont();
+		const int codeLeft = getCodeLeft();
 
 		// 表示領域のライン描画
 		int indexTail = 0;
@@ -80,24 +90,7 @@ struct GuiScripting::Impl
 		// 編集処理
 		if (m_editing)
 		{
-			const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
-			if (newC != m_edit.column)
-			{
-				// 変更
-				m_edit.column = newC;
-				ApplySyntax(m_lines[m_edit.row]);
-			}
-
-			if (Periodic::Square0_1(1.0s) != 0)
-			{
-				// カーソル描画
-				const double cursorThickness = getToml<int>(U"cursorThickness");
-				const int y = m_edit.row - m_headIndex;
-				auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
-				double drawX = codeLeft;
-				for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
-				(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
-			}
+			updateEdit();
 		}
 
 		// インデックス移動
@@ -129,41 +122,7 @@ struct GuiScripting::Impl
 			}
 			else if (not IsClickCaptured() && MouseL.down())
 			{
-				const auto cursorPos = Cursor::Pos();
-				for (int y = 0; y < indexTail; y++)
-				{
-					const auto collider =
-						RectF(Arg::topLeft = Vec2{0, y * LineHeight}, availableRegion.withY(LineHeight));
-					if (collider.intersects(cursorPos))
-					{
-						m_editing = true;
-						m_edit.row = y + m_headIndex;
-						if (m_edit.row > m_lines.size())
-						{
-							// 列を末尾にする
-							m_edit.row = m_lines.size() - 1;
-							m_edit.column = m_lines[m_edit.row].code.size();
-						}
-						else
-						{
-							// 列をカーソルXから決定
-							auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
-							double left = codeLeft;
-							m_edit.column = lineGlyphs.size();
-							for (int c = 0; c < lineGlyphs.size(); ++c)
-							{
-								auto&& g = lineGlyphs[c];
-								left += g.xAdvance;
-								if (cursorPos.x < left)
-								{
-									m_edit.column = c;
-									break;
-								}
-							}
-						}
-						break;
-					}
-				}
+				moveCursorByClick(availableRegion, indexTail);
 			}
 		}
 	}
@@ -179,6 +138,71 @@ private:
 			auto element = LineCode{.code = line, .syntax = Array<SyntaxType>(line.size())};
 			ApplySyntax(element);
 			m_lines.emplace_back(element);
+		}
+	}
+
+	void updateEdit()
+	{
+		const auto font = getFont();
+		const int codeLeft = getCodeLeft();
+		const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
+		if (newC != m_edit.column)
+		{
+			// 変更
+			m_edit.column = newC;
+			ApplySyntax(m_lines[m_edit.row]);
+		}
+
+		if (Periodic::Square0_1(1.0s) != 0)
+		{
+			// カーソル描画
+			const double cursorThickness = getToml<int>(U"cursorThickness");
+			const int y = m_edit.row - m_headIndex;
+			auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
+			double drawX = codeLeft;
+			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
+			(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
+		}
+	}
+
+	void moveCursorByClick(const Size& availableRegion, int indexTail)
+	{
+		const int codeLeft = getCodeLeft();
+		const auto font = getFont();
+		const auto cursorPos = Cursor::Pos();
+		for (int y = 0; y < indexTail; y++)
+		{
+			const auto collider =
+				RectF(Arg::topLeft = Vec2{0, y * LineHeight}, availableRegion.withY(LineHeight));
+			if (collider.intersects(cursorPos))
+			{
+				m_editing = true;
+				m_edit.row = y + m_headIndex;
+				if (m_edit.row > m_lines.size())
+				{
+					// 列を末尾にする
+					m_edit.row = m_lines.size() - 1;
+					m_edit.column = m_lines[m_edit.row].code.size();
+				}
+				else
+				{
+					// 列をカーソルXから決定
+					auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
+					double left = codeLeft;
+					m_edit.column = lineGlyphs.size();
+					for (int c = 0; c < lineGlyphs.size(); ++c)
+					{
+						auto&& g = lineGlyphs[c];
+						left += g.xAdvance;
+						if (cursorPos.x < left)
+						{
+							m_edit.column = c;
+							break;
+						}
+					}
+				}
+				break;
+			}
 		}
 	}
 };
