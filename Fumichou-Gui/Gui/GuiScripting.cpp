@@ -94,7 +94,7 @@ namespace
 		return FontAsset(FontKeys::ZxProto_20_Bitmap);
 	}
 
-	static size_t inputText(String& str, size_t index)
+	size_t inputText(String& str, size_t index)
 	{
 		if (KeyControl.pressed() && KeyV.down())
 		{
@@ -102,7 +102,7 @@ namespace
 			String c{};
 			if (Clipboard::GetText(c))
 			{
-				str += c;
+				str.insert(index, c);
 				return index + c.size();
 			}
 		}
@@ -278,6 +278,7 @@ private:
 			// カーソル描画
 			const double cursorThickness = getToml<int>(U"cursorThickness");
 			const int y = m_edit.row - m_headIndex;
+			if (y < 0) return;
 			auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
 			double drawX = codeLeft;
 			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
@@ -295,7 +296,7 @@ private:
 			if (s.length() >= selection.endColumn && r == selection.endRow)
 				s.erase(s.begin() + selection.endColumn, s.end());
 			if (s.length() >= selection.endColumn && r == selection.startRow)
-				s.erase(s.begin(), s.begin() + selection.startColumn + 1);
+				s.erase(s.begin(), s.begin() + selection.startColumn);
 			regionTexts += s;
 			if (r < selection.endRow) regionTexts += U'\n';
 		}
