@@ -313,10 +313,20 @@ private:
 		else if (Util::IsKeyRepeating(KeyLeft))
 		{
 			m_edit.column -= KeyLeft.pressedDuration().count() > 1.0 ? 2 : 1;
+			if (m_edit.column < 0 && m_edit.row > 0)
+			{
+				m_edit.column = INT_MAX;
+				m_edit.row--;
+			}
 		}
 		else if (Util::IsKeyRepeating(KeyRight))
 		{
 			m_edit.column += KeyRight.pressedDuration().count() > 1.0 ? 2 : 1;
+			if (m_edit.column >= m_lines[m_edit.row].code.size() && m_edit.column < m_lines.size() - 1)
+			{
+				m_edit.column = 0;
+				m_edit.row++;
+			}
 		}
 		else
 		{
