@@ -125,14 +125,6 @@ struct GuiController::Impl
 			m_top.patternTable.Update(available);
 		}
 
-		{
-			// 下側領域
-			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
-			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			const Transformer2D transformer{Mat3x2::Translate(tl), TransformCursor::Yes};
-			m_bottom.scripting.Update(available);
-		}
-
 		auto&& nes = Nes::HwFrame::Instance();
 
 		{
@@ -140,6 +132,14 @@ struct GuiController::Impl
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
 			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
 			(void)rect.stretched(2).drawFrame(2, Palette::Black);
+		}
+
+		{
+			// 下側領域
+			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
+			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
+			const Transformer2D transformer{Mat3x2::Translate(tl), TransformCursor::Yes};
+			m_bottom.scripting.Update(available);
 		}
 
 		if (const auto abort = nes.GetAbort())

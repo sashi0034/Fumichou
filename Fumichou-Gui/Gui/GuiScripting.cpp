@@ -93,6 +93,11 @@ namespace
 	{
 		return FontAsset(FontKeys::ZxProto_20_Bitmap);
 	}
+
+	static size_t inputText(String& str, size_t index)
+	{
+		return TextInput::UpdateText(str, index);
+	}
 }
 
 struct GuiScripting::Impl
@@ -122,9 +127,6 @@ struct GuiScripting::Impl
 			// 選択領域描画
 			int lineIndex = m_headIndex - 1;
 			const auto selection = m_edit.GetSelection();
-
-			Console.writeln(U"{} {} {} {}"_fmt(selection.startRow, selection.startColumn, selection.endRow,
-			                                   selection.endColumn));
 
 			for (int y = 0; y < availableRegion.y; y += LineHeight)
 			{
@@ -244,32 +246,10 @@ private:
 
 		const auto font = getFont();
 		const int codeLeft = getCodeLeft();
-		const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
-		if (newC != m_edit.column)
-		{
-			// 変更が存在
-			m_edit.column = newC;
 
-			// タブ処理
-			const int replacedTabs = ReplaceTab(m_lines[m_edit.row]);
-			if (replacedTabs != 0) m_edit.column += replacedTabs - 1;
-
-			// 改行処理
-			processEditWrap();
-
-			ApplySyntax(m_lines[m_edit.row]);
-			clampCursor(indexTail);
-		}
-		else if (m_edit.row > 0 && m_edit.column == 0 && Util::IsKeyRepeating(KeyBackspace))
-		{
-			// 行削除
-			m_edit.column = m_lines[m_edit.row - 1].code.size();
-			m_lines[m_edit.row - 1].code += m_lines[m_edit.row].code;
-			m_lines.remove_at(m_edit.row);
-			m_edit.row--;
-			ApplySyntax(m_lines[m_edit.row]);
-			clampCursor(indexTail);
-		}
+		// 文字入力
+		if (m_edit.isSelecting) inputToSelection(indexTail);
+		else inputToCursor(indexTail);
 
 		m_cursorFlash += Scene::DeltaTime();
 		if (Periodic::Square0_1(0.5s, m_cursorFlash) != 0)
@@ -281,6 +261,82 @@ private:
 			double drawX = codeLeft;
 			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
 			(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
+		}
+	}
+
+	// 選択部分の文字列抽出
+	String getSelectedText(const SelectionData& selection) const
+	{
+		String regionTexts{};
+		for (int r = selection.startRow; r <= selection.endRow; ++r)
+		{
+			String s = m_lines[r].code;
+			if (s.length() >= selection.endColumn && r == selection.endRow)
+				s.erase(s.begin() + selection.endColumn, s.end());
+			if (s.length() >= selection.endColumn && r == selection.startRow)
+				s.erase(s.begin(), s.begin() + selection.startColumn + 1);
+			regionTexts += s;
+		}
+		return regionTexts;
+	}
+
+	void inputToSelection(int indexTail)
+	{
+		if (Keyboard::GetAllInputs().empty()) return;
+
+		const auto selection = m_edit.GetSelection();
+
+		String replace{U"  "}; // 空白はダミー
+		inputText(replace, 1);
+		if (replace == U"  ") return;
+		if (not replace.empty() && replace.front() == U' ') replace.pop_front();
+		if (not replace.empty() && replace.back() == U' ') replace.pop_back();
+
+		// 選択範囲の行の選択外の前後を結合
+		const String headTail =
+			m_lines[selection.startRow].code.substr(0, selection.startColumn)
+			+ replace
+			+ m_lines[selection.endRow].code.substr(selection.endColumn);
+
+		// 選択範囲が含まれる行を一旦除去
+		m_lines.erase(m_lines.begin() + selection.startRow, m_lines.begin() + selection.endRow + 1);
+
+		// 置換テキストを挿入
+		m_lines.insert(m_lines.begin() + selection.startRow, LineCode{.code = headTail});
+		m_edit.row = selection.startRow;
+		m_edit.column = selection.startColumn + replace.size();
+		applyWrapsWithMovingCursor();
+
+		clampCursor(indexTail);
+
+		m_edit.isSelecting = false;
+	}
+
+	void inputToCursor(int indexTail)
+	{
+		const int newC = inputText(m_lines[m_edit.row].code, m_edit.column);
+		if (newC != m_edit.column)
+		{
+			// 変更が存在
+			m_edit.column = newC;
+
+			// タブ処理
+			const int replacedTabs = ReplaceTab(m_lines[m_edit.row]);
+			if (replacedTabs != 0) m_edit.column += replacedTabs - 1;
+
+			// 改行処理
+			applyWrapsWithMovingCursor();
+			clampCursor(indexTail);
+		}
+		else if (m_edit.row > 0 && m_edit.column == 0 && Util::IsKeyRepeating(KeyBackspace))
+		{
+			// 行削除
+			m_edit.column = m_lines[m_edit.row - 1].code.size();
+			m_lines[m_edit.row - 1].code += m_lines[m_edit.row].code;
+			m_lines.remove_at(m_edit.row);
+			m_edit.row--;
+			ApplySyntax(m_lines[m_edit.row]);
+			clampCursor(indexTail);
 		}
 	}
 
@@ -322,7 +378,7 @@ private:
 		else if (Util::IsKeyRepeating(KeyRight))
 		{
 			m_edit.column += KeyRight.pressedDuration().count() > 1.0 ? 2 : 1;
-			if (m_edit.column >= m_lines[m_edit.row].code.size() && m_edit.column < m_lines.size() - 1)
+			if (m_edit.column > m_lines[m_edit.row].code.size() && m_edit.row < m_lines.size() - 1)
 			{
 				m_edit.column = 0;
 				m_edit.row++;
@@ -391,21 +447,25 @@ private:
 		}
 	}
 
-	void processEditWrap()
+	// 現在のカーソル位置からカーソルを動かしつつ改行処理を行う
+	void applyWrapsWithMovingCursor()
 	{
 		const auto indentSpace = m_lines[m_edit.row].code.substr(0, m_lines[m_edit.row].code.indexOfNot(U' '));
 
 		while (true)
 		{
-			// 改行処理
+			// 改行コードを検索
 			const auto wrapAt = m_lines[m_edit.row].code.indexOfAny(U"\r\n");
-			if (wrapAt == String::npos) break;
+			if (wrapAt == String::npos)
+			{
+				ApplySyntax(m_lines[m_edit.row]);
+				break;
+			}
 			m_lines[m_edit.row].code.remove_at(wrapAt);
 
+			// 2ラインに分割
 			auto newLine = LineCode{.code = indentSpace + m_lines[m_edit.row].code.substr(wrapAt)};
 			m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
-
-			ApplySyntax(m_lines[m_edit.row]);
 
 			// 次行の処理へ
 			m_edit.column = indentSpace.size();
