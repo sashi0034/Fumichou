@@ -3,10 +3,12 @@
 
 #include "FontKeys.h"
 #include "GuiForward.h"
+#include "GuiScripting_detail.h"
 #include "WidgetSlideBar.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
+using namespace GuiScripting_detail;
 
 namespace
 {
@@ -17,19 +19,6 @@ namespace
 	{
 		return Util::GetTomlStyle<T>(U"GuiScripting." + key);
 	}
-
-	enum SyntaxType
-	{
-		Syntax_Plain = 0,
-		Syntax_Comment,
-		Syntax_count,
-	};
-
-	struct LineCode
-	{
-		String code{};
-		Array<SyntaxType> syntax{};
-	};
 
 	void drawCodeLine(const Font& font, const LineCode& line, Vec2 penPos)
 	{
@@ -106,7 +95,9 @@ private:
 		m_lines.clear();
 		for (auto&& line : reader.readLines())
 		{
-			m_lines.emplace_back(LineCode{.code = line, .syntax = Array<SyntaxType>(line.size())});
+			auto element = LineCode{.code = line, .syntax = Array<SyntaxType>(line.size())};
+			ApplySyntax(element);
+			m_lines.emplace_back(element);
 		}
 	}
 };
