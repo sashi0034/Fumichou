@@ -205,6 +205,16 @@ struct GuiScripting::Impl
 				moveCursorByClick(availableRegion, indexTail);
 			}
 		}
+
+		// 全選択
+		if (m_isEditing && KeyControl.pressed() && KeyA.down())
+		{
+			m_edit.isSelecting = true;
+			m_edit.select.row = 0;
+			m_edit.select.column = 0;
+			m_edit.row = m_lines.size() - 1;
+			m_edit.column = m_lines.back().code.size();
+		}
 	}
 
 private:
@@ -418,6 +428,7 @@ private:
 			if (collider.intersects(cursorPos))
 			{
 				m_isEditing = true;
+				m_edit.isSelecting = false;
 				m_edit.row = y + m_headIndex;
 				if (m_edit.row >= m_lines.size())
 				{
