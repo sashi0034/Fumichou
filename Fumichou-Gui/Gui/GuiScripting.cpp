@@ -65,6 +65,7 @@ struct GuiScripting::Impl
 	int m_headIndex{};
 	bool m_editing{};
 	EditState m_edit{};
+	double m_cursorFlash{};
 
 	void Update(const Size& availableRegion)
 	{
@@ -148,6 +149,7 @@ private:
 		if (moveEditCursor(indexTail))
 		{
 			clampCursor(indexTail);
+			m_cursorFlash = 0;
 		}
 
 		const auto font = getFont();
@@ -157,30 +159,30 @@ private:
 		{
 			// 変更が存在
 			m_edit.column = newC;
+
+			// タブ処理
 			const int replacedTabs = ReplaceTab(m_lines[m_edit.row]);
 			if (replacedTabs != 0) m_edit.column += replacedTabs - 1;
-			while (true)
-			{
-				// 改行処理
-				const auto wrapAt = m_lines[m_edit.row].code.indexOfAny(U"\r\n");
-				if (wrapAt == String::npos) break;
-				m_lines[m_edit.row].code.remove_at(wrapAt);
 
-				auto newLine = LineCode{.code = m_lines[m_edit.row].code.substr(wrapAt)};
-				m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
-
-				ApplySyntax(m_lines[m_edit.row]);
-
-				// 次行の処理へ
-				m_edit.row++;
-				m_lines.insert(m_lines.begin() + m_edit.row, newLine);
-			}
+			// 改行処理
+			processEditWrap();
 
 			ApplySyntax(m_lines[m_edit.row]);
 			clampCursor(indexTail);
 		}
+		else if (m_edit.row > 0 && m_edit.column == 0 && KeyBackspace.down())
+		{
+			// 行削除
+			m_edit.column = m_lines[m_edit.row - 1].code.size();
+			m_lines[m_edit.row - 1].code += m_lines[m_edit.row].code;
+			m_lines.remove_at(m_edit.row);
+			m_edit.row--;
+			ApplySyntax(m_lines[m_edit.row]);
+			clampCursor(indexTail);
+		}
 
-		if (Periodic::Square0_1(0.5s) != 0)
+		m_cursorFlash += Scene::DeltaTime();
+		if (Periodic::Square0_1(0.5s, m_cursorFlash) != 0)
 		{
 			// カーソル描画
 			const double cursorThickness = getToml<int>(U"cursorThickness");
@@ -286,6 +288,26 @@ private:
 				}
 				break;
 			}
+		}
+	}
+
+	void processEditWrap()
+	{
+		while (true)
+		{
+			// 改行処理
+			const auto wrapAt = m_lines[m_edit.row].code.indexOfAny(U"\r\n");
+			if (wrapAt == String::npos) break;
+			m_lines[m_edit.row].code.remove_at(wrapAt);
+
+			auto newLine = LineCode{.code = m_lines[m_edit.row].code.substr(wrapAt)};
+			m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
+
+			ApplySyntax(m_lines[m_edit.row]);
+
+			// 次行の処理へ
+			m_edit.row++;
+			m_lines.insert(m_lines.begin() + m_edit.row, newLine);
 		}
 	}
 };
