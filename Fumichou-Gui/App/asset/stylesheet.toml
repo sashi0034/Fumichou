@@ -21,7 +21,7 @@ sliderMargin = 24
 gridThickness = 3
 
 [GuiScripting]
-codeLeft = 40
+codeLeft = 48
 cursorThickness = 2
 
 [WidgetTabBar]

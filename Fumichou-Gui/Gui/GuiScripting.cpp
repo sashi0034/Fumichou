@@ -40,10 +40,48 @@ namespace
 		}
 	}
 
+	struct SelectionData
+	{
+		int startRow;
+		int startColumn;
+		int endRow;
+		int endColumn;
+	};
+
 	struct EditState
 	{
 		int row{};
 		int column{};
+
+		struct
+		{
+			int row{};
+			int column{};
+		} select;
+
+		bool isSelecting{};
+
+		SelectionData GetSelection() const
+		{
+			if (row < select.row || (row == select.row && column < select.column))
+			{
+				return SelectionData{
+					.startRow = row,
+					.startColumn = column,
+					.endRow = select.row,
+					.endColumn = select.column
+				};
+			}
+			else
+			{
+				return SelectionData{
+					.startRow = select.row,
+					.startColumn = select.column,
+					.endRow = row,
+					.endColumn = column
+				};
+			}
+		}
 	};
 
 	int getCodeLeft()
@@ -63,7 +101,7 @@ struct GuiScripting::Impl
 	bool m_initialized{};
 	WidgetSlideBar m_verticalSlider{};
 	int m_headIndex{};
-	bool m_editing{};
+	bool m_isEditing{};
 	EditState m_edit{};
 	double m_cursorFlash{};
 
@@ -79,6 +117,43 @@ struct GuiScripting::Impl
 		auto&& font = getFont();
 		const int codeLeft = getCodeLeft();
 
+		if (m_isEditing && m_edit.isSelecting)
+		{
+			// 選択領域描画
+			int lineIndex = m_headIndex - 1;
+			const auto selection = m_edit.GetSelection();
+
+			Console.writeln(U"{} {} {} {}"_fmt(selection.startRow, selection.startColumn, selection.endRow,
+			                                   selection.endColumn));
+
+			for (int y = 0; y < availableRegion.y; y += LineHeight)
+			{
+				lineIndex++;
+				double leftX = codeLeft;
+				double rightX = availableRegion.x;
+				if (lineIndex < selection.startRow || selection.endRow < lineIndex)
+				{
+					// 範囲外
+					continue;
+				}
+				if (lineIndex == selection.endRow)
+				{
+					// 選択終了点
+					rightX = leftX;
+					auto&& lineGlyphs = font.getGlyphs(m_lines[lineIndex].code);
+					for (int x = 0; x < selection.endColumn; ++x) rightX += lineGlyphs[x].xAdvance;
+				}
+				if (lineIndex == selection.startRow)
+				{
+					// 選択開始点
+					auto&& lineGlyphs = font.getGlyphs(m_lines[lineIndex].code);
+					for (int x = 0; x < selection.startColumn; ++x) leftX += lineGlyphs[x].xAdvance;
+				}
+
+				(void)Rect(leftX, y, rightX - leftX, LineHeight).draw(Palette::Steelblue);
+			}
+		}
+
 		// 表示領域のライン描画
 		int indexTail = 0;
 		for (int y = 0; y < availableRegion.y; y += LineHeight)
@@ -90,7 +165,7 @@ struct GuiScripting::Impl
 		}
 
 		// 編集処理
-		if (m_editing)
+		if (m_isEditing)
 		{
 			updateEdit(indexTail);
 		}
@@ -120,7 +195,8 @@ struct GuiScripting::Impl
 		{
 			if (not hovering)
 			{
-				m_editing = false;
+				m_isEditing = false;
+				m_edit.isSelecting = false;
 			}
 			else if (not IsClickCaptured() && MouseL.down())
 			{
@@ -145,9 +221,23 @@ private:
 
 	void updateEdit(int indexTail)
 	{
+		const int prevR = m_edit.row;
+		const int prevC = m_edit.column;
+
 		// カーソル移動
 		if (moveEditCursor(indexTail))
 		{
+			if (not m_edit.isSelecting && KeyShift.pressed())
+			{
+				// 選択開始
+				m_edit.isSelecting = true;
+				m_edit.select.row = prevR;
+				m_edit.select.column = prevC;
+			}
+			else if (m_edit.isSelecting && not KeyShift.pressed())
+			{
+				m_edit.isSelecting = false;
+			}
 			clampCursor(indexTail);
 			m_cursorFlash = 0;
 		}
@@ -170,7 +260,7 @@ private:
 			ApplySyntax(m_lines[m_edit.row]);
 			clampCursor(indexTail);
 		}
-		else if (m_edit.row > 0 && m_edit.column == 0 && KeyBackspace.down())
+		else if (m_edit.row > 0 && m_edit.column == 0 && Util::IsKeyRepeating(KeyBackspace))
 		{
 			// 行削除
 			m_edit.column = m_lines[m_edit.row - 1].code.size();
@@ -261,9 +351,9 @@ private:
 				RectF(Arg::topLeft = Vec2{0, y * LineHeight}, availableRegion.withY(LineHeight));
 			if (collider.intersects(cursorPos))
 			{
-				m_editing = true;
+				m_isEditing = true;
 				m_edit.row = y + m_headIndex;
-				if (m_edit.row > m_lines.size())
+				if (m_edit.row >= m_lines.size())
 				{
 					// 列を末尾にする
 					m_edit.row = m_lines.size() - 1;
@@ -306,6 +396,7 @@ private:
 			ApplySyntax(m_lines[m_edit.row]);
 
 			// 次行の処理へ
+			m_edit.column = 0;
 			m_edit.row++;
 			m_lines.insert(m_lines.begin() + m_edit.row, newLine);
 		}

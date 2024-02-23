@@ -18,7 +18,7 @@ namespace Gui
 			Array<SyntaxType> syntax{};
 		};
 
-		int ReplaceTab(LineCode& code, const String& tabSpace = U"    ");
+		int ReplaceTab(LineCode& code, const String& tabSpace = U"  ");
 		void ApplySyntax(LineCode& code);
 	}
 }
