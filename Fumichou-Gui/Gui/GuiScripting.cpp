@@ -96,6 +96,17 @@ namespace
 
 	static size_t inputText(String& str, size_t index)
 	{
+		if (KeyControl.pressed() && KeyV.down())
+		{
+			// ペースト
+			String c{};
+			if (Clipboard::GetText(c))
+			{
+				str += c;
+				return index + c.size();
+			}
+		}
+
 		return TextInput::UpdateText(str, index);
 	}
 }
@@ -286,6 +297,7 @@ private:
 			if (s.length() >= selection.endColumn && r == selection.startRow)
 				s.erase(s.begin(), s.begin() + selection.startColumn + 1);
 			regionTexts += s;
+			if (r < selection.endRow) regionTexts += U'\n';
 		}
 		return regionTexts;
 	}
@@ -296,11 +308,22 @@ private:
 
 		const auto selection = m_edit.GetSelection();
 
-		String replace{U"  "}; // 空白はダミー
-		inputText(replace, 1);
-		if (replace == U"  ") return;
-		if (not replace.empty() && replace.front() == U' ') replace.pop_front();
-		if (not replace.empty() && replace.back() == U' ') replace.pop_back();
+		String replace{U""};
+		if (KeyControl.pressed() && (KeyC.down() || KeyX.down()))
+		{
+			// コピー | カット
+			m_edit.isSelecting = false;
+			Clipboard::SetText(getSelectedText(selection));
+			if (KeyC.down()) return;
+		}
+		else
+		{
+			replace = U"  "; // 入力検出用のダミー空白
+			inputText(replace, 1);
+			if (replace == U"  ") return;
+			if (not replace.empty() && replace.front() == U' ') replace.pop_front();
+			if (not replace.empty() && replace.back() == U' ') replace.pop_back();
+		}
 
 		// 選択範囲の行の選択外の前後を結合
 		const String headTail =
@@ -314,9 +337,8 @@ private:
 		// 置換テキストを挿入
 		m_lines.insert(m_lines.begin() + selection.startRow, LineCode{.code = headTail});
 		m_edit.row = selection.startRow;
-		m_edit.column = selection.startColumn + replace.size();
 		applyWrapsWithMovingCursor();
-
+		m_edit.column = selection.startColumn + replace.size();
 		clampCursor(indexTail);
 
 		m_edit.isSelecting = false;
@@ -477,6 +499,7 @@ private:
 			// 2ラインに分割
 			auto newLine = LineCode{.code = indentSpace + m_lines[m_edit.row].code.substr(wrapAt)};
 			m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
+			ApplySyntax(m_lines[m_edit.row]);
 
 			// 次行の処理へ
 			m_edit.column = indentSpace.size();
