@@ -139,6 +139,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util\KeyRepetition.cpp" />
     <ClCompile Include="Util\ShaderReloader.cpp" />
     <ClCompile Include="Util\TomlStyleSheet.cpp" />
   </ItemGroup>
@@ -351,6 +352,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClInclude Include="Gui\WidgetSlideBar.h" />
     <ClInclude Include="Gui\WidgetTabBar.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Util\KeyRepetition.h" />
     <ClInclude Include="Util\ShaderReloader.h" />
     <ClInclude Include="Util\TomlStyleSheet.h" />
     <ClInclude Include="Util\Utils.h" />

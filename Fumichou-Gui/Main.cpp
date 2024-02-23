@@ -13,6 +13,7 @@
 #include "Gui/GuiController.h"
 #include "Gui/GuiForward.h"
 #include "Gui/GuiIni.h"
+#include "Util/KeyRepetition.h"
 #include "Util/ShaderReloader.h"
 #include "Util/TomlStyleSheet.h"
 #include "Util\Utils.h"
@@ -49,6 +50,7 @@ void Main()
 	Gui::LoadGuiIni();
 
 	Util::RegisterTomlStyleSheetAddon();
+	Util::RegisterKeyRepetitionAddon();
 	Gui::RegisterGuiAddon();
 
 	FontKeys::Register();

@@ -5,6 +5,7 @@
 #include "GuiForward.h"
 #include "GuiScripting_detail.h"
 #include "WidgetSlideBar.h"
+#include "Util/KeyRepetition.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -90,7 +91,7 @@ struct GuiScripting::Impl
 		// 編集処理
 		if (m_editing)
 		{
-			updateEdit();
+			updateEdit(indexTail);
 		}
 
 		// インデックス移動
@@ -141,8 +142,24 @@ private:
 		}
 	}
 
-	void updateEdit()
+	void updateEdit(int indexTail)
 	{
+		// カーソル移動
+		if (moveEditCursor(indexTail))
+		{
+			m_edit.row = std::min<int>(std::max(m_edit.row, 0), m_lines.size() - 1);
+			m_edit.column = std::min<int>(std::max(m_edit.column, 0), m_lines[m_edit.row].code.size());
+
+			if (m_edit.row - m_headIndex < 0)
+			{
+				m_headIndex = m_edit.row;
+			}
+			if (m_edit.row - m_headIndex >= indexTail - 1)
+			{
+				m_headIndex = m_edit.row - indexTail + 1;
+			}
+		}
+
 		const auto font = getFont();
 		const int codeLeft = getCodeLeft();
 		const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
@@ -153,7 +170,7 @@ private:
 			ApplySyntax(m_lines[m_edit.row]);
 		}
 
-		if (Periodic::Square0_1(1.0s) != 0)
+		if (Periodic::Square0_1(0.5s) != 0)
 		{
 			// カーソル描画
 			const double cursorThickness = getToml<int>(U"cursorThickness");
@@ -163,6 +180,47 @@ private:
 			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
 			(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
 		}
+	}
+
+	bool moveEditCursor(int indexTail)
+	{
+		if (KeyHome.down())
+		{
+			m_edit.column = 0;
+		}
+		else if (KeyEnd.down())
+		{
+			m_edit.column = INT_MAX;
+		}
+		else if (KeyPageUp.down())
+		{
+			m_edit.column -= indexTail;
+		}
+		else if (KeyPageDown.down())
+		{
+			m_edit.column += indexTail;
+		}
+		else if (Util::IsKeyRepeating(KeyUp))
+		{
+			m_edit.row -= KeyUp.pressedDuration().count() > 1.0 ? 2 : 1;
+		}
+		else if (Util::IsKeyRepeating(KeyDown))
+		{
+			m_edit.row += KeyDown.pressedDuration().count() > 1.0 ? 2 : 1;
+		}
+		else if (Util::IsKeyRepeating(KeyLeft))
+		{
+			m_edit.column -= KeyLeft.pressedDuration().count() > 1.0 ? 2 : 1;
+		}
+		else if (Util::IsKeyRepeating(KeyRight))
+		{
+			m_edit.column += KeyRight.pressedDuration().count() > 1.0 ? 2 : 1;
+		}
+		else
+		{
+			return false;
+		}
+		return true;
 	}
 
 	void moveCursorByClick(const Size& availableRegion, int indexTail)
