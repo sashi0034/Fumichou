@@ -38,6 +38,12 @@ namespace
 			penPos.x += g.xAdvance;
 		}
 	}
+
+	struct EditState
+	{
+		int row{};
+		int column{};
+	};
 }
 
 struct GuiScripting::Impl
@@ -46,6 +52,8 @@ struct GuiScripting::Impl
 	bool m_initialized{};
 	WidgetSlideBar m_verticalSlider{};
 	int m_headIndex{};
+	bool m_editing{};
+	EditState m_edit{};
 
 	void Update(const Size& availableRegion)
 	{
@@ -57,7 +65,7 @@ struct GuiScripting::Impl
 		}
 
 		auto&& font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-		const int codeRight = getToml<int>(U"codeRight");
+		const int codeLeft = getToml<int>(U"codeLeft");
 
 		// 表示領域のライン描画
 		int indexTail = 0;
@@ -65,13 +73,26 @@ struct GuiScripting::Impl
 		{
 			const int lineIndex = m_headIndex + indexTail;
 			font(Format(lineIndex)).draw(Arg::topLeft = Vec2{8, y}, Palette::Gray);
-			if (lineIndex < m_lines.size()) drawCodeLine(font, m_lines[lineIndex], Vec2{codeRight, y});
+			if (lineIndex < m_lines.size()) drawCodeLine(font, m_lines[lineIndex], Vec2{codeLeft, y});
 			indexTail++;
 		}
 
+		// カーソル描画
+		if (m_editing && Periodic::Square0_1(1.0s) != 0)
+		{
+			const double cursorThickness = getToml<int>(U"cursorThickness");
+			const int y = m_edit.row - m_headIndex;
+			auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
+			double drawX = codeLeft;
+			for (int x = 0; x < m_edit.column; ++x) drawX += lineGlyphs[x].xAdvance;
+			(void)Line(drawX, y * LineHeight, drawX, (y + 1) * LineHeight).draw(cursorThickness, Palette::White);
+		}
+
 		// インデックス移動
+		bool hovering{};
 		if (RectF(availableRegion).intersects(Cursor::PosF()))
 		{
+			hovering = true;
 			constexpr int step = 1;
 			const auto wheel = Mouse::Wheel();
 			if (wheel < 0) m_headIndex -= step;
@@ -86,6 +107,53 @@ struct GuiScripting::Impl
 			.maxIndex = static_cast<int>(m_lines.size()),
 			.pageSize = indexTail
 		});
+
+		// 編集カーソル移動処理
+		if (MouseL.down())
+		{
+			if (not hovering)
+			{
+				m_editing = false;
+			}
+			else if (not IsClickCaptured() && MouseL.down())
+			{
+				const auto cursorPos = Cursor::Pos();
+				for (int y = 0; y < indexTail; y++)
+				{
+					const auto collider =
+						RectF(Arg::topLeft = Vec2{0, y * LineHeight}, availableRegion.withY(LineHeight));
+					if (collider.intersects(cursorPos))
+					{
+						m_editing = true;
+						m_edit.row = y + m_headIndex;
+						if (m_edit.row > m_lines.size())
+						{
+							// 列を末尾にする
+							m_edit.row = m_lines.size() - 1;
+							m_edit.column = m_lines[m_edit.row].code.size();
+						}
+						else
+						{
+							// 列をカーソルXから決定
+							auto&& lineGlyphs = font.getGlyphs(m_lines[m_edit.row].code);
+							double left = codeLeft;
+							m_edit.column = lineGlyphs.size();
+							for (int c = 0; c < lineGlyphs.size(); ++c)
+							{
+								auto&& g = lineGlyphs[c];
+								left += g.xAdvance;
+								if (cursorPos.x < left)
+								{
+									m_edit.column = c;
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
 	}
 
 private:

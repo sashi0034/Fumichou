@@ -7,6 +7,7 @@ namespace
 
 	void parseNumber(LineCode& code, size_t tailIndex)
 	{
+		// 簡単に数値判別を行う
 		bool isHex{};
 		for (size_t i = 0; i < tailIndex; ++i)
 		{

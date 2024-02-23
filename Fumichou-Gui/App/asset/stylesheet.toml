@@ -21,7 +21,8 @@ sliderMargin = 24
 gridThickness = 3
 
 [GuiScripting]
-codeRight = 40
+codeLeft = 40
+cursorThickness = 2
 
 [WidgetTabBar]
 plainColor = "#323232"

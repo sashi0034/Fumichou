@@ -129,8 +129,7 @@ struct GuiController::Impl
 			// 下側領域
 			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			const ScopedViewport2D viewport2D{tl, available};
-			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			const Transformer2D transformer{Mat3x2::Translate(tl), TransformCursor::Yes};
 			m_bottom.scripting.Update(available);
 		}
 
