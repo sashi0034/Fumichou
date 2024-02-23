@@ -147,17 +147,7 @@ private:
 		// カーソル移動
 		if (moveEditCursor(indexTail))
 		{
-			m_edit.row = std::min<int>(std::max(m_edit.row, 0), m_lines.size() - 1);
-			m_edit.column = std::min<int>(std::max(m_edit.column, 0), m_lines[m_edit.row].code.size());
-
-			if (m_edit.row - m_headIndex < 0)
-			{
-				m_headIndex = m_edit.row;
-			}
-			if (m_edit.row - m_headIndex >= indexTail - 1)
-			{
-				m_headIndex = m_edit.row - indexTail + 1;
-			}
+			clampCursor(indexTail);
 		}
 
 		const auto font = getFont();
@@ -165,9 +155,29 @@ private:
 		const int newC = TextInput::UpdateText(m_lines[m_edit.row].code, m_edit.column);
 		if (newC != m_edit.column)
 		{
-			// 変更
+			// 変更が存在
 			m_edit.column = newC;
+			const int replacedTabs = ReplaceTab(m_lines[m_edit.row]);
+			if (replacedTabs != 0) m_edit.column += replacedTabs - 1;
+			while (true)
+			{
+				// 改行処理
+				const auto wrapAt = m_lines[m_edit.row].code.indexOfAny(U"\r\n");
+				if (wrapAt == String::npos) break;
+				m_lines[m_edit.row].code.remove_at(wrapAt);
+
+				auto newLine = LineCode{.code = m_lines[m_edit.row].code.substr(wrapAt)};
+				m_lines[m_edit.row].code = m_lines[m_edit.row].code.substr(0, wrapAt);
+
+				ApplySyntax(m_lines[m_edit.row]);
+
+				// 次行の処理へ
+				m_edit.row++;
+				m_lines.insert(m_lines.begin() + m_edit.row, newLine);
+			}
+
 			ApplySyntax(m_lines[m_edit.row]);
+			clampCursor(indexTail);
 		}
 
 		if (Periodic::Square0_1(0.5s) != 0)
@@ -221,6 +231,21 @@ private:
 			return false;
 		}
 		return true;
+	}
+
+	void clampCursor(int indexTail)
+	{
+		m_edit.row = std::min<int>(std::max(m_edit.row, 0), m_lines.size() - 1);
+		m_edit.column = std::min<int>(std::max(m_edit.column, 0), m_lines[m_edit.row].code.size());
+
+		if (m_edit.row - m_headIndex < 0)
+		{
+			m_headIndex = m_edit.row;
+		}
+		if (m_edit.row - m_headIndex >= indexTail - 1)
+		{
+			m_headIndex = m_edit.row - indexTail + 1;
+		}
 	}
 
 	void moveCursorByClick(const Size& availableRegion, int indexTail)

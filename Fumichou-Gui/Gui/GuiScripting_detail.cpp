@@ -38,10 +38,24 @@ namespace
 
 namespace Gui::GuiScripting_detail
 {
+	int ReplaceTab(LineCode& code, const String& tabSpace)
+	{
+		int count{};
+		while (true)
+		{
+			const auto pos = code.code.indexOf(U'\t');
+			if (pos == String::npos) break;
+			code.code.replace(pos, 1, tabSpace);
+			count += tabSpace.size();
+		}
+		return count;
+	}
+
 	void ApplySyntax(LineCode& code)
 	{
 		if (code.syntax.size() != code.code.size())
 		{
+			// シンタックス部分と文字長を同じサイズにする
 			code.syntax.resize(code.code.size());
 		}
 
