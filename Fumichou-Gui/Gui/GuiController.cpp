@@ -7,6 +7,7 @@
 #include "GuiMapping.h"
 #include "GuiNametable.h"
 #include "GuiPatternTable.h"
+#include "GuiToolbar.h"
 #include "GuiTrace.h"
 #include "WidgetTabBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -45,6 +46,11 @@ struct GuiController::Impl
 	{
 		GuiPatternTable patternTable{};
 	} m_bottom;
+
+	struct
+	{
+		GuiToolbar toolbar{};
+	} m_top;
 
 	void Update()
 	{
@@ -116,15 +122,9 @@ struct GuiController::Impl
 			// 上側領域
 			const auto tl = Point(sideWidth, 0);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-		}
-
-		auto&& nes = Nes::HwFrame::Instance();
-
-		{
-			// 画面描画
-			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
-			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
-			(void)rect.stretched(2).drawFrame(2, Palette::Black);
+			const ScopedViewport2D viewport2D{tl, available};
+			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			m_top.toolbar.Update(available);
 		}
 
 		{
@@ -134,6 +134,15 @@ struct GuiController::Impl
 			const ScopedViewport2D viewport2D{tl, available};
 			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
 			m_bottom.patternTable.Update(available);
+		}
+
+		auto&& nes = Nes::HwFrame::Instance();
+
+		{
+			// 画面描画
+			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
+			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
+			(void)rect.stretched(2).drawFrame(2, Palette::Black);
 		}
 
 		if (const auto abort = nes.GetAbort())

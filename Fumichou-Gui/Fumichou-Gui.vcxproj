@@ -123,11 +123,10 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClCompile Include="Gui\GuiForward.cpp" />
     <ClCompile Include="Gui\GuiNametable.cpp" />
     <ClCompile Include="Gui\GuiPatternTable.cpp" />
-    <ClCompile Include="Gui\GuiScripting.cpp" />
-    <ClCompile Include="Gui\GuiScripting_detail.cpp" />
     <ClCompile Include="Gui\GuiStatus.cpp" />
     <ClCompile Include="Gui\GuiIni.cpp" />
     <ClCompile Include="Gui\GuiMapping.cpp" />
+    <ClCompile Include="Gui\GuiToolbar.cpp" />
     <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Gui\WidgetButton.cpp" />
     <ClCompile Include="Gui\WidgetCheckbox.cpp" />
@@ -343,6 +342,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClInclude Include="Gui\GuiStatus.h" />
     <ClInclude Include="Gui\GuiIni.h" />
     <ClInclude Include="Gui\GuiMapping.h" />
+    <ClInclude Include="Gui\GuiToolbar.h" />
     <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="Gui\WidgetButton.h" />
     <ClInclude Include="Gui\WidgetCheckbox.h" />
