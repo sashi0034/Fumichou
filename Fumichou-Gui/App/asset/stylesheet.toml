@@ -20,9 +20,8 @@ lineHeight = 8
 sliderMargin = 24
 gridThickness = 3
 
-[GuiScripting]
-codeLeft = 48
-cursorThickness = 2
+[GuiToolbar]
+leftMargin = 8
 
 [WidgetTabBar]
 plainColor = "#323232"

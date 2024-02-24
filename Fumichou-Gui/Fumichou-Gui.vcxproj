@@ -340,8 +340,6 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClInclude Include="Gui\GuiForward.h" />
     <ClInclude Include="Gui\GuiNametable.h" />
     <ClInclude Include="Gui\GuiPatternTable.h" />
-    <ClInclude Include="Gui\GuiScripting.h" />
-    <ClInclude Include="Gui\GuiScripting_detail.h" />
     <ClInclude Include="Gui\GuiStatus.h" />
     <ClInclude Include="Gui\GuiIni.h" />
     <ClInclude Include="Gui\GuiMapping.h" />
