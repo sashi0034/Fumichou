@@ -27,6 +27,8 @@ struct GuiToolbar::Impl
 	WidgetButton m_stepCycleButton{};
 	WidgetButton m_stepFrameButton{};
 
+	WidgetButton m_dummyButton{};
+
 	void Update(const Size& availableRegion)
 	{
 		const int leftMargin = getToml<int>(U"leftMargin");
@@ -34,6 +36,7 @@ struct GuiToolbar::Impl
 
 		auto&& frame = Nes::HwFrame::Instance();
 		constexpr double lineH = 1.5 * LineHeight;
+		const int halfW = leftMargin + availableRegion.x / 2;
 
 		if (m_loadButton.Update({
 			.availableRect = lineRect.movedBy(0, 0 * lineH),
@@ -80,11 +83,32 @@ struct GuiToolbar::Impl
 		if (m_stepFrameButton.Update({
 			.availableRect = lineRect.movedBy(0, 4 * lineH),
 			.emojiIcon = U"⏩"_emoji,
-			.text = U"Step 1 Frame",
+			.text = U"Step 1 Frame (F11)",
+			.textColor = Palette::Darkgray,
+		}) || KeyF11.down())
+		{
+			frame.StepOneFrame();
+		}
+
+		if (m_dummyButton.Update({
+			.availableRect = lineRect.movedBy(halfW, 3 * lineH),
+			.emojiIcon = U"😺"_emoji,
+			.text = U"Dummy Button 1",
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			frame.StepOneFrame();
+			// TODO: なんか考える
+			// 多分スプライト可視化ボタンなど
+		}
+
+		if (m_dummyButton.Update({
+			.availableRect = lineRect.movedBy(halfW, 4 * lineH),
+			.emojiIcon = U"😺"_emoji,
+			.text = U"Dummy Button 2",
+			.textColor = Palette::Darkgray,
+		}))
+		{
+			// TODO: なんか考える
 		}
 	}
 };
