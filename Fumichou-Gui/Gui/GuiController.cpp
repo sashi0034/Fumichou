@@ -7,7 +7,6 @@
 #include "GuiMapping.h"
 #include "GuiNametable.h"
 #include "GuiPatternTable.h"
-#include "GuiScripting.h"
 #include "GuiTrace.h"
 #include "WidgetTabBar.h"
 #include "Util/TomlStyleSheet.h"
@@ -39,16 +38,12 @@ struct GuiController::Impl
 		int tabIndex{};
 		GuiStatus generalStatus{};
 		GuiMapping mapping{};
+		// GuiScripting scripting{};
 	} m_left;
 
 	struct
 	{
 		GuiPatternTable patternTable{};
-	} m_top;
-
-	struct
-	{
-		GuiScripting scripting{};
 	} m_bottom;
 
 	void Update()
@@ -102,7 +97,9 @@ struct GuiController::Impl
 			});
 
 			available.y -= tabHeight;
-			Transformer2D t{Mat3x2::Translate(0, tabHeight), TransformCursor::Yes};
+			constexpr auto tl = Point(0, tabHeight);
+			const ScopedViewport2D viewport2D{tl, available};
+			const Transformer2D t{Mat3x2::Identity(), Mat3x2::Translate(tl)};
 			switch (m_left.tabIndex)
 			{
 			case 0:
@@ -119,10 +116,6 @@ struct GuiController::Impl
 			// 上側領域
 			const auto tl = Point(sideWidth, 0);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			// (void)Rect(available).moveBy(tl.x, tl.y).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
-			const ScopedViewport2D viewport2D{tl, available};
-			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
-			m_top.patternTable.Update(available);
 		}
 
 		auto&& nes = Nes::HwFrame::Instance();
@@ -138,8 +131,9 @@ struct GuiController::Impl
 			// 下側領域
 			const auto tl = Point(sideWidth, Scene::Size().y - sideHeight);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			const Transformer2D transformer{Mat3x2::Translate(tl), TransformCursor::Yes};
-			m_bottom.scripting.Update(available);
+			const ScopedViewport2D viewport2D{tl, available};
+			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			m_bottom.patternTable.Update(available);
 		}
 
 		if (const auto abort = nes.GetAbort())

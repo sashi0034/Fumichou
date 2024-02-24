@@ -93,7 +93,6 @@ struct GuiMapping::Impl
 
 	void Update(const Size& availableRegion)
 	{
-		const ScopedViewport2D viewport2D{availableRegion};
 		if (not m_document.Data().Size()) generateTexts(m_document.Data().Raw());
 		m_document.Update(availableRegion);
 	}
