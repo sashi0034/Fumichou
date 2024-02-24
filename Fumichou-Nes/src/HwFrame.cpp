@@ -21,6 +21,7 @@ struct HwFrame::Impl
 	inline static Impl* s_instance = nullptr;
 
 	Hardware m_hardware{};
+	s3d::FilePath m_currentRom{};
 	s3d::Optional<EmulationAbort> m_abort{s3d::none};
 	uint64 m_frameCount{};
 	uint64 m_cycleCount{};
@@ -39,16 +40,14 @@ struct HwFrame::Impl
 
 	bool StartRomFile(s3d::FilePathView romPath)
 	{
+		m_currentRom = romPath;
+
 		if (not Cartridge::In::LoadRomFile(m_hardware.GetCartridge(), romPath))
 		{
 			return false;
 		}
 
-		Ppu::In::UpdateMirroring(m_hardware.GetPpu(), m_hardware.GetCartridge().GetRomData().GetNameTableMirror());
-
-		Mmu::In::MapWholeAddr(m_hardware);
-
-		Mos6502::In::Reset(m_hardware);
+		resetStates();
 
 		return true;
 	}
@@ -97,6 +96,19 @@ struct HwFrame::Impl
 	}
 
 private:
+	void resetStates()
+	{
+		Ppu::In::UpdateMirroring(m_hardware.GetPpu(), m_hardware.GetCartridge().GetRomData().GetNameTableMirror());
+
+		Mmu::In::MapWholeAddr(m_hardware);
+
+		Mos6502::In::Reset(m_hardware);
+
+		m_abort = s3d::none;
+		m_frameCount = 0;
+		m_cycleCount = 0;
+	}
+
 	void emulateFrame()
 	{
 		const auto endCycle = m_cycleCount + CpuCyclesPerFrame_29781;
@@ -144,6 +156,16 @@ namespace Nes
 	HwFrameView::HwFrameView(HwFrame::Impl* impl) :
 		p_impl(impl)
 	{
+	}
+
+	bool HwFrameView::StartRomFile(s3d::FilePathView romPath)
+	{
+		return p_impl->StartRomFile(romPath);
+	}
+
+	bool HwFrameView::ResetRomFile()
+	{
+		return p_impl->StartRomFile(p_impl->m_currentRom);
 	}
 
 	s3d::Optional<EmulationAbort> HwFrameView::GetAbort() const

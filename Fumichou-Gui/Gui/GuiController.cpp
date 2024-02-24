@@ -122,8 +122,9 @@ struct GuiController::Impl
 			// 上側領域
 			const auto tl = Point(sideWidth, 0);
 			const auto available = Size{Scene::Size().x - sideWidth * 2, sideHeight};
-			const ScopedViewport2D viewport2D{tl, available};
-			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			// const ScopedViewport2D viewport2D{tl, available};
+			// const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
+			const Transformer2D transformer{Mat3x2::Translate(tl), TransformCursor::Yes};
 			m_top.toolbar.Update(available);
 		}
 

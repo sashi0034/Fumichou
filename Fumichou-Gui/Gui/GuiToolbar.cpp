@@ -21,19 +21,43 @@ namespace
 struct GuiToolbar::Impl
 {
 	bool m_isPaused{};
-	WidgetCheckbox m_stoppingCheck;
-	WidgetButton m_stepCycleButton;
-	WidgetButton m_stepFrameButton;
+	WidgetButton m_loadButton{};
+	WidgetButton m_resetButton{};
+	WidgetCheckbox m_stoppingCheck{};
+	WidgetButton m_stepCycleButton{};
+	WidgetButton m_stepFrameButton{};
 
 	void Update(const Size& availableRegion)
 	{
 		const int leftMargin = getToml<int>(U"leftMargin");
-		const Rect lineRect = Rect(availableRegion.withY(LineHeight)).moveBy(leftMargin, 0);
+		const Rect lineRect = Rect(availableRegion.withY(LineHeight)).moveBy(leftMargin, 2);
 
 		auto&& frame = Nes::HwFrame::Instance();
+		constexpr double lineH = 1.5 * LineHeight;
+
+		if (m_loadButton.Update({
+			.availableRect = lineRect.movedBy(0, 0 * lineH),
+			.emojiIcon = U"📂"_emoji,
+			.text = U"Load ROM File",
+			.textColor = Palette::Darkgray,
+		}))
+		{
+			const auto romPath = Dialog::OpenFile({}, FileSystem::CurrentDirectory() + U"rom").value_or(U"");
+			(void)frame.StartRomFile(romPath);
+		}
+
+		if (m_loadButton.Update({
+			.availableRect = lineRect.movedBy(0, 1 * lineH),
+			.emojiIcon = U"♻️"_emoji,
+			.text = U"Reset (Ctrl + R)",
+			.textColor = Palette::Darkgray,
+		}) || (KeyControl.pressed() && KeyR.down()))
+		{
+			(void)frame.ResetRomFile();
+		}
 
 		if (m_stoppingCheck.Update({
-			.availableRect = lineRect.movedBy(0, 3 * LineHeight),
+			.availableRect = lineRect.movedBy(0, 2 * lineH),
 			.toggle = m_isPaused,
 			.text = U"Pause Emulation (F9)",
 			.textColor = Palette::Darkgray,
@@ -44,7 +68,7 @@ struct GuiToolbar::Impl
 		}
 
 		if (m_stepCycleButton.Update({
-			.availableRect = lineRect.movedBy(0, 4 * LineHeight),
+			.availableRect = lineRect.movedBy(0, 3 * lineH),
 			.emojiIcon = U"▶️"_emoji,
 			.text = U"Step 1 Cycle (F10)",
 			.textColor = Palette::Darkgray,
@@ -54,7 +78,7 @@ struct GuiToolbar::Impl
 		}
 
 		if (m_stepFrameButton.Update({
-			.availableRect = lineRect.movedBy(0, 5 * LineHeight),
+			.availableRect = lineRect.movedBy(0, 4 * lineH),
 			.emojiIcon = U"⏩"_emoji,
 			.text = U"Step 1 Frame",
 			.textColor = Palette::Darkgray,

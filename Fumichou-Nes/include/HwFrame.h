@@ -8,8 +8,7 @@ namespace Nes
 	public:
 		HwFrame();
 
-		[[nodiscard]]
-		bool StartRomFile(s3d::FilePathView romPath);
+		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
 
 		void ControlFrames();
 
@@ -25,6 +24,10 @@ namespace Nes
 	{
 	public:
 		HwFrameView(HwFrame::Impl* impl);
+
+		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
+		[[nodiscard]] bool ResetRomFile();
+
 		[[nodiscard]] s3d::Optional<EmulationAbort> GetAbort() const;
 		[[nodiscard]] const Hardware& GetHw() const;
 
