@@ -7,7 +7,7 @@ tagLeft = 96
 messageLeft = 160
 
 [GuiNametable]
-addressLeft = 72
+addressLeft = 80
 dataLeft = 144
 
 [GuiMapping]

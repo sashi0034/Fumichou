@@ -50,9 +50,7 @@ private:
 		int indexTail = 0;
 		auto&& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
 		auto&& nt = Nes::HwFrame::Instance().GetHw().GetPpu().GetNametableData();
-		const int tableBaseAddr = getTableBaseAddr(ppu);
-		const uint16 headAddr = tableBaseAddr + m_headIndexes[m_tableIndex] * columnSize;
-		const uint16 rowIndex0 = m_headIndexes[m_tableIndex] * columnSize + 0x400 * m_tableIndex;
+		const uint16 rowIndex0 = m_headIndexes[m_tableIndex] * columnSize + ppu.GetNametableOffset()[m_tableIndex];
 		uint16 rowIndex = rowIndex0;
 		const int dataLeft = getToml<int>(U"dataLeft");
 		const int addressLeft = getToml<int>(U"addressLeft");
@@ -64,12 +62,12 @@ private:
 				RectF(Arg::bottomLeft = Vec2{0, y}, availableRegion.withY(LineHeight)).draw(ColorF(1.0, 0.1));
 			}
 
-			// インデックス
-			font(U"{:03X}"_fmt(rowIndex))
+			// 実際のアドレス
+			font(U"{:04X}"_fmt(0x2000 + rowIndex + indexTail * columnSize))
 				.draw(Arg::topLeft = Vec2{8, y}, Palette::Gray);
 
-			// 実際のアドレス
-			font(tableBaseAddr != -1 ? U"{:04X}"_fmt(headAddr + indexTail * columnSize) : U"NONE")
+			// インデックス
+			font(U"{:03X}"_fmt(rowIndex))
 				.draw(Arg::topLeft = Vec2{addressLeft, y}, ColorOrange);
 
 			// データ
@@ -119,15 +117,15 @@ private:
 	}
 
 	//そのネームテーブルに実際にアクセス可能であるアドレス
-	int getTableBaseAddr(const Nes::Ppu& ppu) const
-	{
-		for (int i = 0; i < 4; ++i)
-		{
-			if (0x400 * m_tableIndex == ppu.GetNametableOffset()[i]) return 0x2000 + 0x400 * i;
-		}
-
-		return -1;
-	}
+	// int getTableBaseAddr(const Nes::Ppu& ppu) const
+	// {
+	// 	for (int i = 0; i < 4; ++i)
+	// 	{
+	// 		if (0x400 * m_tableIndex == ppu.GetNametableOffset()[i]) return 0x2000 + 0x400 * i;
+	// 	}
+	//
+	// 	return -1;
+	// }
 };
 
 namespace Gui
