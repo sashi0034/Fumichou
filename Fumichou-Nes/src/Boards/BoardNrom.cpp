@@ -90,7 +90,7 @@ public:
 		};
 	}
 
-	MappedWrite MapPrgWriteChr(addr16 addr) override
+	MappedWrite MapWriteChr(addr16 addr) override
 	{
 		if (hasChrRam())
 		{
@@ -105,7 +105,7 @@ public:
 			};
 		}
 
-		return MappedWrite::Invalid(MappingType::Cpu);
+		return MappedWrite::None();
 	}
 
 	[[nodiscard]] const s3d::Image& PatternTableImage() const override

@@ -51,6 +51,11 @@ namespace Nes
 	{
 		auto& ppu = hw.GetPpu();
 
+		if (AddrRange<addr16>(0x0000, 0x1FFF).IsBetween(addr))
+		{
+			return hw.GetCartridge().GetBoard().MapWriteChr(addr);
+		}
+
 		if (AddrRange<addr16>(0x2000, 0x3EFF).IsBetween(addr))
 		{
 			const bool isMirror = addr >= 0x3000;

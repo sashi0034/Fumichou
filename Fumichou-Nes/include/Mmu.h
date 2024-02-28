@@ -21,6 +21,7 @@ namespace Nes
 		static MappedRead Unmapped(MappingType mapping);
 		static MappedRead Invalid(MappingType mapping);
 		static MappedRead Unsupported(MappingType mapping, StringView desc);
+		static MappedRead None();
 	};
 
 	struct MappedWrite
@@ -34,6 +35,7 @@ namespace Nes
 		static MappedWrite Unmapped(MappingType mapping);
 		static MappedWrite Invalid(MappingType mapping);
 		static MappedWrite Unsupported(MappingType mapping, StringView desc);
+		static MappedWrite None();
 	};
 
 	using MappedReaderArray = std::array<MappedRead, AddrSize_0x10000>;

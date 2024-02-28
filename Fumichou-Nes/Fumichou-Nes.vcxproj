@@ -139,7 +139,6 @@
     <ClCompile Include="src\Mos6502_In.cpp" />
     <ClCompile Include="src\RomData_In.cpp" />
     <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\Ram.cpp" />
     <ClCompile Include="src\Mmu.cpp" />
     <ClCompile Include="src\Mos6502.cpp" />
     <ClCompile Include="src\HwFrame.cpp" />

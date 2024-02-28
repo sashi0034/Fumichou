@@ -6,6 +6,7 @@
 #include "HwFrame.h"
 #include "WidgetButton.h"
 #include "WidgetCheckbox.h"
+#include "Util/KeyRepetition.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -81,7 +82,7 @@ struct GuiToolbar::Impl
 			.emojiIcon = U"▶️"_emoji,
 			.text = U"Step 1 Cycle (F10)",
 			.textColor = Palette::Darkgray,
-		}) || KeyF10.down())
+		}) || Util::IsKeyRepeating(KeyF10))
 		{
 			frame.StepOneCycle();
 		}
@@ -91,7 +92,7 @@ struct GuiToolbar::Impl
 			.emojiIcon = U"⏩"_emoji,
 			.text = U"Step 1 Frame (F11)",
 			.textColor = Palette::Darkgray,
-		}) || KeyF11.down())
+		}) || Util::IsKeyRepeating(KeyF11))
 		{
 			frame.StepOneFrame();
 		}

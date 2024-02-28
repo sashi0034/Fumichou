@@ -19,7 +19,7 @@ namespace Nes
 		[[nodiscard]] virtual MappedWrite MapWritePrg(addr16 addr) = 0;
 
 		[[nodiscard]] virtual MappedRead MapReadChr(addr16 addr) const = 0;
-		[[nodiscard]] virtual MappedWrite MapPrgWriteChr(addr16 addr) = 0;
+		[[nodiscard]] virtual MappedWrite MapWriteChr(addr16 addr) = 0;
 
 		[[nodiscard]] virtual const s3d::Image& PatternTableImage() const = 0;
 		[[nodiscard]] virtual const s3d::Texture& PatternTableTexture() const = 0;

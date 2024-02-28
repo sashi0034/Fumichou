@@ -85,6 +85,15 @@ namespace Nes
 		};
 	}
 
+	MappedRead MappedRead::None()
+	{
+		return {
+			.desc = U"None",
+			.ctx = nullptr,
+			.func = [](const void* ctx, addr16 addr) { return uint8(); }
+		};
+	}
+
 	MappedWrite MappedWrite::Unmapped(MappingType mapping)
 	{
 		return {
@@ -115,6 +124,15 @@ namespace Nes
 			.func = mapping == MappingType::Cpu
 				        ? abortWrite<MappingType::Cpu, MapAbort::Unsupported>
 				        : abortWrite<MappingType::Ppu, MapAbort::Unsupported>,
+		};
+	}
+
+	MappedWrite MappedWrite::None()
+	{
+		return MappedWrite{
+			.desc = U"None",
+			.ctx = nullptr,
+			.func = [](void* ctx, addr16 addr, uint8 value) { return; }
 		};
 	}
 
