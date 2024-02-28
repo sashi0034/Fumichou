@@ -121,6 +121,7 @@
     <ClCompile Include="src\Apu.cpp" />
     <ClCompile Include="src\Apu_In.cpp" />
     <ClCompile Include="src\Apu_In_Io.cpp" />
+    <ClCompile Include="src\Boards\BoardCnrom.cpp" />
     <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="src\Apu_In.h" />
     <ClInclude Include="src\Apu_In_Io.h" />
+    <ClInclude Include="src\Boards\BoardCnrom.h" />
     <ClInclude Include="src\Boards\PatternTableMemory.h" />
     <ClInclude Include="src\Cartridge_In.h" />
     <ClInclude Include="src\Boards\BoardNrom.h" />

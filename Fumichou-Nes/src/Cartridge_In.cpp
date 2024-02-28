@@ -3,6 +3,7 @@
 
 #include "Logger.h"
 #include "RomData_In.h"
+#include "Boards/BoardCnrom.h"
 #include "Boards/BoardNrom.h"
 
 struct Nes::Cartridge::In::Impl
@@ -29,6 +30,8 @@ private:
 		{
 		case 0:
 			return CreateBoardNrom(rom);
+		case 3:
+			return CreateBoardCnrom(rom);
 
 		default:
 			Logger::Error(fmt::format(U"Unsupported mapper: {}", static_cast<uint8>(mapper)));

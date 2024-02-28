@@ -1,26 +1,20 @@
 ﻿#include "stdafx.h"
-#include "BoardNrom.h"
-
-#include "BoardBase.h"
+#include "BoardCnrom.h"
 
 #include "Logger.h"
 #include "PatternTableMemory.h"
 
-// https://www.nesdev.org/wiki/Nm_rom
-// https://github.com/amhndu/SimpleNES/blob/d7b8865edac693f348070674e07a7b173bb6662f/src/MapperNm_rom.cpp
-
-class Nes::BoardNrom final : public BoardBase
+class Nes::BoardCnrom final : public BoardBase
 {
 public:
 	using BoardBase::BoardBase;
-	~BoardNrom() override = default;
+	~BoardCnrom() override = default;
 
 	void Initialize() override
 	{
 		m_oneBank = m_rom.GetPrg().size() == 0x4000;
 
-		if (hasChrRam()) m_patternTable = PatternTableMemory(0x2000);
-		else m_patternTable = PatternTableMemory(m_rom.GetChr());
+		m_patternTable = PatternTableMemory(m_rom.GetChr());
 	}
 
 	MappedRead MapReadPrg(addr16 addr) const override
@@ -74,37 +68,33 @@ public:
 
 	MappedWrite MapWritePrg(addr16 addr) override
 	{
-		return MappedWrite::Invalid(MappingType::Cpu);
+		return MappedWrite{
+			.desc = U"CHR Bank Select",
+			.ctx = this,
+			.func = [](void* ctx, addr16 addr, uint8 value)
+			{
+				auto& self = *static_cast<decltype(this)>(ctx);
+				self.m_chrBank = value & 0x3;
+			}
+		};
 	}
 
 	MappedRead MapReadChr(addr16 addr) const override
 	{
 		return MappedRead{
-			.desc = hasChrRam() ? U"CHR-RAM"_sv : U"CHR-ROM"_sv,
-			.ctx = &m_patternTable,
+			.desc = U"CHR-ROM"_sv,
+			.ctx = this,
 			.func = [](const void* ctx, addr16 addr)
 			{
-				auto& patternTable = *static_cast<const decltype(m_patternTable)*>(ctx);
-				return patternTable.Read8(addr);
+				const auto& self = *static_cast<decltype(this)>(ctx);
+				const auto& patternTable = self.m_patternTable;
+				return patternTable.Read8(addr | (self.m_chrBank << 13));
 			}
 		};
 	}
 
 	MappedWrite MapWriteChr(addr16 addr) override
 	{
-		if (hasChrRam())
-		{
-			return MappedWrite{
-				.desc = U"CHR-RAM",
-				.ctx = &m_patternTable,
-				.func = [](void* ctx, addr16 addr, uint8 value)
-				{
-					auto& patternTable = *static_cast<decltype(m_patternTable)*>(ctx);
-					patternTable.Write8(addr, value);
-				}
-			};
-		}
-
 		return MappedWrite::None();
 	}
 
@@ -121,14 +111,13 @@ public:
 private:
 	PatternTableMemory m_patternTable{};
 	bool m_oneBank{};
-
-	bool hasChrRam() const
-	{
-		return m_rom.GetChr().size() == 0;
-	}
+	uint8 m_chrBank{}; // TODO: レンダリングのときに CHR-ROM を反映させる
 };
 
-std::unique_ptr<Nes::BoardBase> Nes::CreateBoardNrom(const RomData& rom)
+namespace Nes
 {
-	return std::make_unique<BoardNrom>(rom);
+	std::unique_ptr<BoardBase> CreateBoardCnrom(const RomData& rom)
+	{
+		return std::make_unique<BoardCnrom>(rom);
+	}
 }
