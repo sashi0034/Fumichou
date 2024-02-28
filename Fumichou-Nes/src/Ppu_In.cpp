@@ -56,7 +56,8 @@ private:
 		if (line < 240)
 		{
 			// スクロール位置登録
-			ppu.m_renderer->SetScrollX(line, ppu.m_scrollX);
+			const auto tableX = (ppu.m_regs.tempAddr.NameTableAddr() & 1) ? DisplayWidth_256 : 0;
+			ppu.m_renderer->SetScrollX(line, ppu.m_scrollX + tableX);
 
 			if (ppu.m_scanningSprZero)
 			{
@@ -104,7 +105,7 @@ private:
 
 		const uint16 bgPageOffset = ppu.m_regs.control.SecondBgPattern() << 8;
 
-		// TODO
+		// TODO: スクロール対応をしますからね
 		const auto scrollPos = s3d::Point(
 			ppu.m_regs.fineX | (ppu.m_unstable.vramAddr.CoarseX() << 3),
 			ppu.m_unstable.vramAddr.FineY() | (ppu.m_unstable.vramAddr.CoarseY() << 3));

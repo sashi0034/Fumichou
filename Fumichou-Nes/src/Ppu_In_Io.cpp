@@ -148,7 +148,7 @@ namespace Nes
 					if (not ppu.m_unstable.writeToggle)
 					{
 						// 1回目の書き込み
-						ppu.m_scrollX = (ppu.m_regs.control.BaseNameTableAddrX() ? DisplayWidth_256 : 0) + value;
+						ppu.m_scrollX = value;
 						ppu.m_regs.fineX = GetBits<0, 2>(value);
 						ppu.m_regs.tempAddr.CoarseX().Set(GetBits<3, 7>(value));
 						ppu.m_unstable.writeToggle = true;
