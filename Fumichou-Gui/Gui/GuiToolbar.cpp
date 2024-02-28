@@ -103,7 +103,7 @@ struct GuiToolbar::Impl
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			// TODO
+			// Nothing
 		}
 
 		if (m_spriteVisibleCheck.Update({
@@ -113,7 +113,7 @@ struct GuiToolbar::Impl
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			// TODO
+			if (m_isPaused) Nes::HwFrame::Instance().RerenderVideo();
 		}
 
 		if (m_bgVisibleCheck.Update({
@@ -123,7 +123,7 @@ struct GuiToolbar::Impl
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			// TODO
+			if (m_isPaused) Nes::HwFrame::Instance().RerenderVideo();
 		}
 	}
 };

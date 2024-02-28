@@ -158,6 +158,11 @@ namespace Nes
 	{
 	}
 
+	void HwFrameView::RerenderVideo()
+	{
+		Ppu::In::RenderVideo(p_impl->m_hardware);
+	}
+
 	bool HwFrameView::StartRomFile(s3d::FilePathView romPath)
 	{
 		return p_impl->StartRomFile(romPath);

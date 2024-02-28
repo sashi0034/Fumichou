@@ -40,6 +40,16 @@ public:
 		}
 	}
 
+	static void RenderVideo(Hardware& hw)
+	{
+		auto& ppu = hw.GetPpu();
+		ppu.m_renderer->Render({
+			.ppu = ppu,
+			.mmu = hw.GetMmu(),
+			.board = hw.GetCartridge().GetBoard()
+		});
+	}
+
 private:
 	static void reachedLineEnd(Hardware& hw, Ppu& ppu, uint32 line)
 	{
@@ -137,11 +147,7 @@ private:
 		}
 
 		// ディスプレイ描画
-		ppu.m_renderer->Render({
-			.ppu = hw.GetPpu(),
-			.mmu = hw.GetMmu(),
-			.board = hw.GetCartridge().GetBoard()
-		});
+		RenderVideo(hw);
 	}
 };
 
@@ -150,6 +156,11 @@ namespace Nes
 	void Ppu::In::Step(Hardware& hw, PpuCycle cycle)
 	{
 		Impl::Step(hw, cycle);
+	}
+
+	void Ppu::In::RenderVideo(Hardware& hw)
+	{
+		Impl::RenderVideo(hw);
 	}
 
 	// https://www.nesdev.org/wiki/Mirroring

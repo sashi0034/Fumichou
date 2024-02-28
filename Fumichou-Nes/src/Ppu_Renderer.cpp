@@ -94,7 +94,7 @@ public:
 		const s3d::Transformer2D transformer2D{s3d::Mat3x2::Identity(), s3d::Transformer2D::Target::SetLocal};
 		const s3d::ScopedViewport2D viewport2D{s3d::Rect(Display_256x240)};
 		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
-		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(s3d::Palette::Black)};
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(s3d::Color(16))};
 
 		// パレット登録
 		applyPalettes(ppu);

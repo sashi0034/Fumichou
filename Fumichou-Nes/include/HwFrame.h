@@ -25,6 +25,8 @@ namespace Nes
 	public:
 		HwFrameView(HwFrame::Impl* impl);
 
+		void RerenderVideo();
+
 		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
 		[[nodiscard]] bool ResetRomFile();
 
