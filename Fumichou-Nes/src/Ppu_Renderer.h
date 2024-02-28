@@ -25,6 +25,7 @@ namespace Nes
 		virtual const s3d::Texture& GetVideoTexture() const = 0;
 		virtual void SetScrollY(uint32 scrollY) = 0;
 		virtual uint32 GetScrollY() const = 0;
+		virtual const std::array<OamData, 64>& GetRenderedSprites() const = 0;
 
 	private:
 		class Hle;

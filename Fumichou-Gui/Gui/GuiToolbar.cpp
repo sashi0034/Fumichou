@@ -139,4 +139,9 @@ namespace Gui
 	{
 		p_impl->Update(availableRegion);
 	}
+
+	bool GuiToolbar::ShowSpriteWireframe() const
+	{
+		return p_impl->m_isSpriteWireframe;
+	}
 }

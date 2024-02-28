@@ -8,6 +8,8 @@ namespace Gui
 		GuiToolbar();
 		void Update(const Size& availableRegion);
 
+		bool ShowSpriteWireframe() const;
+
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;

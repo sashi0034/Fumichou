@@ -113,8 +113,11 @@ namespace Nes
 		Ppu();
 
 		const s3d::Texture& GetVideo() const;
+		const std::array<OamData, 64>& GetRenderedSprites() const;
+
 		const std::array<addr16, 4>& GetNametableOffset() const { return m_nametableOffset; }
 		const std::array<uint8, 4096>& GetNametableData() const { return m_nametableData; };
+		const std::array<OamData, 64>& GetOam() const { return m_oam.sprites; }
 
 	private:
 		class IRenderer;

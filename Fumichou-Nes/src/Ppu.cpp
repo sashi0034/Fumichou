@@ -16,4 +16,9 @@ namespace Nes
 	{
 		return m_renderer->GetVideoTexture();
 	}
+
+	const std::array<OamData, 64>& Ppu::GetRenderedSprites() const
+	{
+		return m_renderer->GetRenderedSprites();
+	}
 }

@@ -38,6 +38,7 @@ public:
 	s3d::RenderTexture m_videoTexture{Display_256x240};
 	s3d::ConstantBuffer<CbPaletteColors> m_cbPaletteColors{};
 	s3d::ConstantBuffer<CbBgData> m_cbBgData{};
+	std::array<OamData, 64> m_renderedSprites{};
 
 	Hle()
 	{
@@ -65,6 +66,11 @@ public:
 		return m_cbBgData->ppu.scrollY;
 	}
 
+	const std::array<OamData, 64>& GetRenderedSprites() const override
+	{
+		return m_renderedSprites;
+	}
+
 	void Render(const render_args& args) override
 	{
 		auto& ppu = args.ppu.get();
@@ -84,6 +90,9 @@ public:
 
 		// スプライト描画
 		renderSprites(args, ppu);
+
+		// デバッグ用にデータ格納
+		std::memcpy(&m_renderedSprites, &ppu.m_oam, sizeof(ppu.m_oam));
 	}
 
 private:

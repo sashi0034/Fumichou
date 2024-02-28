@@ -9,6 +9,8 @@
 #include "GuiPatternTable.h"
 #include "GuiToolbar.h"
 #include "GuiTrace.h"
+#include "HwFrame.h"
+#include "RenderSpriteWireframe.h"
 #include "WidgetTabBar.h"
 #include "Util/TomlStyleSheet.h"
 
@@ -142,8 +144,9 @@ struct GuiController::Impl
 		{
 			// 画面描画
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
-			auto&& rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
+			const auto rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
 			(void)rect.stretched(2).drawFrame(2, Palette::Black);
+			if (m_top.toolbar.ShowSpriteWireframe()) RenderSpriteWireframe(rect);
 		}
 
 		if (const auto abort = nes.GetAbort())
