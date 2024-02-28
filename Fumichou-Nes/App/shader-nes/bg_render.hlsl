@@ -43,8 +43,8 @@ cbuffer CbBgData : register(b2)
         uint scrollY;
     } g_ppu;
 
-    uint4 g_nametable[256]; // 4KiB
     uint4 g_scrollX[30];
+    uint4 g_nametable[256]; // 4KiB
 }
 
 #define W_256 256
@@ -54,19 +54,21 @@ cbuffer CbBgData : register(b2)
 // ((array[address / 16][(address % 16) / 4] >> ((address % 4) * 8)) & 0xFF)
 #define FROM_UINT8ARRAY(array, address) ((array[(address) >> 4][((address) & 0xF) >> 2] >> (((address) & 0x3) << 3)) & 0xFF)
 
-// ((array[address / 8][(address % 8) / 2] >> ((address % 2) * 8)) & 0xFF)
-#define FROM_UINT16ARRAY(array, address) ((array[(address) >> 3][((address) & 0x7) >> 1] >> (((address) & 0x1) << 3)) & 0xFF)
+// ((array[address / 8][(address % 8) / 2] >> ((address % 2) * 16)) & 0xFF)
+#define FROM_UINT16ARRAY(array, address) ((array[(address) >> 3][((address) & 0x7) >> 1] >> (((address) & 0x1) << 4)) & 0xFFFF)
 
 float4 PS(s3d::PSInput input) : SV_TARGET
 {
-    const uint2 scrollPos = uint2(0, g_ppu.scrollY);
-    const uint2 screenPos0 = (scrollPos + input.uv * float2(W_256, H_240));
+    const uint2 uv = input.uv * float2(W_256, H_240);
+    const uint2 scrollPos = uint2(FROM_UINT16ARRAY(g_scrollX, uv.y), g_ppu.scrollY);
+    const uint2 screenPos0 = scrollPos + uv;
     const uint2 screenPos = screenPos0 % (2 * uint2(W_256, H_240));
     const uint2 tileCoarse = screenPos / TILE_8;
     const uint2 tileFine = screenPos - tileCoarse * TILE_8;
 
-    const uint crossPage = ((tileCoarse.y + 2) >> 5) * 0x440; // Correct if Y is greater than 30
-    const uint addr = tileCoarse.x + tileCoarse.y * 32 + crossPage;
+    const uint crossPageX = ((tileCoarse.x) >> 5) * (0x400 - 32); // Correct if X is greater than 32
+    const uint crossPageY = ((tileCoarse.y + 2) >> 5) * (0x400 + 64); // Correct if Y is greater than 30
+    const uint addr = tileCoarse.x + tileCoarse.y * 32 + crossPageX + crossPageY;
 
     const uint tileId = g_ppu.pageOffset + FROM_UINT8ARRAY(g_nametable, addr);
 

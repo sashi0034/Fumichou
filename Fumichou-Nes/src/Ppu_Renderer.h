@@ -29,6 +29,6 @@ namespace Nes
 		virtual const std::array<OamData, 64>& GetRenderedSprites() const = 0;
 
 	private:
-		class Hle;
+		class HleRenderer;
 	};
 }

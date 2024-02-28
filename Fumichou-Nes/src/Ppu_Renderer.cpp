@@ -33,17 +33,17 @@ namespace
 			uint32 scrollY;
 		} ppu;
 
-		uint32 nametable[4 * 256];
-
 		union
 		{
 			uint32 words[4 * 30];
 			uint16 shorts[DisplayHeight_240];
 		} scrollX;
+
+		uint32 nametable[4 * 256];
 	};
 }
 
-class Ppu::IRenderer::Hle : public IRenderer
+class Ppu::IRenderer::HleRenderer : public IRenderer
 {
 public:
 	s3d::RenderTexture m_videoTexture{Display_256x240};
@@ -51,7 +51,7 @@ public:
 	s3d::ConstantBuffer<CbBgData> m_cbBgData{};
 	std::array<OamData, 64> m_renderedSprites{};
 
-	Hle()
+	HleRenderer()
 	{
 		for (int i = 0; i < PaletteColors.size(); ++i)
 		{
@@ -59,7 +59,7 @@ public:
 		}
 	}
 
-	~Hle() override = default;
+	~HleRenderer() override = default;
 
 	const s3d::Texture& GetVideoTexture() const override
 	{
@@ -195,6 +195,6 @@ namespace Nes
 {
 	std::unique_ptr<Ppu::IRenderer> Ppu::IRenderer::Create()
 	{
-		return std::make_unique<Hle>();
+		return std::make_unique<HleRenderer>();
 	}
 }
