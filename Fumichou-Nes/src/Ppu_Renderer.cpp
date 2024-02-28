@@ -21,7 +21,7 @@ namespace
 		{
 			uint32 words[4 * 2];
 			uint8 bytes[32];
-		} paletteIndexes;;
+		} paletteIndexes;
 	};
 
 	struct CbBgData
@@ -34,6 +34,12 @@ namespace
 		} ppu;
 
 		uint32 nametable[4 * 256];
+
+		union
+		{
+			uint32 words[4 * 30];
+			uint16 shorts[DisplayHeight_240];
+		} scrollX;
 	};
 }
 
@@ -58,6 +64,11 @@ public:
 	const s3d::Texture& GetVideoTexture() const override
 	{
 		return m_videoTexture;
+	}
+
+	void SetScrollX(uint32 scanline, uint16 scrollX) override
+	{
+		m_cbBgData->scrollX.shorts[scanline] = scrollX;
 	}
 
 	void SetScrollY(uint32 scrollY) override

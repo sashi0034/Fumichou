@@ -45,9 +45,12 @@ private:
 	{
 		if (line < 240)
 		{
+			// スクロール位置登録
+			ppu.m_renderer->SetScrollX(line, ppu.m_scrollX);
+
 			if (ppu.m_scanningSprZero)
 			{
-				// DMAのときが重なったら、前回のフラグが残ってしまうかもしれないので一応チェック
+				// DMAのタイミングで、前回のスプライト0ヒットが残ってしまうかもしれないので一応チェック
 				checkSprZeroHit(hw, ppu);
 			}
 

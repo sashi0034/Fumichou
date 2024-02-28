@@ -44,14 +44,18 @@ cbuffer CbBgData : register(b2)
     } g_ppu;
 
     uint4 g_nametable[256]; // 4KiB
+    uint4 g_scrollX[30];
 }
 
 #define W_256 256
 #define H_240 240
 #define TILE_8 8
 
-// ((array[address / 16][(address & 16) / 4] >> ((address % 4) * 8)) & 0xFF)
+// ((array[address / 16][(address % 16) / 4] >> ((address % 4) * 8)) & 0xFF)
 #define FROM_UINT8ARRAY(array, address) ((array[(address) >> 4][((address) & 0xF) >> 2] >> (((address) & 0x3) << 3)) & 0xFF)
+
+// ((array[address / 8][(address % 8) / 2] >> ((address % 2) * 8)) & 0xFF)
+#define FROM_UINT16ARRAY(array, address) ((array[(address) >> 3][((address) & 0x7) >> 1] >> (((address) & 0x1) << 3)) & 0xFF)
 
 float4 PS(s3d::PSInput input) : SV_TARGET
 {

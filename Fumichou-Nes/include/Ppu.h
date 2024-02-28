@@ -142,6 +142,8 @@ namespace Nes
 		uint32 m_scanLine{}; // [0, 262)
 		PpuCycle m_lineCycles{}; // [0, 341)
 		bool m_scanningSprZero{};
+		uint16 m_scrollX{};
+
 		PpuRegs m_regs{};
 		mutable PpuUnstableRegs m_unstable{};
 	};
