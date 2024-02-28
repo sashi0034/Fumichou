@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GuiToolbar.h"
 
+#include "DebugParameter.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
 #include "WidgetButton.h"
@@ -23,11 +24,16 @@ struct GuiToolbar::Impl
 	bool m_isPaused{};
 	WidgetButton m_loadButton{};
 	WidgetButton m_resetButton{};
-	WidgetCheckbox m_stoppingCheck{};
+	WidgetCheckbox m_pauseCheck{};
 	WidgetButton m_stepCycleButton{};
 	WidgetButton m_stepFrameButton{};
 
-	WidgetButton m_dummyButton{};
+	bool m_isSpriteWireframe{};
+	bool m_isSpriteVisible{true};
+	bool m_isBgVisible{true};
+	WidgetCheckbox m_spriteWireframeCheck{};
+	WidgetCheckbox m_spriteVisibleCheck{};
+	WidgetCheckbox m_bgVisibleCheck{};
 
 	void Update(const Size& availableRegion)
 	{
@@ -59,7 +65,7 @@ struct GuiToolbar::Impl
 			(void)frame.ResetRomFile();
 		}
 
-		if (m_stoppingCheck.Update({
+		if (m_pauseCheck.Update({
 			.availableRect = lineRect.movedBy(0, 2 * lineH),
 			.toggle = m_isPaused,
 			.text = U"Pause Emulation (F9)",
@@ -90,25 +96,34 @@ struct GuiToolbar::Impl
 			frame.StepOneFrame();
 		}
 
-		if (m_dummyButton.Update({
-			.availableRect = lineRect.movedBy(halfW, 3 * lineH),
-			.emojiIcon = U"😺"_emoji,
-			.text = U"Dummy Button 1",
+		if (m_spriteWireframeCheck.Update({
+			.availableRect = lineRect.movedBy(halfW, 0 * lineH),
+			.toggle = m_isSpriteWireframe,
+			.text = U"Sprite Wireframe",
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			// TODO: なんか考える
-			// 多分スプライト可視化ボタンなど
+			// TODO
 		}
 
-		if (m_dummyButton.Update({
-			.availableRect = lineRect.movedBy(halfW, 4 * lineH),
-			.emojiIcon = U"😺"_emoji,
-			.text = U"Dummy Button 2",
+		if (m_spriteVisibleCheck.Update({
+			.availableRect = lineRect.movedBy(halfW, 1 * lineH),
+			.toggle = Nes::DebugParameter::Instance().spriteVisibility,
+			.text = U"Sprite Visibility",
 			.textColor = Palette::Darkgray,
 		}))
 		{
-			// TODO: なんか考える
+			// TODO
+		}
+
+		if (m_bgVisibleCheck.Update({
+			.availableRect = lineRect.movedBy(halfW, 2 * lineH),
+			.toggle = Nes::DebugParameter::Instance().bgVisibility,
+			.text = U"BG Visibility",
+			.textColor = Palette::Darkgray,
+		}))
+		{
+			// TODO
 		}
 	}
 };

@@ -125,6 +125,7 @@
     <ClCompile Include="src\Cartridge.cpp" />
     <ClCompile Include="src\Cartridge_In.cpp" />
     <ClCompile Include="src\Boards\BoardNrom.cpp" />
+    <ClCompile Include="src\DebugParameter.cpp" />
     <ClCompile Include="src\Ppu_In.cpp" />
     <ClCompile Include="src\Ppu_In_Io.cpp" />
     <ClCompile Include="src\Ppu_In_Mm.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="include\Apu.h" />
     <ClInclude Include="include\Cartridge.h" />
     <ClInclude Include="include\BoardBase.h" />
+    <ClInclude Include="include\DebugParameter.h" />
     <ClInclude Include="include\LogReader.h" />
     <ClInclude Include="include\ShaderKeys.h" />
     <ClInclude Include="include\RomData.h" />

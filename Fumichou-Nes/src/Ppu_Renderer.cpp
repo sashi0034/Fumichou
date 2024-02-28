@@ -2,6 +2,7 @@
 #include "Ppu_Renderer.h"
 
 #include "BoardBase.h"
+#include "DebugParameter.h"
 #include "PaletteColors.h"
 #include "Ppu_In.h"
 #include "ShaderKeys.h"
@@ -71,7 +72,7 @@ public:
 		const s3d::Transformer2D transformer2D{s3d::Mat3x2::Identity(), s3d::Transformer2D::Target::SetLocal};
 		const s3d::ScopedViewport2D viewport2D{s3d::Rect(Display_256x240)};
 		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
-		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture};
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(s3d::Palette::Black)};
 
 		// パレット登録
 		std::memcpy(
@@ -88,6 +89,8 @@ public:
 private:
 	void renderBg(const render_args& args, const Ppu& ppu)
 	{
+		if (not DebugParameter::Instance().bgVisibility) return;
+
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
 
 		// static TimeProfiler profiler{U"PPU Rendering"};
@@ -121,6 +124,8 @@ private:
 
 	void renderSprites(const render_args& args, const Ppu& ppu)
 	{
+		if (not DebugParameter::Instance().spriteVisibility) return;
+
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
 		auto& patternTable = args.board.get().PatternTableTexture();
 
