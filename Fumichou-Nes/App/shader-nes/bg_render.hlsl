@@ -40,10 +40,11 @@ cbuffer CbBgData : register(b2)
     {
         uint2 patternTableSize;
         uint pageOffset;
-        uint scrollY;
+        uint padding_0x60;
     } g_ppu;
 
     uint4 g_scrollX[30];
+    uint4 g_scrollY[30];
     uint4 g_nametable[256]; // 4KiB
 }
 
@@ -60,7 +61,7 @@ cbuffer CbBgData : register(b2)
 float4 PS(s3d::PSInput input) : SV_TARGET
 {
     const uint2 uv = input.uv * float2(W_256, H_240);
-    const uint2 scrollPos = uint2(FROM_UINT16ARRAY(g_scrollX, uv.y), g_ppu.scrollY);
+    const uint2 scrollPos = uint2(FROM_UINT16ARRAY(g_scrollX, uv.y), FROM_UINT16ARRAY(g_scrollY, uv.y));
     const uint2 screenPos0 = scrollPos + uv;
     const uint2 screenPos = screenPos0 % (2 * uint2(W_256, H_240));
     const uint2 tileCoarse = screenPos / TILE_8;

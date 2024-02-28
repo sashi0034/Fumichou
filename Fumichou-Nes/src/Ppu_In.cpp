@@ -51,13 +51,20 @@ public:
 	}
 
 private:
+	static void applyScrollPos(Ppu& ppu, uint32 line)
+	{
+		// スクロール位置登録
+		const auto tableX = ppu.m_regs.tempAddr.NameTableAddrX() ? DisplayWidth_256 : 0;
+		const auto tableY = ppu.m_regs.tempAddr.NameTableAddrY() ? DisplayHeight_240 : 0;
+
+		ppu.m_renderer->SetScrollPos(line, ppu.m_scrollX + tableX, ppu.m_scrollY + tableY);
+	}
+
 	static void reachedLineEnd(Hardware& hw, Ppu& ppu, uint32 line)
 	{
 		if (line < 240)
 		{
-			// スクロール位置登録
-			const auto tableX = (ppu.m_regs.tempAddr.NameTableAddr() & 1) ? DisplayWidth_256 : 0;
-			ppu.m_renderer->SetScrollX(line, ppu.m_scrollX + tableX);
+			if (line < 239) applyScrollPos(ppu, line + 1);
 
 			if (ppu.m_scanningSprZero)
 			{
@@ -88,8 +95,7 @@ private:
 		}
 		else if (line == 261)
 		{
-			// いる?
-			// ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;
+			applyScrollPos(ppu, 0);
 		}
 	}
 

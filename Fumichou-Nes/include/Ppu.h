@@ -71,6 +71,8 @@ namespace Nes
 		auto CoarseX() { return BitAccess<0, 4>(m_value); }
 		auto CoarseY() { return BitAccess<5, 9>(m_value); }
 		auto NameTableAddr() { return BitAccess<10, 11>(m_value); }
+		auto NameTableAddrX() { return BitAccess<10>(m_value); }
+		auto NameTableAddrY() { return BitAccess<11>(m_value); }
 		auto FineY() { return BitAccess<12, 14>(m_value); }
 		// [15] Unused
 
@@ -142,6 +144,7 @@ namespace Nes
 		uint32 m_scanLine{}; // [0, 262)
 		PpuCycle m_lineCycles{}; // [0, 341)
 		bool m_scanningSprZero{};
+		uint16 m_scrollY{};
 		uint16 m_scrollX{};
 
 		PpuRegs m_regs{};

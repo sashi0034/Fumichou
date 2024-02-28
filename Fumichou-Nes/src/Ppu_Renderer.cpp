@@ -30,14 +30,21 @@ namespace
 		{
 			uint32 patternTableSize[2];
 			uint32 pageOffset;
-			uint32 scrollY;
+			uint32 padding_0x60;
 		} ppu;
 
+		// スキャンラインごとにスクロール位置の決定
 		union
 		{
 			uint32 words[4 * 30];
 			uint16 shorts[DisplayHeight_240];
 		} scrollX;
+
+		union
+		{
+			uint32 words[4 * 30];
+			uint16 shorts[DisplayHeight_240];
+		} scrollY;
 
 		uint32 nametable[4 * 256];
 	};
@@ -66,20 +73,10 @@ public:
 		return m_videoTexture;
 	}
 
-	void SetScrollX(uint32 scanline, uint16 scrollX) override
+	void SetScrollPos(uint32 scanline, uint16 scrollX, uint16 scrollY) override
 	{
 		m_cbBgData->scrollX.shorts[scanline] = scrollX;
-	}
-
-	void SetScrollY(uint32 scrollY) override
-	{
-		// FIXME: ラインごとにスクロール位置を記録する必要がありそう
-		m_cbBgData->ppu.scrollY = scrollY;
-	}
-
-	uint32 GetScrollY() const override
-	{
-		return m_cbBgData->ppu.scrollY;
+		m_cbBgData->scrollY.shorts[scanline] = scrollY;
 	}
 
 	const std::array<OamData, 64>& GetRenderedSprites() const override
