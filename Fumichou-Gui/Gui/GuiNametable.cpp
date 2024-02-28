@@ -49,8 +49,8 @@ private:
 		constexpr int columnSize = 8;
 		int indexTail = 0;
 		auto&& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
-		auto&& nt = Nes::HwFrame::Instance().GetHw().GetPpu().GetNametableData();
-		const uint16 rowIndex0 = m_headIndexes[m_tableIndex] * columnSize + ppu.GetNametableOffset()[m_tableIndex];
+		auto&& nt = Nes::HwFrame::Instance().GetHw().GetPpu().NametableData();
+		const uint16 rowIndex0 = m_headIndexes[m_tableIndex] * columnSize + ppu.NametableOffset()[m_tableIndex];
 		uint16 rowIndex = rowIndex0;
 		const int dataLeft = getToml<int>(U"dataLeft");
 		const int addressLeft = getToml<int>(U"addressLeft");

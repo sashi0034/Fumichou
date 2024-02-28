@@ -115,9 +115,14 @@ namespace Nes
 		const s3d::Texture& GetVideo() const;
 		const std::array<OamData, 64>& GetRenderedSprites() const;
 
-		const std::array<addr16, 4>& GetNametableOffset() const { return m_nametableOffset; }
-		const std::array<uint8, 4096>& GetNametableData() const { return m_nametableData; };
-		const std::array<OamData, 64>& GetOam() const { return m_oam.sprites; }
+		const std::array<addr16, 4>& NametableOffset() const { return m_nametableOffset; }
+		const std::array<uint8, 4096>& NametableData() const { return m_nametableData; };
+		const std::array<OamData, 64>& Oam() const { return m_oam.sprites; }
+
+		uint32 ScanLine() const { return m_scanLine; }
+		PpuCycle LineCycles() const { return m_lineCycles; }
+		const PpuRegs& Regs() const { return m_regs; }
+		const PpuUnstableRegs& UnstableRegs() const { return m_unstable; }
 
 	private:
 		class IRenderer;
@@ -134,8 +139,8 @@ namespace Nes
 			std::array<uint8, 256> bytes;
 		} m_oam{};
 
+		uint32 m_scanLine{}; // [0, 262)
 		PpuCycle m_lineCycles{}; // [0, 341)
-		uint32 m_scanLine{};
 		bool m_scanningSprZero{};
 		PpuRegs m_regs{};
 		mutable PpuUnstableRegs m_unstable{};

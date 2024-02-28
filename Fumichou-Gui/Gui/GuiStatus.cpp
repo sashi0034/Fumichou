@@ -62,14 +62,21 @@ namespace
 		void operator ()(PpuView) const
 		{
 			auto& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
-			// TODO
+
+			const auto& reg0 = ppu.Regs();
+			const auto& reg1 = ppu.UnstableRegs();
+
+			drawTextLine(0, U"Scanline={} Linecycles={}"_fmt(ppu.ScanLine(), ppu.LineCycles()));
+			drawTextLine(1, U"CONTROL={:02X} STASUS={:02X}"_fmt(
+				             static_cast<uint8>(reg0.control), static_cast<uint8>(reg1.status)));
 		}
 	};
 
 	using StatusDocumentData = DocumentData<
 		StatusDraw,
 		EmulationView,
-		CpuView>;
+		CpuView,
+		PpuView>;
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
@@ -77,15 +84,20 @@ namespace
 		texts.push_back(std::monostate{});
 		texts.push_back(EmulationView());
 		texts.push_back(std::monostate{});
-		texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(CpuView());
+		for (const auto i : step(2)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
+
+		texts.push_back(Document::HeaderText(U"PPU Status"));
 		texts.push_back(std::monostate{});
-		texts.push_back(std::monostate{});
+		texts.push_back(PpuView());
+		for (const auto i : step(1)) texts.push_back(std::monostate{});
 	}
 }
 
