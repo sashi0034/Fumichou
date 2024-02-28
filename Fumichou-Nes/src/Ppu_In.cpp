@@ -133,9 +133,6 @@ private:
 			Mos6502::In::RequestNmi(hw.GetMos6502());
 		}
 
-		// 描画用にPPUパレットのミラー領域を埋める
-		ApplyPaletteMirror(ppu);
-
 		// ディスプレイ描画
 		ppu.m_renderer->Render({
 			.ppu = hw.GetPpu(),
@@ -176,15 +173,6 @@ namespace Nes
 		default: ;
 			Logger::Abort();
 		}
-	}
-
-	void Ppu::In::ApplyPaletteMirror(Ppu& ppu)
-	{
-		constexpr uint16 mirror = 0x0010;
-		ppu.m_palettes[0x0010] = ppu.m_palettes[0x0010 - mirror];
-		ppu.m_palettes[0x0014] = ppu.m_palettes[0x0014 - mirror];
-		ppu.m_palettes[0x0018] = ppu.m_palettes[0x0018 - mirror];
-		ppu.m_palettes[0x001C] = ppu.m_palettes[0x001C - mirror];
 	}
 
 	uint8 Ppu::In::readPalette(const Ppu& ppu, uint8 paletteIndex)

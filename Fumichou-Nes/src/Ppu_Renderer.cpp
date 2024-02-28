@@ -16,7 +16,12 @@ namespace
 	struct CbPaletteColors
 	{
 		s3d::Float4 paletteColors[64];
-		uint32 paletteIndexes[4 * 2];
+
+		union
+		{
+			uint32 words[4 * 2];
+			uint8 bytes[32];
+		} paletteIndexes;;
 	};
 
 	struct CbBgData
@@ -81,8 +86,7 @@ public:
 		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(s3d::Palette::Black)};
 
 		// パレット登録
-		std::memcpy(
-			&m_cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(m_cbPaletteColors->paletteIndexes));
+		applyPalettes(ppu);
 		s3d::Graphics2D::SetPSConstantBuffer(1, m_cbPaletteColors);
 
 		// BG描画
@@ -96,6 +100,23 @@ public:
 	}
 
 private:
+	void applyPalettes(const Ppu& ppu)
+	{
+		std::memcpy(
+			&m_cbPaletteColors->paletteIndexes, ppu.m_palettes.data(), sizeof(m_cbPaletteColors->paletteIndexes));
+
+		// 透明色反映
+		m_cbPaletteColors->paletteIndexes.bytes[0x04] = ppu.m_palettes[0x00];
+		m_cbPaletteColors->paletteIndexes.bytes[0x08] = ppu.m_palettes[0x00];
+		m_cbPaletteColors->paletteIndexes.bytes[0x0C] = ppu.m_palettes[0x00];
+
+		// ミラー反映
+		m_cbPaletteColors->paletteIndexes.bytes[0x10] = ppu.m_palettes[0x00];
+		m_cbPaletteColors->paletteIndexes.bytes[0x14] = ppu.m_palettes[0x04];
+		m_cbPaletteColors->paletteIndexes.bytes[0x18] = ppu.m_palettes[0x08];
+		m_cbPaletteColors->paletteIndexes.bytes[0x1C] = ppu.m_palettes[0x0C];
+	}
+
 	void renderBg(const render_args& args, const Ppu& ppu)
 	{
 		if (not DebugParameter::Instance().bgVisibility) return;

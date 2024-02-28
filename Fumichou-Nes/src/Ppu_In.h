@@ -10,7 +10,6 @@ namespace Nes
 		class Mm;
 		static void Step(Hardware& hw, PpuCycle cycle);
 		static void UpdateMirroring(Ppu& ppu, NameTableMirror mirror);
-		static void ApplyPaletteMirror(Ppu& ppu);
 
 	private:
 		static uint8 readPalette(const Ppu& ppu, uint8 paletteIndex);
