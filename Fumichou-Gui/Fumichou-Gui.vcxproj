@@ -612,9 +612,10 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <Content Include="App\asset\font\RocknRoll\README.md" />
     <Content Include="App\asset\font\RocknRoll\RocknRollOne-Regular.ttf" />
     <Content Include="App\asset\stylesheet.toml" />
+    <Content Include="App\scripting.as" />
+    <Content Include="App\scripting.example.as" />
     <Content Include="App\icon.ico" />
     <ClInclude Include="FontKeys.h" />
-    <Content Include="App\scripting.as" />
     <ClInclude Include="Util\ScriptFunctionWrapper.h" />
   </ItemGroup>
   <ItemGroup>

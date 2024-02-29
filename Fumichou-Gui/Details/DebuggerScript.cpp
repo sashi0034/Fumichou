@@ -11,6 +11,7 @@ using namespace AngelScript;
 
 namespace
 {
+	constexpr FilePathView examplePath = U"scripting.example.as";
 	constexpr FilePathView defaultPath = U"scripting.as";
 
 	void __cdecl breakpoint()
@@ -82,11 +83,31 @@ struct DebuggerScript::Impl
 
 	void Refresh()
 	{
-		if (not m_initialized || m_fileWatcher.CheckChanged())
+		if (not m_initialized)
 		{
-			m_initialized = true;
+			initialize();
+		}
+
+		if (m_fileWatcher.CheckChanged())
+		{
 			Reload();
 		}
+	}
+
+private:
+	void initialize()
+	{
+		m_initialized = true;
+		Reload();
+
+		// スクリプトファイルが存在しないなら凡例を利用
+		const auto targetFile = m_fileWatcher.TargetFile();
+		if (not FileSystem::Exists(targetFile))
+		{
+			FileSystem::Copy(examplePath, targetFile);
+		}
+
+		m_script = Script(targetFile);
 	}
 };
 
