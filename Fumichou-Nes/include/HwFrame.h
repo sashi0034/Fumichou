@@ -40,6 +40,8 @@ namespace Nes
 		[[nodiscard]] bool IsPaused() const;
 		void SetPaused(bool paused);
 
+		void RequestBreakpoint();
+
 		void StepOneCycle();
 		void StepOneFrame();
 

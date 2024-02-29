@@ -2,7 +2,7 @@
 #include "DebuggerScript.h"
 
 #include "DebugParameter.h"
-#include "Forward.h"
+#include "HwFrame.h"
 #include "Util/FileWatcher.h"
 #include "Util/ScriptFunctionWrapper.h"
 
@@ -15,7 +15,7 @@ namespace
 
 	void __cdecl breakpoint()
 	{
-		throw Nes::EmulationAbort(U"Break Point");
+		Nes::HwFrame::Instance().RequestBreakpoint();
 	}
 
 	void __cdecl watch_interrupt(asIScriptFunction* callback)

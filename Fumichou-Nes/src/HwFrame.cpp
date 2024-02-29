@@ -27,6 +27,7 @@ struct HwFrame::Impl
 	uint64 m_cycleCount{};
 	bool m_paused{};
 	double m_controlledTime{};
+	bool m_breakpoint{};
 
 	Impl()
 	{
@@ -127,6 +128,13 @@ private:
 		Ppu::In::Step(m_hardware, cpuCycle * 3);
 
 		m_cycleCount += cpuCycle;
+
+		// ブレイクポイント
+		if (m_breakpoint)
+		{
+			m_breakpoint = false;
+			throw EmulationAbort(U"Breakpoint!");
+		}
 	}
 };
 
@@ -206,6 +214,11 @@ namespace Nes
 	void HwFrameView::SetPaused(bool paused)
 	{
 		p_impl->m_paused = paused;
+	}
+
+	void HwFrameView::RequestBreakpoint()
+	{
+		p_impl->m_breakpoint = true;
 	}
 
 	void HwFrameView::StepOneCycle()
