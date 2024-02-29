@@ -4,8 +4,6 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
-#include "WidgetButton.h"
-#include "WidgetCheckbox.h"
 #include "WidgetDocument.h"
 
 using namespace Gui;
@@ -14,7 +12,12 @@ namespace
 {
 	struct EmulationView
 	{
-		bool isPaused;
+	};
+
+	struct CartridgeView
+	{
+		FilePathView currentPath{};
+		String cachedName{};
 	};
 
 	struct CpuView
@@ -41,6 +44,22 @@ namespace
 			auto&& frame = Nes::HwFrame::Instance();
 			drawTextLine(0, U"Frame={}"_fmt(frame.GetFrameCount()));
 			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
+		}
+
+		void operator ()(CartridgeView& self) const
+		{
+			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
+			auto&& frame = Nes::HwFrame::Instance();
+			auto&& cart = frame.GetHw().GetCartridge();
+
+			if (frame.CurrentRomFile() != self.currentPath)
+			{
+				self.currentPath = frame.CurrentRomFile();
+				self.cachedName = FileSystem::FileName(self.currentPath);
+			}
+
+			drawTextLine(0, U"File=\"{}\""_fmt(self.cachedName));
+			drawTextLine(1, U"Mapper={}"_fmt(static_cast<uint8>(cart.GetRomData().GetMapperNumber())));
 		}
 
 		void operator ()(CpuView) const
@@ -74,6 +93,7 @@ namespace
 
 	using StatusDocumentData = DocumentData<
 		StatusDraw,
+		CartridgeView,
 		EmulationView,
 		CpuView,
 		PpuView>;
@@ -83,7 +103,14 @@ namespace
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(EmulationView());
+		for (const auto i : step(1)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
+
+		texts.push_back(Document::HeaderText(U"Cartridge Information"));
 		texts.push_back(std::monostate{});
+		texts.push_back(CartridgeView{});
+		for (const auto i : step(1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 

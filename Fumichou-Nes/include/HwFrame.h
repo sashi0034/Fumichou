@@ -29,6 +29,7 @@ namespace Nes
 
 		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
 		[[nodiscard]] bool ResetRomFile();
+		[[nodiscard]] s3d::FilePathView CurrentRomFile() const;
 
 		[[nodiscard]] s3d::Optional<EmulationAbort> GetAbort() const;
 		[[nodiscard]] const Hardware& GetHw() const;

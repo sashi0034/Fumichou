@@ -173,6 +173,11 @@ namespace Nes
 		return p_impl->StartRomFile(p_impl->m_currentRom);
 	}
 
+	s3d::FilePathView HwFrameView::CurrentRomFile() const
+	{
+		return p_impl->m_currentRom;
+	}
+
 	s3d::Optional<EmulationAbort> HwFrameView::GetAbort() const
 	{
 		return p_impl->m_abort;
