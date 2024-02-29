@@ -10,8 +10,8 @@
 #include "GuiToolbar.h"
 #include "GuiTrace.h"
 #include "HwFrame.h"
-#include "RenderSpriteWireframe.h"
 #include "WidgetTabBar.h"
+#include "Details/RenderSpriteWireframe.h"
 #include "Util/TomlStyleSheet.h"
 
 using namespace Gui;
@@ -146,7 +146,7 @@ struct GuiController::Impl
 			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
 			const auto rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
 			(void)rect.stretched(2).drawFrame(2, Palette::Black);
-			if (m_top.toolbar.ShowSpriteWireframe()) RenderSpriteWireframe(rect);
+			if (m_top.toolbar.ShowSpriteWireframe()) Details::RenderSpriteWireframe(rect);
 		}
 
 		if (const auto abort = nes.GetAbort())

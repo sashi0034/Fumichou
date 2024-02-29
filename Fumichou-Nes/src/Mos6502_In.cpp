@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Mos6502_In.h"
 
+#include "DebugParameter.h"
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502Forward.h"
@@ -105,6 +106,8 @@ namespace Nes
 	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)
 	{
 		Logger::Trace(TraceCpuInterrupt{.pc = self.m_regs.pc, .interrupt = interrupt});
+
+		if (auto&& watcher = DebugParameter::Instance().watchInterrupt) watcher();
 
 		CpuStatus8 status{};
 		status.Carry().Set(self.m_flags.c);

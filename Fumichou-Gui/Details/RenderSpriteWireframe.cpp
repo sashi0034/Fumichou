@@ -15,7 +15,7 @@ namespace
 	}
 }
 
-namespace Gui
+namespace Details
 {
 	void RenderSpriteWireframe(const RectF& displayRect)
 	{

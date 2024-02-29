@@ -5,30 +5,36 @@
 #include "GuiForward.h"
 #include "HwFrame.h"
 #include "WidgetDocument.h"
+#include "Details/DebuggerScript.h"
 
 using namespace Gui;
 
 namespace
 {
-	struct EmulationView
+	struct EmulationViewer
 	{
 	};
 
-	struct CartridgeView
+	struct CartridgeViewer
 	{
 		FilePathView currentPath{};
 		String cachedName{};
 	};
 
-	struct CpuView
+	struct CpuViewer
 	{
 	};
 
-	struct PpuView
+	struct PpuViewer
 	{
 	};
 
-	struct StatusDraw : Document::Drawer
+	struct ScriptViewer
+	{
+		DebuggerScript script{};
+	};
+
+	struct StatusDrawer : Document::Drawer
 	{
 		using Drawer::operator();
 
@@ -38,7 +44,7 @@ namespace
 			font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
 		};
 
-		void operator ()(EmulationView& self) const
+		void operator ()(EmulationViewer& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			auto&& frame = Nes::HwFrame::Instance();
@@ -46,7 +52,7 @@ namespace
 			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
 		}
 
-		void operator ()(CartridgeView& self) const
+		void operator ()(CartridgeViewer& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			auto&& frame = Nes::HwFrame::Instance();
@@ -62,7 +68,7 @@ namespace
 			drawTextLine(1, U"Mapper={}"_fmt(static_cast<uint8>(cart.GetRomData().GetMapperNumber())));
 		}
 
-		void operator ()(CpuView) const
+		void operator ()(CpuViewer) const
 		{
 			auto& cpu = Nes::HwFrame::Instance().GetHw().GetMos6502();
 			auto& regs = cpu.GetRegs();
@@ -78,7 +84,7 @@ namespace
 				             static_cast<uint8>(flags.n)));
 		}
 
-		void operator ()(PpuView) const
+		void operator ()(PpuViewer) const
 		{
 			auto& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
 
@@ -89,41 +95,57 @@ namespace
 			drawTextLine(1, U"CONTROL={:02X} STASUS={:02X}"_fmt(
 				             static_cast<uint8>(reg0.control), static_cast<uint8>(reg1.status)));
 		}
+
+		void operator ()(ScriptViewer& self) const
+		{
+			self.script.Refresh();
+			auto&& lastReloaded = self.script.LastReloadedTime();
+			drawTextLine(0, U"Reloaded at {:02}:{:02}:{:02}"_fmt(
+				             lastReloaded.hour, lastReloaded.minute, lastReloaded.second));
+		}
 	};
 
 	using StatusDocumentData = DocumentData<
-		StatusDraw,
-		CartridgeView,
-		EmulationView,
-		CpuView,
-		PpuView>;
+		StatusDrawer,
+		CartridgeViewer,
+		EmulationViewer,
+		CpuViewer,
+		PpuViewer,
+		ScriptViewer>;
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
 		texts.push_back(std::monostate{});
-		texts.push_back(EmulationView());
+		texts.push_back(EmulationViewer());
 		for (const auto i : step(1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"Cartridge Information"));
 		texts.push_back(std::monostate{});
-		texts.push_back(CartridgeView{});
+		texts.push_back(CartridgeViewer{});
 		for (const auto i : step(1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"CPU Status"));
 		texts.push_back(std::monostate{});
-		texts.push_back(CpuView());
+		texts.push_back(CpuViewer());
 		for (const auto i : step(2)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"PPU Status"));
 		texts.push_back(std::monostate{});
-		texts.push_back(PpuView());
+		texts.push_back(PpuViewer());
+		for (const auto i : step(1)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
+
+		texts.push_back(Document::HeaderText(U"Script Result"));
+		texts.push_back(std::monostate{});
+		texts.push_back(ScriptViewer());
 		for (const auto i : step(1)) texts.push_back(std::monostate{});
 	}
 }
