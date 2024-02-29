@@ -55,6 +55,9 @@ void Main()
 
 	FontKeys::Register();
 
+	const Font emojiFont{48, Typeface::ColorEmoji};
+	(void)FontAsset(FontKeys::ZxProto_20_Bitmap).addFallback(emojiFont);
+
 	for (auto& key : Nes::ShaderKeys::AllPS) PixelShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
 	for (auto& key : Nes::ShaderKeys::AllVS) VertexShaderAsset::Register(key, HLSL(U"asset/{}.hlsl"_fmt(key)));
 

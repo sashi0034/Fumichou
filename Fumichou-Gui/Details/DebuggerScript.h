@@ -8,7 +8,10 @@ namespace Gui
 		DebuggerScript();
 
 		void Refresh();
-		const DateTime& LastReloadedTime() const;
+
+		[[nodiscard]] const DateTime& LastReloadedTime() const;
+		[[nodiscard]] FilePathView Filepath() const;
+		[[nodiscard]] bool IsSucceeded() const;
 
 	private:
 		struct Impl;

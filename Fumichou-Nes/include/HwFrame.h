@@ -32,6 +32,7 @@ namespace Nes
 		[[nodiscard]] s3d::FilePathView CurrentRomFile() const;
 
 		[[nodiscard]] s3d::Optional<EmulationAbort> GetAbort() const;
+		void ClearAbort();
 		[[nodiscard]] const Hardware& GetHw() const;
 
 		[[nodiscard]] uint64 GetFrameCount() const;

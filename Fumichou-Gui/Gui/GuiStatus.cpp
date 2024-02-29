@@ -4,6 +4,7 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
+#include "WidgetButton.h"
 #include "WidgetDocument.h"
 #include "Details/DebuggerScript.h"
 
@@ -32,6 +33,11 @@ namespace
 	struct ScriptViewer
 	{
 		DebuggerScript script{};
+	};
+
+	struct FunctionViewer
+	{
+		WidgetButton clearAbortButton{};
 	};
 
 	struct StatusDrawer : Document::Drawer
@@ -100,8 +106,25 @@ namespace
 		{
 			self.script.Refresh();
 			auto&& lastReloaded = self.script.LastReloadedTime();
-			drawTextLine(0, U"Reloaded at {:02}:{:02}:{:02}"_fmt(
-				             lastReloaded.hour, lastReloaded.minute, lastReloaded.second));
+			drawTextLine(0, U"File=\"{}\""_fmt(self.script.Filepath()));
+			drawTextLine(1, U"{:02}:{:02}:{:02} {}"_fmt(
+				             lastReloaded.hour, lastReloaded.minute, lastReloaded.second,
+				             (self.script.IsSucceeded() ? U"Succeed 🎉"_sv : U"Error ❌ See Logs for Detail."_sv)));
+		}
+
+		void operator ()(FunctionViewer& self) const
+		{
+			auto&& frame = Nes::HwFrame::Instance();
+
+			if (self.clearAbortButton.Update({
+				.availableRect = LineRect().movedBy(0, 0 * LineHeight),
+				.emojiIcon = frame.GetAbort().has_value() ? U"🧹"_emoji : U"✨"_emoji,
+				.text = U"Clear Abort",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				frame.ClearAbort();
+			}
 		}
 	};
 
@@ -111,7 +134,8 @@ namespace
 		EmulationViewer,
 		CpuViewer,
 		PpuViewer,
-		ScriptViewer>;
+		ScriptViewer,
+		FunctionViewer>;
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
@@ -143,9 +167,16 @@ namespace
 
 		texts.push_back(Document::SplitLine{});
 
-		texts.push_back(Document::HeaderText(U"Script Result"));
+		texts.push_back(Document::HeaderText(U"Script Information"));
 		texts.push_back(std::monostate{});
 		texts.push_back(ScriptViewer());
+		for (const auto i : step(1)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
+
+		texts.push_back(Document::HeaderText(U"Function Viewer"));
+		texts.push_back(std::monostate{});
+		texts.push_back(FunctionViewer{});
 		for (const auto i : step(1)) texts.push_back(std::monostate{});
 	}
 }

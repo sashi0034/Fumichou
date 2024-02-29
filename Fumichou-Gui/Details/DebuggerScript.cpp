@@ -52,18 +52,21 @@ struct DebuggerScript::Impl
 	Util::FileWatcher m_fileWatcher{defaultPath};
 	Script m_script{defaultPath};
 	DateTime m_lastReloadedTime{};
+	bool m_succeeded{};
 
 	void Reload()
 	{
 		checkInitializeEngine();
 
 		m_lastReloadedTime = DateTime::Now();
+		m_succeeded = true;
 
 		if (not m_script.reload())
 		{
+			m_succeeded = false;
 			for (auto&& message : m_script.getMessages())
 			{
-				Console.write(message);
+				Console.writeln(message);
 			}
 		}
 
@@ -72,7 +75,8 @@ struct DebuggerScript::Impl
 		scriptFunc.tryCall(exception);
 		if (exception.isEmpty() == false)
 		{
-			Print(exception);
+			Console.writeln(exception);
+			m_succeeded = false;
 		}
 	}
 
@@ -101,5 +105,15 @@ namespace Gui
 	const DateTime& DebuggerScript::LastReloadedTime() const
 	{
 		return p_impl->m_lastReloadedTime;
+	}
+
+	FilePathView DebuggerScript::Filepath() const
+	{
+		return p_impl->m_fileWatcher.TargetFile();
+	}
+
+	bool DebuggerScript::IsSucceeded() const
+	{
+		return p_impl->m_succeeded;
 	}
 }

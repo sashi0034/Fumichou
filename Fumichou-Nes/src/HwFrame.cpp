@@ -191,6 +191,11 @@ namespace Nes
 		return p_impl->m_abort;
 	}
 
+	void HwFrameView::ClearAbort()
+	{
+		p_impl->m_abort = {};
+	}
+
 	const Hardware& HwFrameView::GetHw() const
 	{
 		return p_impl->m_hardware;
