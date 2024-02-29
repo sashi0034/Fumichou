@@ -4,6 +4,7 @@
 #include "FontKeys.h"
 #include "GuiForward.h"
 #include "HwFrame.h"
+#include "LogReader.h"
 #include "WidgetButton.h"
 #include "WidgetDocument.h"
 #include "Details/DebuggerScript.h"
@@ -38,6 +39,7 @@ namespace
 	struct FunctionViewer
 	{
 		WidgetButton clearAbortButton{};
+		WidgetButton copyTraceButton{};
 	};
 
 	struct StatusDrawer : Document::Drawer
@@ -125,6 +127,22 @@ namespace
 			{
 				frame.ClearAbort();
 			}
+
+			if (self.copyTraceButton.Update({
+				.availableRect = LineRect().movedBy(0, 1 * LineHeight),
+				.emojiIcon = U"🚜"_emoji,
+				.text = U"Copy Traces to Clipboard",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				String str{};
+				for (int i = Nes::LogReader::GetTraceSize() - 1; i >= 0; --i)
+				{
+					auto&& next = Nes::LogReader::GetTraceData(i);
+					str += U"[{}] {}\n"_fmt(next.tag, next.message);
+				}
+				Clipboard::SetText(str);
+			}
 		}
 	};
 
@@ -174,10 +192,10 @@ namespace
 
 		texts.push_back(Document::SplitLine{});
 
-		texts.push_back(Document::HeaderText(U"Function Viewer"));
+		texts.push_back(Document::HeaderText(U"Functions"));
 		texts.push_back(std::monostate{});
 		texts.push_back(FunctionViewer{});
-		for (const auto i : step(1)) texts.push_back(std::monostate{});
+		for (const auto i : step(2)) texts.push_back(std::monostate{});
 	}
 }
 
