@@ -149,7 +149,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <None Include=".editorconfig" />
-    <None Include="App\shader-nes\bg_rendering.hlsl" />
     <None Include="App\shader-nes\sprite_render.hlsl" />
   </ItemGroup>
   <ItemGroup>
