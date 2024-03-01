@@ -25,6 +25,7 @@ struct HwFrame::Impl
 	s3d::Optional<EmulationAbort> m_abort{s3d::none};
 	uint64 m_frameCount{};
 	uint64 m_cycleCount{};
+	double m_runningTimer{};
 	bool m_paused{};
 	double m_controlledTime{};
 	bool m_breakpoint{};
@@ -70,10 +71,12 @@ struct HwFrame::Impl
 	// 1フレーム実行
 	bool StepFrame()
 	{
+		const s3d::Stopwatch sw{s3d::StartImmediately::Yes};
 		try
 		{
 			emulateFrame();
 			m_frameCount++;
+			m_runningTimer += sw.sF();
 			return true;
 		}
 		catch (const EmulationAbort& abort)
@@ -108,6 +111,7 @@ private:
 		m_abort = s3d::none;
 		m_frameCount = 0;
 		m_cycleCount = 0;
+		m_runningTimer = 0;
 	}
 
 	void emulateFrame()
@@ -209,6 +213,11 @@ namespace Nes
 	uint64 HwFrameView::GetCycleCount() const
 	{
 		return p_impl->m_cycleCount;
+	}
+
+	double HwFrameView::GetRunningTime() const
+	{
+		return p_impl->m_runningTimer;
 	}
 
 	bool HwFrameView::IsPaused() const

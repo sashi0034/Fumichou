@@ -58,6 +58,8 @@ namespace
 			auto&& frame = Nes::HwFrame::Instance();
 			drawTextLine(0, U"Frame={}"_fmt(frame.GetFrameCount()));
 			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
+			const double performance = 1000 * (frame.GetRunningTime() / frame.GetFrameCount());
+			drawTextLine(2, U"Performance={:.4f}ms / {:.4f}ms"_fmt(performance, 1000 / 60.0));
 		}
 
 		void operator ()(CartridgeViewer& self) const
@@ -129,7 +131,7 @@ namespace
 			}
 
 			if (self.copyTraceButton.Update({
-				.availableRect = LineRect().movedBy(0, 1 * LineHeight),
+				.availableRect = LineRect().movedBy(0, 1.5 * LineHeight),
 				.emojiIcon = U"🚜"_emoji,
 				.text = U"Copy Traces to Clipboard",
 				.textColor = Palette::Darkgray,
@@ -160,7 +162,7 @@ namespace
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(EmulationViewer());
-		for (const auto i : step(1)) texts.push_back(std::monostate{});
+		for (const auto i : step(2)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
@@ -195,7 +197,7 @@ namespace
 		texts.push_back(Document::HeaderText(U"Functions"));
 		texts.push_back(std::monostate{});
 		texts.push_back(FunctionViewer{});
-		for (const auto i : step(2)) texts.push_back(std::monostate{});
+		for (const auto i : step(static_cast<int>(2 * 1.5))) texts.push_back(std::monostate{});
 	}
 }
 

@@ -37,6 +37,7 @@ namespace Nes
 
 		[[nodiscard]] uint64 GetFrameCount() const;
 		[[nodiscard]] uint64 GetCycleCount() const;
+		[[nodiscard]] double GetRunningTime() const;
 
 		[[nodiscard]] bool IsPaused() const;
 		void SetPaused(bool paused);
