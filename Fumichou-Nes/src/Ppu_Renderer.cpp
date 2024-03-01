@@ -127,17 +127,10 @@ private:
 
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
 
-		// static TimeProfiler profiler{U"PPU Rendering"};
-		// profiler.begin(U"BG");
-
-		const auto tilePages = args.board.get().TilePageOffsets();
-		const bool secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern();
 		for (int i = 0; i < 4; ++i)
 		{
-			m_cbBgData->tilePageOffsets[i] = tilePages[secondBgPattern * 4 + i];
+			m_cbBgData->tilePageOffsets[i] = ppu.m_tilePageOffsets[i];
 		}
-		// m_cbBgData->ppu.scrollY = tempAddr.FineY() | (tempAddr.CoarseY() << 3);
-		// s3d::Console.writeln(m_cbBgData->ppu.scrollY);
 
 		auto& patternTable = args.board.get().PatternTableTexture();
 		m_cbBgData->patternTableSize[0] = patternTable.width();
@@ -156,9 +149,6 @@ private:
 
 		s3d::Graphics2D::SetPSConstantBuffer(2, m_cbBgData);
 		(void)patternTable.resized(Display_256x240).draw();
-
-		// profiler.end(U"BG");
-		// profiler.console();
 	}
 
 	void renderSprites(const render_args& args, const Ppu& ppu)

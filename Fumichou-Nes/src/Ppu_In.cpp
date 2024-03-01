@@ -61,6 +61,16 @@ private:
 		ppu.m_renderer->SetScrollPos(line, ppu.m_fixedScroll);
 	}
 
+	static void applyTilePageOffsets(Hardware& hw, Ppu& ppu)
+	{
+		// 64タイルを4ページ、つまり256タイル分のタイルのオフセット登録
+		const bool secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern();
+		for (int i = 0; i < 4; ++i)
+		{
+			ppu.m_tilePageOffsets[i] = hw.GetCartridge().GetBoard().TilePageOffsets()[secondBgPattern * 4 + i];
+		}
+	}
+
 	static void reachedLineEnd(Hardware& hw, Ppu& ppu, uint32 line)
 	{
 		if (line < 240)
@@ -75,12 +85,7 @@ private:
 
 			// スプライト0ヒットを検出するラインかチェック
 			const auto spr0 = ppu.m_oam.sprites[0];
-			ppu.m_scanningSprZero = spr0.y <= line && line <= spr0.y + 7;
-
-			// VRAMアドレス加算
-			// const uint8 fineY = ppu.m_unstable.vramAddr.FineY();
-			// ppu.m_unstable.vramAddr.FineY().Set(fineY + 1);
-			// if (fineY == 7) ppu.m_unstable.vramAddr.CoarseY().Set(ppu.m_unstable.vramAddr.CoarseY() + 1);
+			ppu.m_scanningSprZero = not ppu.m_unstable.status.SprZeroHit() && spr0.y <= line && line <= spr0.y + 7;
 		}
 		else if (line == 240)
 		{
@@ -106,6 +111,7 @@ private:
 		else if (line == 261)
 		{
 			applyScrollPos(ppu, 0);
+			applyTilePageOffsets(hw, ppu);
 		}
 	}
 
@@ -119,10 +125,10 @@ private:
 		// R, G にパターンデータを格納している
 		auto&& patternTable = hw.GetCartridge().GetBoard().PatternTableImage();
 
-		const uint16 bgPageOffset = ppu.m_regs.control.SecondBgPattern() << 8;
-
-		// TODO: スクロール対応をしますからね
 		const auto scrollPos = s3d::Point(ppu.m_fixedScroll.x, ppu.m_fixedScroll.y);
+		const auto& tilePageOffsets = ppu.m_tilePageOffsets;
+
+		// FIXME: 用検証
 
 		for (uint8 x = 0; x < 8; ++x)
 		{
@@ -132,13 +138,15 @@ private:
 			if (sprYes == false) continue;
 
 			// BGチェック
-			// TODO: スクロール対応
-			const auto screenPos = s3d::Point(spr0.x + x, scanLine);
+			// bg_render.hlsl を見ながら書いています
+			const auto screenPos0 = s3d::Point(spr0.x + x, scanLine) + scrollPos;
+			const auto screenPos = screenPos0 % (2 * Display_256x240);
 			const auto tileCoarse = screenPos / tile_8;
 			const auto tileFine = screenPos - tileCoarse * tile_8;
 
 			const auto addr = tileCoarse.x + tileCoarse.y * 32;
-			const uint32 tileId = bgPageOffset + ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 8]];
+			const uint32 tileId0 = ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 8]];
+			const uint32 tileId = tilePageOffsets[tileId0 >> 6] | (tileId0 & 0x3F);
 			const auto tileUV = s3d::Point(tileId * tile_8, 0) + tileFine;
 			const auto bgPixel = patternTable[tileUV];
 			const bool bgYes = bgPixel.r || bgPixel.g;
@@ -146,7 +154,6 @@ private:
 
 			// ヒット
 			ppu.m_unstable.status.SprZeroHit().Set(true);
-			// s3d::Console.writeln(U"Hit at: " + s3d::Format(screenPos));
 			break;
 		}
 	}
