@@ -156,7 +156,7 @@ namespace Nes
 					{
 						// 2回目の書き込み
 						ppu.m_scrollY = value;
-						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value)); // TODO: tempAddr いらなそうなので消す
+						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value));
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
 						ppu.m_unstable.writeToggle = false;
 					}
@@ -216,7 +216,7 @@ namespace Nes
 				Mos6502::In::StartDmaCycles(hw.GetMos6502());
 
 				const addr16 high = value << 8;
-				const uint16 oamAddr = hw.GetPpu().m_regs.OamAddr; // FIXME: いらないかも
+				const uint16 oamAddr = hw.GetPpu().m_regs.OamAddr;
 				for (uint16 low = 0; low < 256; ++low)
 				{
 					hw.GetPpu().m_oam.bytes[(oamAddr + low) & 0xFF] = hw.GetMmu().ReadPrg8(high | low);

@@ -83,6 +83,21 @@ namespace Nes
 			}
 		}
 
+		if (AddrRange<addr16>(0x3F00, 0x3FFF).IsBetween(addr))
+		{
+			const bool isMirror = addr >= 0x3F20;
+			return MappedRead{
+				.desc = isMirror ? U"Mirrors of Palette RAM"_sv : U"Palette RAM",
+				.ctx = &ppu,
+				.func = [](const void* ctx, addr16 addr)
+				{
+					auto& ppu = *static_cast<const Ppu*>(ctx);
+					addr &= 0x001F;
+					return readPalette(ppu, addr);
+				}
+			};
+		}
+
 		return MappedRead::Invalid(MappingType::Ppu);
 	}
 
