@@ -144,8 +144,10 @@ private:
 			const auto tileCoarse = screenPos / tile_8;
 			const auto tileFine = screenPos - tileCoarse * tile_8;
 
-			const auto addr = tileCoarse.x + tileCoarse.y * 32;
-			const uint32 tileId0 = ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 8]];
+			const uint32 crossPageX = ((tileCoarse.x) >> 5) * (0x400 - 32); // Correct if X is greater than 32
+			const uint32 crossPageY = ((tileCoarse.y + 2) >> 5) * (0x400 + 64); // Correct if Y is greater than 30
+			const auto addr = tileCoarse.x + tileCoarse.y * 32 + crossPageX + crossPageY;
+			const uint32 tileId0 = ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 10]];
 			const uint32 tileId = tilePageOffsets[tileId0 >> 6] | (tileId0 & 0x3F);
 			const auto tileUV = s3d::Point(tileId * tile_8, 0) + tileFine;
 			const auto bgPixel = patternTable[tileUV];
