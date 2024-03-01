@@ -147,7 +147,7 @@ namespace Nes
 					if (not ppu.m_unstable.writeToggle)
 					{
 						// 1回目の書き込み
-						ppu.m_scrollX = value;
+						ppu.m_scrollBuffer.x = value;
 						ppu.m_regs.fineX = GetBits<0, 2>(value);
 						ppu.m_regs.tempAddr.CoarseX().Set(GetBits<3, 7>(value));
 						ppu.m_unstable.writeToggle = true;
@@ -155,7 +155,7 @@ namespace Nes
 					else
 					{
 						// 2回目の書き込み
-						ppu.m_scrollY = value;
+						ppu.m_scrollBuffer.y = value;
 						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value));
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
 						ppu.m_unstable.writeToggle = false;

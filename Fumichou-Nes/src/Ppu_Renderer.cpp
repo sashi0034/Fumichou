@@ -73,10 +73,10 @@ public:
 		return m_videoTexture;
 	}
 
-	void SetScrollPos(uint32 scanline, uint16 scrollX, uint16 scrollY) override
+	void SetScrollPos(uint32 scanline, const ScrollPoint& scroll) override
 	{
-		m_cbBgData->scrollX.shorts[scanline] = scrollX;
-		m_cbBgData->scrollY.shorts[scanline] = scrollY;
+		m_cbBgData->scrollX.shorts[scanline] = scroll.x;
+		m_cbBgData->scrollY.shorts[scanline] = scroll.y;
 	}
 
 	const std::array<OamData, 64>& GetRenderedSprites() const override

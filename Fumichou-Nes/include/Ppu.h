@@ -107,6 +107,17 @@ namespace Nes
 
 	static_assert(sizeof(std::array<OamData, 64>) == sizeof(std::array<uint8, 256>));
 
+	struct ScrollPoint
+	{
+		uint16 x; // [0, 512)
+		uint16 y; // [0, 512)
+
+		constexpr ScrollPoint operator +(const ScrollPoint& p) const noexcept
+		{
+			return {static_cast<uint16>(x + p.x), static_cast<uint16>(y + p.y)};
+		}
+	};
+
 	class Ppu
 	{
 	public:
@@ -144,8 +155,8 @@ namespace Nes
 		uint32 m_scanLine{}; // [0, 262)
 		PpuCycle m_lineCycles{}; // [0, 341)
 		bool m_scanningSprZero{};
-		uint16 m_scrollY{};
-		uint16 m_scrollX{};
+		ScrollPoint m_scrollBuffer{};
+		ScrollPoint m_fixedScroll{};
 
 		PpuRegs m_regs{};
 		mutable PpuUnstableRegs m_unstable{};

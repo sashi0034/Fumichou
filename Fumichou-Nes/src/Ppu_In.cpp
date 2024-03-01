@@ -57,7 +57,8 @@ private:
 		const auto tableX = ppu.m_regs.tempAddr.NameTableAddrX() ? DisplayWidth_256 : 0;
 		const auto tableY = ppu.m_regs.tempAddr.NameTableAddrY() ? DisplayHeight_240 : 0;
 
-		ppu.m_renderer->SetScrollPos(line, ppu.m_scrollX + tableX, ppu.m_scrollY + tableY);
+		ppu.m_fixedScroll = ppu.m_scrollBuffer + ScrollPoint(tableX, tableY);
+		ppu.m_renderer->SetScrollPos(line, ppu.m_fixedScroll);
 	}
 
 	static void reachedLineEnd(Hardware& hw, Ppu& ppu, uint32 line)
@@ -121,9 +122,7 @@ private:
 		const uint16 bgPageOffset = ppu.m_regs.control.SecondBgPattern() << 8;
 
 		// TODO: スクロール対応をしますからね
-		const auto scrollPos = s3d::Point(
-			ppu.m_regs.fineX | (ppu.m_unstable.vramAddr.CoarseX() << 3),
-			ppu.m_unstable.vramAddr.FineY() | (ppu.m_unstable.vramAddr.CoarseY() << 3));
+		const auto scrollPos = s3d::Point(ppu.m_fixedScroll.x, ppu.m_fixedScroll.y);
 
 		for (uint8 x = 0; x < 8; ++x)
 		{

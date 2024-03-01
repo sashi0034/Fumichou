@@ -23,7 +23,7 @@ namespace Nes
 		virtual void Render(const render_args& args) = 0;
 
 		virtual const s3d::Texture& GetVideoTexture() const = 0;
-		virtual void SetScrollPos(uint32 scanline, uint16 scrollX, uint16 scrollY) = 0;
+		virtual void SetScrollPos(uint32 scanline, const ScrollPoint& scroll) = 0;
 		virtual const std::array<OamData, 64>& GetRenderedSprites() const = 0;
 
 	private:
