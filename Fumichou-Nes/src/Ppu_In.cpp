@@ -87,6 +87,15 @@ private:
 			beginVerticalBlank(hw, ppu);
 			ppu.m_scanningSprZero = false;
 		}
+		else if (line == 241)
+		{
+			// 垂直同期時にNMIが発生すると「ソロモンの鍵」が動かないようなので数クロック送らせる
+			if (ppu.m_regs.control.NmiEnabled())
+			{
+				// NMI割り込み
+				Mos6502::In::RequestNmi(hw.GetMos6502());
+			}
+		}
 		else if (line == 260)
 		{
 			// 本来は261ライン最初で行う?
@@ -147,11 +156,6 @@ private:
 	{
 		// 垂直同期フラグ
 		ppu.m_unstable.status.VBlank().Set(true);
-		if (ppu.m_regs.control.NmiEnabled())
-		{
-			// NMI割り込み
-			Mos6502::In::RequestNmi(hw.GetMos6502());
-		}
 
 		// ディスプレイ描画
 		RenderVideo(hw);
