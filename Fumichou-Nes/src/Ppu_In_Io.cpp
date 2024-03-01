@@ -4,7 +4,6 @@
 #include "Hardware.h"
 #include "Logger.h"
 #include "Mos6502_In.h"
-#include "Ppu_Renderer.h"
 
 using namespace Nes;
 
@@ -159,7 +158,6 @@ namespace Nes
 						ppu.m_scrollY = value;
 						ppu.m_regs.tempAddr.FineY().Set(GetBits<0, 2>(value)); // TODO: tempAddr いらなそうなので消す
 						ppu.m_regs.tempAddr.CoarseY().Set(GetBits<3, 7>(value));
-						ppu.m_unstable.vramAddr = ppu.m_regs.tempAddr;
 						ppu.m_unstable.writeToggle = false;
 					}
 				}
