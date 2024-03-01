@@ -170,6 +170,7 @@ private:
 		const uint16 sprPage = PpuControl8(ppu.m_regs.control).SecondSprPatter() << 8;
 
 		// アドレス降順から描画開始
+		const bool longSprite = PpuControl8(ppu.m_regs.control).LongSprite();
 		for (int i = 63; i >= 0; --i)
 		{
 			auto&& spr = ppu.m_oam.sprites[i];
@@ -180,10 +181,27 @@ private:
 			const bool flipV = GetBits<7>(spr.attribute);
 
 			// RにパレットIDを渡して描画
-			patternTable(s3d::Rect(s3d::Point(sprPage | spr.tile, 0) * tile_8, tile_8, tile_8))
-				.mirrored(flipH)
-				.flipped(flipV)
-				.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
+			if (longSprite)
+			{
+				// 8x16 描画
+				const bool odd = not flipV;
+				patternTable(s3d::Rect(s3d::Point((sprPage | spr.tile) & ~odd, 0) * tile_8, tile_8, tile_8))
+					.mirrored(flipH)
+					.flipped(flipV)
+					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
+				patternTable(s3d::Rect(s3d::Point((sprPage | spr.tile | odd), 0) * tile_8, tile_8, tile_8))
+					.mirrored(flipH)
+					.flipped(flipV)
+					.draw(pos.movedBy(0, tile_8), s3d::ColorF(paletteIdBase, 0, 0));
+			}
+			else
+			{
+				// 8x8 描画
+				patternTable(s3d::Rect(s3d::Point(sprPage | spr.tile, 0) * tile_8, tile_8, tile_8))
+					.mirrored(flipH)
+					.flipped(flipV)
+					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
+			}
 		}
 	}
 };
