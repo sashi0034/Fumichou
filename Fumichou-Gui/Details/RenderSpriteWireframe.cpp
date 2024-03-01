@@ -25,13 +25,15 @@ namespace Details
 			.scaled(displayRect.size / Nes::Display_256x240, displayRect.tl())
 		};
 
-		auto&& oam = Nes::HwFrame::Instance().GetHw().GetPpu().GetRenderedSprites();
+		auto&& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
+		auto&& oam = ppu.GetRenderedSprites();
 		constexpr double wireThickness = 0.5;
 
 		// ワイヤーフレーム描画
+		const int spriteHeight = Nes::PpuControl8(ppu.Regs().control).LongSprite() ? 16 : 8;
 		for (auto&& spr : oam)
 		{
-			(void)Rect(spr.x, spr.y + 1, 8, 8)
+			(void)Rect(spr.x, spr.y + 1, 8, spriteHeight)
 			      .stretched(-wireThickness * 1)
 			      .drawFrame(wireThickness * 2, Palette::Black);
 		}
@@ -40,7 +42,7 @@ namespace Details
 		for (int i = 0; i < oam.size(); ++i)
 		{
 			auto&& spr = oam[i];
-			(void)Rect(spr.x, spr.y + 1, 8, 8)
+			(void)Rect(spr.x, spr.y + 1, 8, spriteHeight)
 			      .stretched(-wireThickness * 1)
 			      .drawFrame(wireThickness * 1, green);
 		}
@@ -51,7 +53,7 @@ namespace Details
 		for (int i = 0; i < oam.size(); ++i)
 		{
 			auto&& spr = oam[i];
-			(void)font(U"{:02X}"_fmt(i)).drawAt(6.0, Rect(spr.x, spr.y + 1, 8, 8).center(), textColor);
+			(void)font(U"{:02X}"_fmt(i)).drawAt(6.0, Rect(spr.x, spr.y + 1, 8, spriteHeight).center(), textColor);
 		}
 	}
 }
