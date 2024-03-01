@@ -10,8 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fumichou-Gui", "Fumichou-Gu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fumichou-Nes", "Fumichou-Nes\Fumichou-Nes.vcxproj", "{3FDAAD63-00FC-4ADA-BE87-CB94F26D6C08}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExternalLibraries", "ExternalLibraries\ExternalLibraries.vcxproj", "{1A845E97-8695-4BB1-81A1-88178480968C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,10 +24,6 @@ Global
 		{3FDAAD63-00FC-4ADA-BE87-CB94F26D6C08}.Debug|x64.Build.0 = Debug|x64
 		{3FDAAD63-00FC-4ADA-BE87-CB94F26D6C08}.Release|x64.ActiveCfg = Release|x64
 		{3FDAAD63-00FC-4ADA-BE87-CB94F26D6C08}.Release|x64.Build.0 = Release|x64
-		{1A845E97-8695-4BB1-81A1-88178480968C}.Debug|x64.ActiveCfg = Debug|x64
-		{1A845E97-8695-4BB1-81A1-88178480968C}.Debug|x64.Build.0 = Debug|x64
-		{1A845E97-8695-4BB1-81A1-88178480968C}.Release|x64.ActiveCfg = Release|x64
-		{1A845E97-8695-4BB1-81A1-88178480968C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
