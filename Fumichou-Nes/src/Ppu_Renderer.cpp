@@ -26,12 +26,8 @@ namespace
 
 	struct CbBgData
 	{
-		struct
-		{
-			uint32 patternTableSize[2];
-			uint32 pageOffset;
-			uint32 padding_0x60;
-		} ppu;
+		uint32 patternTableSize[4];
+		uint32 tilePageOffsets[4];
 
 		// スキャンラインごとにスクロール位置の決定
 		union
@@ -134,13 +130,18 @@ private:
 		// static TimeProfiler profiler{U"PPU Rendering"};
 		// profiler.begin(U"BG");
 
-		m_cbBgData->ppu.pageOffset = PpuControl8(ppu.m_regs.control).SecondBgPattern() << 8;
+		const auto tilePages = args.board.get().TilePageOffsets();
+		const bool secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern();
+		for (int i = 0; i < 4; ++i)
+		{
+			m_cbBgData->tilePageOffsets[i] = tilePages[secondBgPattern * 4 + i];
+		}
 		// m_cbBgData->ppu.scrollY = tempAddr.FineY() | (tempAddr.CoarseY() << 3);
 		// s3d::Console.writeln(m_cbBgData->ppu.scrollY);
 
 		auto& patternTable = args.board.get().PatternTableTexture();
-		m_cbBgData->ppu.patternTableSize[0] = patternTable.width();
-		m_cbBgData->ppu.patternTableSize[1] = patternTable.height();
+		m_cbBgData->patternTableSize[0] = patternTable.width();
+		m_cbBgData->patternTableSize[1] = patternTable.height();
 
 		// ネームテーブル転送
 		constexpr int tableCount_4 = 4;

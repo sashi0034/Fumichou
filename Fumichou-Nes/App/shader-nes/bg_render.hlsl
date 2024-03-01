@@ -36,13 +36,8 @@ cbuffer CbPaletteColors : register(b1)
 
 cbuffer CbBgData : register(b2)
 {
-    struct
-    {
-        uint2 patternTableSize;
-        uint pageOffset;
-        uint padding_0x60;
-    } g_ppu;
-
+    uint4 g_patternTableSize;
+    uint4 g_tilePageOffsets; // 4 page offsets of 64 tiles
     uint4 g_scrollX[30];
     uint4 g_scrollY[30];
     uint4 g_nametable[256]; // 4KiB
@@ -71,7 +66,8 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     const uint crossPageY = ((tileCoarse.y + 2) >> 5) * (0x400 + 64); // Correct if Y is greater than 30
     const uint addr = tileCoarse.x + tileCoarse.y * 32 + crossPageX + crossPageY;
 
-    const uint tileId = g_ppu.pageOffset + FROM_UINT8ARRAY(g_nametable, addr);
+    const uint tileId0 = FROM_UINT8ARRAY(g_nametable, addr); // [0, 512)
+    const uint tileId = g_tilePageOffsets[tileId0 >> 6] | (tileId0 & 0x3F);
 
     const uint attrAddr = 0x3C0 | (addr & 0xC00) | ((addr >> 4) & 0x38) | ((addr >> 2) & 0x7);
     const uint attribute = FROM_UINT8ARRAY(g_nametable, attrAddr);
@@ -79,7 +75,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     const uint shift = ((addr >> 4) & 4) | (addr & 2);
     const uint paletteIdBase = ((attribute >> shift) & 0x3) << 2;
 
-    const float2 tileUV = float2(uint2(tileId * TILE_8, 0) + tileFine) / g_ppu.patternTableSize;
+    const float2 tileUV = float2(uint2(tileId * TILE_8, 0) + tileFine) / g_patternTableSize.xy;
     const float4 tileColor = g_patternTableTexture.Sample(g_sampler0, tileUV);
     const uint paletteIndex = paletteIdBase + tileColor.r + tileColor.g * 2;
 

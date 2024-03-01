@@ -108,6 +108,14 @@ public:
 		return MappedWrite::None();
 	}
 
+	[[nodiscard]] std::array<uint16, 8> TilePageOffsets() const override
+	{
+		return std::array<uint16, 8>{
+			0x000, 0x040, 0x080, 0x0C0,
+			0x100, 0x140, 0x180, 0x1C0,
+		};
+	}
+
 	[[nodiscard]] const s3d::Image& PatternTableImage() const override
 	{
 		return m_patternTable.Image();
