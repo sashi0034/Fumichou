@@ -13,6 +13,12 @@ using namespace Gui;
 
 namespace
 {
+	struct FunctionViewer
+	{
+		WidgetButton clearAbortButton{};
+		WidgetButton copyTraceButton{};
+	};
+
 	struct EmulationViewer
 	{
 	};
@@ -36,12 +42,6 @@ namespace
 		DebuggerScript script{};
 	};
 
-	struct FunctionViewer
-	{
-		WidgetButton clearAbortButton{};
-		WidgetButton copyTraceButton{};
-	};
-
 	struct StatusDrawer : Document::Drawer
 	{
 		using Drawer::operator();
@@ -51,6 +51,37 @@ namespace
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
 		};
+
+		void operator ()(FunctionViewer& self) const
+		{
+			auto&& frame = Nes::HwFrame::Instance();
+
+			if (self.clearAbortButton.Update({
+				.availableRect = LineRect().movedBy(0, 0 * LineHeight),
+				.emojiIcon = frame.GetAbort().has_value() ? U"🧹"_emoji : U"✨"_emoji,
+				.text = U"Clear Abort",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				frame.ClearAbort();
+			}
+
+			if (self.copyTraceButton.Update({
+				.availableRect = LineRect().movedBy(0, 1.5 * LineHeight),
+				.emojiIcon = U"🚜"_emoji,
+				.text = U"Copy Traces to Clipboard",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+				String str{};
+				for (int i = Nes::LogReader::GetTraceSize() - 1; i >= 0; --i)
+				{
+					auto&& next = Nes::LogReader::GetTraceData(i);
+					str += U"[{}] {}\n"_fmt(next.tag, next.message);
+				}
+				Clipboard::SetText(str);
+			}
+		}
 
 		void operator ()(EmulationViewer& self) const
 		{
@@ -113,52 +144,28 @@ namespace
 			drawTextLine(0, U"File=\"{}\""_fmt(self.script.Filepath()));
 			drawTextLine(1, U"{:02}:{:02}:{:02} {}"_fmt(
 				             lastReloaded.hour, lastReloaded.minute, lastReloaded.second,
-				             (self.script.IsSucceeded() ? U"Succeed 🎉"_sv : U"Error ❌ See Logs for Detail."_sv)));
-		}
-
-		void operator ()(FunctionViewer& self) const
-		{
-			auto&& frame = Nes::HwFrame::Instance();
-
-			if (self.clearAbortButton.Update({
-				.availableRect = LineRect().movedBy(0, 0 * LineHeight),
-				.emojiIcon = frame.GetAbort().has_value() ? U"🧹"_emoji : U"✨"_emoji,
-				.text = U"Clear Abort",
-				.textColor = Palette::Darkgray,
-			}))
-			{
-				frame.ClearAbort();
-			}
-
-			if (self.copyTraceButton.Update({
-				.availableRect = LineRect().movedBy(0, 1.5 * LineHeight),
-				.emojiIcon = U"🚜"_emoji,
-				.text = U"Copy Traces to Clipboard",
-				.textColor = Palette::Darkgray,
-			}))
-			{
-				String str{};
-				for (int i = Nes::LogReader::GetTraceSize() - 1; i >= 0; --i)
-				{
-					auto&& next = Nes::LogReader::GetTraceData(i);
-					str += U"[{}] {}\n"_fmt(next.tag, next.message);
-				}
-				Clipboard::SetText(str);
-			}
+				             (self.script.IsSucceeded() ? U"Succeed 🎉"_sv : U"Error ❌ See Logs for Details."_sv)));
 		}
 	};
 
 	using StatusDocumentData = DocumentData<
 		StatusDrawer,
+		FunctionViewer,
 		CartridgeViewer,
 		EmulationViewer,
 		CpuViewer,
 		PpuViewer,
-		ScriptViewer,
-		FunctionViewer>;
+		ScriptViewer>;
 
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
+		texts.push_back(Document::HeaderText(U"Functions"));
+		texts.push_back(std::monostate{});
+		texts.push_back(FunctionViewer{});
+		for (const auto i : step(static_cast<int>(2 * 1.5) - 1)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine{});
+
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
 		texts.push_back(std::monostate{});
 		texts.push_back(EmulationViewer());
@@ -191,13 +198,6 @@ namespace
 		texts.push_back(std::monostate{});
 		texts.push_back(ScriptViewer());
 		for (const auto i : step(1)) texts.push_back(std::monostate{});
-
-		texts.push_back(Document::SplitLine{});
-
-		texts.push_back(Document::HeaderText(U"Functions"));
-		texts.push_back(std::monostate{});
-		texts.push_back(FunctionViewer{});
-		for (const auto i : step(static_cast<int>(2 * 1.5))) texts.push_back(std::monostate{});
 	}
 }
 
