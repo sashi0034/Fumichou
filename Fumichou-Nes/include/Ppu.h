@@ -157,7 +157,7 @@ namespace Nes
 		bool m_scanningSprZero{};
 		ScrollPoint m_scrollBuffer{};
 		ScrollPoint m_fixedScroll{};
-		std::array<uint16, 4> m_tilePageOffsets{};
+		std::array<uint16, 8> m_tilePageOffsets{};
 
 		PpuRegs m_regs{};
 		mutable PpuUnstableRegs m_unstable{};

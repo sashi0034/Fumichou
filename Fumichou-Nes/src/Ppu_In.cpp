@@ -64,10 +64,9 @@ private:
 	static void applyTilePageOffsets(Hardware& hw, Ppu& ppu)
 	{
 		// 64タイルを4ページ、つまり256タイル分のタイルのオフセット登録
-		const bool secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern();
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < ppu.m_tilePageOffsets.size(); ++i)
 		{
-			ppu.m_tilePageOffsets[i] = hw.GetCartridge().GetBoard().TilePageOffsets()[secondBgPattern * 4 + i];
+			ppu.m_tilePageOffsets[i] = hw.GetCartridge().GetBoard().TilePageOffsets()[i];
 		}
 	}
 
@@ -119,13 +118,17 @@ private:
 	{
 		// TODO: 8x16の対応?
 
-		auto&& spr0 = ppu.m_oam.sprites[0];
 		const auto scanLine = ppu.m_scanLine;
+
+		auto&& spr0 = ppu.m_oam.sprites[0];
+		const auto secondSpPattern = PpuControl8(ppu.m_regs.control).SecondSprPatter() * 4;
+		const auto spr0Tile = ppu.m_tilePageOffsets[secondSpPattern | (spr0.tile >> 6)] | (spr0.tile & 0x3F);
 
 		// R, G にパターンデータを格納している
 		auto&& patternTable = hw.GetCartridge().GetBoard().PatternTableImage();
 
 		const auto scrollPos = s3d::Point(ppu.m_fixedScroll.x, ppu.m_fixedScroll.y);
+		const auto secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern() * 4;
 		const auto& tilePageOffsets = ppu.m_tilePageOffsets;
 
 		// FIXME: 用検証
@@ -133,7 +136,7 @@ private:
 		for (uint8 x = 0; x < 8; ++x)
 		{
 			// スプライトチェック
-			const auto& sprPixel = patternTable[s3d::Point(spr0.tile * tile_8 + x, scanLine - (spr0.y + 1))];
+			const auto& sprPixel = patternTable[s3d::Point(spr0Tile * tile_8 + x, scanLine - (spr0.y + 1))];
 			const bool sprYes = sprPixel.r || sprPixel.g;
 			if (sprYes == false) continue;
 
@@ -148,7 +151,7 @@ private:
 			const uint32 crossPageY = ((tileCoarse.y + 2) >> 5) * (0x400 + 64); // Correct if Y is greater than 30
 			const auto addr = tileCoarse.x + tileCoarse.y * 32 + crossPageX + crossPageY;
 			const uint32 tileId0 = ppu.m_nametableData[(addr & 0x3FF) + ppu.m_nametableOffset[addr >> 10]];
-			const uint32 tileId = tilePageOffsets[tileId0 >> 6] | (tileId0 & 0x3F);
+			const uint32 tileId = tilePageOffsets[secondBgPattern | (tileId0 >> 6)] | (tileId0 & 0x3F);
 			const auto tileUV = s3d::Point(tileId * tile_8, 0) + tileFine;
 			const auto bgPixel = patternTable[tileUV];
 			const bool bgYes = bgPixel.r || bgPixel.g;

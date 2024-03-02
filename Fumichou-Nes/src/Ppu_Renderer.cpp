@@ -127,9 +127,10 @@ private:
 
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
 
+		const auto secondBgPattern = PpuControl8(ppu.m_regs.control).SecondBgPattern() * 4;
 		for (int i = 0; i < 4; ++i)
 		{
-			m_cbBgData->tilePageOffsets[i] = ppu.m_tilePageOffsets[i];
+			m_cbBgData->tilePageOffsets[i] = ppu.m_tilePageOffsets[secondBgPattern | i];
 		}
 
 		auto& patternTable = args.board.get().PatternTableTexture();
@@ -158,7 +159,7 @@ private:
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
 		auto& patternTable = args.board.get().PatternTableTexture();
 
-		const uint16 sprPage = PpuControl8(ppu.m_regs.control).SecondSprPatter() << 8;
+		const uint16 sprPage = PpuControl8(ppu.m_regs.control).SecondSprPatter() * 4;
 
 		// アドレス降順から描画開始
 		const bool longSprite = PpuControl8(ppu.m_regs.control).LongSprite();
@@ -170,17 +171,18 @@ private:
 			const bool behindBg = GetBits<5>(spr.attribute); // TODO
 			const bool flipH = GetBits<6>(spr.attribute);
 			const bool flipV = GetBits<7>(spr.attribute);
+			const auto tileId = ppu.m_tilePageOffsets[sprPage | (spr.tile >> 6)] | (spr.tile & 0x3F);
 
 			// RにパレットIDを渡して描画
 			if (longSprite)
 			{
 				// 8x16 描画
 				const bool odd = not flipV;
-				patternTable(s3d::Rect(s3d::Point((sprPage | spr.tile) & ~odd, 0) * tile_8, tile_8, tile_8))
+				patternTable(s3d::Rect(s3d::Point((tileId) & ~odd, 0) * tile_8, tile_8, tile_8))
 					.mirrored(flipH)
 					.flipped(flipV)
 					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
-				patternTable(s3d::Rect(s3d::Point((sprPage | spr.tile | odd), 0) * tile_8, tile_8, tile_8))
+				patternTable(s3d::Rect(s3d::Point((tileId | odd), 0) * tile_8, tile_8, tile_8))
 					.mirrored(flipH)
 					.flipped(flipV)
 					.draw(pos.movedBy(0, tile_8), s3d::ColorF(paletteIdBase, 0, 0));
@@ -188,7 +190,7 @@ private:
 			else
 			{
 				// 8x8 描画
-				patternTable(s3d::Rect(s3d::Point(sprPage | spr.tile, 0) * tile_8, tile_8, tile_8))
+				patternTable(s3d::Rect(s3d::Point(tileId, 0) * tile_8, tile_8, tile_8))
 					.mirrored(flipH)
 					.flipped(flipV)
 					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
