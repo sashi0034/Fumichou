@@ -10,6 +10,8 @@
 #include "GuiToolbar.h"
 #include "GuiTrace.h"
 #include "HwFrame.h"
+#include "JoyBackground.h"
+#include "ScreenOverlay.h"
 #include "WidgetTabBar.h"
 #include "Details/RenderSpriteWireframe.h"
 #include "Util/TomlStyleSheet.h"
@@ -27,6 +29,9 @@ namespace
 
 struct GuiController::Impl
 {
+	int m_modeIndex{};
+	ScreenOverlay m_screenOverlay{};
+
 	struct
 	{
 		WidgetTabBar tab{};
@@ -54,13 +59,51 @@ struct GuiController::Impl
 		GuiToolbar toolbar{};
 	} m_top;
 
+	struct
+	{
+		JoyBackground bg{};
+	} m_joy;
+
 	void Update()
+	{
+		constexpr Point screenSize = Nes::Display_256x240 * 3;
+
+		// 周囲描画
+		if (m_modeIndex == 0) updateGui(screenSize);
+		else updateJoy(screenSize);
+
+		auto&& nes = Nes::HwFrame::Instance();
+
+		{
+			// 画面描画
+			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
+			const auto rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
+			if (m_modeIndex == 0) (void)rect.stretched(2).drawFrame(2, Palette::Black);
+
+			m_screenOverlay.Update({
+				.screenRect = rect,
+				.modeIndex = m_modeIndex,
+			});
+
+			if (m_top.toolbar.ShowSpriteWireframe()) Details::RenderSpriteWireframe(rect);
+		}
+
+		if (const auto abort = nes.GetAbort())
+		{
+			// アボートメッセージ
+			const auto abortText = FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what());
+			(void)abortText.regionAt(Scene::Center()).stretched(4).rounded(2).draw(ColorF(ColorRed, 0.9));
+			(void)abortText.drawAt(Scene::Center(), Palette::White);
+		}
+	}
+
+private:
+	void updateGui(const Size& screenSize)
 	{
 		const int screenMargin = getToml<int>(U"screenMargin");
 		// const int smallMargin = getToml<int>(U"smallMargin");
 		const auto sideBg = getToml<ColorF>(U"sideBg");
 
-		constexpr auto screenSize = Nes::Display_256x240 * 3; // + Nes::Display_256x240 / 2;
 		const auto [sideWidth, sideHeight] = (Scene::Size() - screenSize) / 2 - Point::One() * screenMargin;
 
 		constexpr int tabHeight = LineHeight * 1;
@@ -138,24 +181,11 @@ struct GuiController::Impl
 			const Transformer2D transformer{Mat3x2::Identity(), Mat3x2::Translate(tl)};
 			m_bottom.patternTable.Update(available);
 		}
+	}
 
-		auto&& nes = Nes::HwFrame::Instance();
-
-		{
-			// 画面描画
-			const ScopedRenderStates2D renderStates2D{SamplerState::ClampNearest};
-			const auto rect = nes.GetHw().GetPpu().GetVideo().resized(screenSize).drawAt(Scene::Center());
-			(void)rect.stretched(2).drawFrame(2, Palette::Black);
-			if (m_top.toolbar.ShowSpriteWireframe()) Details::RenderSpriteWireframe(rect);
-		}
-
-		if (const auto abort = nes.GetAbort())
-		{
-			// アボートメッセージ
-			auto abortText = FontAsset(FontKeys::ZxProto_20_Bitmap)(abort->what());
-			(void)abortText.regionAt(Scene::Center()).stretched(4).rounded(2).draw(ColorF(ColorRed, 0.9));
-			(void)abortText.drawAt(Scene::Center(), Palette::White);
-		}
+	void updateJoy(const Size& screenSize)
+	{
+		m_joy.bg.Update(Scene::Size());
 	}
 };
 
