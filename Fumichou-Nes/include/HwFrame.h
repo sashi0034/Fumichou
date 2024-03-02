@@ -8,7 +8,7 @@ namespace Nes
 	public:
 		HwFrame();
 
-		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
+		bool StartRomFile(s3d::FilePathView romPath);
 
 		void ControlFrames();
 
@@ -27,7 +27,7 @@ namespace Nes
 
 		void RerenderVideo();
 
-		[[nodiscard]] bool StartRomFile(s3d::FilePathView romPath);
+		bool StartRomFile(s3d::FilePathView romPath);
 		[[nodiscard]] bool ResetRomFile();
 		[[nodiscard]] s3d::FilePathView CurrentRomFile() const;
 

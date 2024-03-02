@@ -8,12 +8,14 @@ namespace Nes
 	public:
 		class In;
 
+		Cartridge();
+
 		BoardBase& GetBoard() { return *m_board; }
 		const BoardBase& GetBoard() const { return *m_board; }
 
 		const RomData& GetRomData() const { return m_board->GetRom(); }
 
 	private:
-		std::unique_ptr<BoardBase> m_board{};
+		std::unique_ptr<BoardBase> m_board;
 	};
 }

@@ -29,6 +29,7 @@ struct HwFrame::Impl
 	bool m_paused{};
 	double m_controlledTime{};
 	bool m_breakpoint{};
+	bool m_runnable{};
 
 	Impl()
 	{
@@ -46,6 +47,8 @@ struct HwFrame::Impl
 
 		if (not Cartridge::In::LoadRomFile(m_hardware.GetCartridge(), romPath))
 		{
+			m_abort = EmulationAbort(romPath.empty() ? U"No ROM File" : U"Failed to Open ROM \"{}\""_fmt(romPath));
+			m_runnable = false;
 			return false;
 		}
 
@@ -89,6 +92,8 @@ struct HwFrame::Impl
 	// 1サイクル実行
 	void StepCycle()
 	{
+		if (not m_runnable) return;
+
 		try
 		{
 			stepCycleInternal();
@@ -112,10 +117,13 @@ private:
 		m_frameCount = 0;
 		m_cycleCount = 0;
 		m_runningTimer = 0;
+		m_runnable = true;
 	}
 
 	void emulateFrame()
 	{
+		if (not m_runnable) return;
+
 		const auto endCycle = m_cycleCount + CpuCyclesPerFrame_29781;
 		while (m_cycleCount < endCycle)
 		{

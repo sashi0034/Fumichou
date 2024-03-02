@@ -53,7 +53,7 @@ struct GuiToolbar::Impl
 		}))
 		{
 			const auto romPath = Dialog::OpenFile({}, FileSystem::CurrentDirectory() + U"rom").value_or(U"");
-			(void)frame.StartRomFile(romPath);
+			frame.StartRomFile(romPath);
 		}
 
 		if (m_loadButton.Update({

@@ -67,21 +67,17 @@ void Main()
 
 	const auto args = System::GetCommandLineArgs();
 
-	FilePath romPath = args.size() >= 2 ? args[1] : U"";
-	if (not FileSystem::Exists(romPath))
-	{
-		romPath = Dialog::OpenFile({}, FileSystem::CurrentDirectory() + U"rom").
-			value_or(U"");
-	}
+	const FilePath romPath = args.size() >= 2 ? args[1] : U"";
+	// if (not FileSystem::Exists(romPath))
+	// {
+	// 	romPath = Dialog::OpenFile({}, FileSystem::CurrentDirectory() + U"rom").
+	// 		value_or(U"");
+	// }
 
-	Console.open();
+	Console.writeln(U"[Info] Start with {}"_fmt(romPath.empty() ? U"no ROM file." : romPath));
+
 	Nes::HwFrame nes{};
-	if (nes.StartRomFile(romPath) == false)
-	{
-		Util::WaitAnyKeyOnConsole();
-	}
-
-	Console.writeln(U"Process started.");
+	nes.StartRomFile(romPath);
 
 	Gui::GuiController gui{};
 

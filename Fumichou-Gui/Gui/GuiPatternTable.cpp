@@ -27,6 +27,7 @@ struct GuiPatternTable::Impl
 	void Update(const Size& availableRegion)
 	{
 		auto&& patternTable = Nes::HwFrame::Instance().GetHw().GetCartridge().GetBoard().PatternTableTexture();
+		if (patternTable.isEmpty()) return;
 
 		// 行の適切なサイズを計算
 		const int lineColumn = getToml<int>(U"lineColumn");

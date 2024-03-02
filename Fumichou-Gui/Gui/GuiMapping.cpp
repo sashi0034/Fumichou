@@ -68,6 +68,8 @@ namespace
 	void generateTexts(MappingDocumentData::array_type& texts)
 	{
 		auto&& mmu = Nes::HwFrame::Instance().GetHw().GetMmu();
+		texts.clear();
+
 		texts.push_back(Document::HeaderText(U"CPU Read-mapping"));
 		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuRead(), ColorBlue);
@@ -90,10 +92,16 @@ struct GuiMapping::Impl
 {
 	int m_headIndex{};
 	WidgetDocument<MappingDocumentData> m_document{};
+	FilePath m_mappedRom{};
 
 	void Update(const Size& availableRegion)
 	{
-		if (not m_document.Data().Size()) generateTexts(m_document.Data().Raw());
+		auto&& nes = Nes::HwFrame::Instance();
+		if (not m_document.Data().Size() || m_mappedRom != nes.CurrentRomFile().data())
+		{
+			m_mappedRom = nes.CurrentRomFile().data();
+			generateTexts(m_document.Data().Raw());
+		}
 		m_document.Update(availableRegion);
 	}
 
