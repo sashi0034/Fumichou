@@ -177,12 +177,14 @@ private:
 			if (longSprite)
 			{
 				// 8x16 描画
-				const bool odd = not flipV;
-				patternTable(s3d::Rect(s3d::Point((tileId) & ~odd, 0) * tile_8, tile_8, tile_8))
+				auto id0 = (tileId) & ~0b1;
+				auto id1 = (tileId | 0b1);
+				if (flipV) std::swap(id0, id1);
+				patternTable(s3d::Rect(s3d::Point(id0, 0) * tile_8, tile_8, tile_8))
 					.mirrored(flipH)
 					.flipped(flipV)
 					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
-				patternTable(s3d::Rect(s3d::Point((tileId | odd), 0) * tile_8, tile_8, tile_8))
+				patternTable(s3d::Rect(s3d::Point(id1, 0) * tile_8, tile_8, tile_8))
 					.mirrored(flipH)
 					.flipped(flipV)
 					.draw(pos.movedBy(0, tile_8), s3d::ColorF(paletteIdBase, 0, 0));
