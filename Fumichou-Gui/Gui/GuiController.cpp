@@ -25,12 +25,15 @@ namespace
 	{
 		return Util::GetTomlStyle<T>(U"GuiController." + key);
 	}
+
+	constexpr int adjustScale_3 = 3;
 }
 
 struct GuiController::Impl
 {
 	int m_modeIndex{};
 	GuiScreenOverlay m_screenOverlay{};
+	double m_screenScaling{};
 
 	struct
 	{
@@ -66,11 +69,17 @@ struct GuiController::Impl
 
 	void Update()
 	{
-		constexpr Point screenSize = Nes::Display_256x240 * 3;
-
 		// 周囲描画
-		if (m_modeIndex == 0) updateGui(screenSize);
-		else updateJoy(screenSize);
+		if (m_modeIndex == 0) updateGui(Nes::Display_256x240 * adjustScale_3);
+		else updateJoy(Nes::Display_256x240 * adjustScale_3);
+
+		// スクローンサイズ調整
+		constexpr double scalingSpeed = 3.0;
+		if (m_modeIndex == 0) m_screenScaling -= scalingSpeed * Scene::DeltaTime();
+		else m_screenScaling += scalingSpeed * Scene::DeltaTime();
+		m_screenScaling = Math::Clamp(m_screenScaling, 0, 1);
+		const auto screenSize =
+			(Nes::Display_256x240 * (adjustScale_3 + 1.0 * EaseInOutBack(m_screenScaling))).asPoint();
 
 		auto&& nes = Nes::HwFrame::Instance();
 
