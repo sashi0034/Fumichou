@@ -2,10 +2,10 @@
 
 namespace Gui
 {
-	class ScreenOverlay
+	class GuiScreenOverlay
 	{
 	public:
-		ScreenOverlay();
+		GuiScreenOverlay();
 
 		struct update_args
 		{

@@ -23,6 +23,10 @@ gridThickness = 3
 [GuiToolbar]
 leftMargin = 8
 
+[GuiScreenOverlay]
+iconSize = 48
+iconMargin = 4
+
 [WidgetTabBar]
 plainColor = "#323232"
 

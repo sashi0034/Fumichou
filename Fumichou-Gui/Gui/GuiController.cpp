@@ -11,7 +11,7 @@
 #include "GuiTrace.h"
 #include "HwFrame.h"
 #include "JoyBackground.h"
-#include "ScreenOverlay.h"
+#include "GuiScreenOverlay.h"
 #include "WidgetTabBar.h"
 #include "Details/RenderSpriteWireframe.h"
 #include "Util/TomlStyleSheet.h"
@@ -30,7 +30,7 @@ namespace
 struct GuiController::Impl
 {
 	int m_modeIndex{};
-	ScreenOverlay m_screenOverlay{};
+	GuiScreenOverlay m_screenOverlay{};
 
 	struct
 	{

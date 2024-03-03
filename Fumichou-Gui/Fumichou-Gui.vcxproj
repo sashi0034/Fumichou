@@ -129,7 +129,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClCompile Include="Gui\GuiToolbar.cpp" />
     <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Gui\JoyBackground.cpp" />
-    <ClCompile Include="Gui\ScreenOverlay.cpp" />
+    <ClCompile Include="Gui\GuiScreenOverlay.cpp" />
     <ClCompile Include="Gui\WidgetButton.cpp" />
     <ClCompile Include="Gui\WidgetCheckbox.cpp" />
     <ClCompile Include="Gui\WidgetDocument.cpp" />
@@ -350,7 +350,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClInclude Include="Gui\GuiToolbar.h" />
     <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="Gui\JoyBackground.h" />
-    <ClInclude Include="Gui\ScreenOverlay.h" />
+    <ClInclude Include="Gui\GuiScreenOverlay.h" />
     <ClInclude Include="Gui\WidgetButton.h" />
     <ClInclude Include="Gui\WidgetCheckbox.h" />
     <ClInclude Include="Gui\WidgetDocument.h" />
