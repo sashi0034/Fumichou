@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "GuiController.h"
+#include "UiController.h"
 
 #include "FontKeys.h"
 #include "GuiForward.h"
@@ -11,7 +11,7 @@
 #include "GuiTrace.h"
 #include "HwFrame.h"
 #include "JoyBackground.h"
-#include "GuiScreenOverlay.h"
+#include "UiScreenOverlay.h"
 #include "WidgetTabBar.h"
 #include "Details/RenderSpriteWireframe.h"
 #include "Util/TomlStyleSheet.h"
@@ -23,16 +23,17 @@ namespace
 	template <typename T>
 	inline T getToml(const String& key)
 	{
-		return Util::GetTomlStyle<T>(U"GuiController." + key);
+		return Util::GetTomlStyle<T>(U"UiController." + key);
 	}
 
 	constexpr int adjustScale_3 = 3;
 }
 
-struct GuiController::Impl
+struct UiController::Impl
 {
 	int m_modeIndex{};
-	GuiScreenOverlay m_screenOverlay{};
+	bool m_minimalize{};
+	UiScreenOverlay m_screenOverlay{};
 	double m_screenScaling{};
 
 	struct
@@ -69,6 +70,21 @@ struct GuiController::Impl
 
 	void Update()
 	{
+		if (m_minimalize)
+		{
+			// 最小化モード
+			updateMinimal();
+		}
+		else
+		{
+			// デフォルト
+			updateDefault();
+		}
+	}
+
+private:
+	void updateDefault()
+	{
 		// 周囲描画
 		if (m_modeIndex == 0) updateGui(Nes::Display_256x240 * adjustScale_3);
 		else updateJoy(Nes::Display_256x240 * adjustScale_3);
@@ -81,6 +97,16 @@ struct GuiController::Impl
 		const auto screenSize =
 			(Nes::Display_256x240 * (adjustScale_3 + 1.0 * EaseInOutBack(m_screenScaling))).asPoint();
 
+		updateScreen(screenSize);
+	}
+
+	void updateMinimal()
+	{
+		updateScreen(Nes::Display_256x240 * adjustScale_3);
+	}
+
+	void updateScreen(const Point screenSize)
+	{
 		auto&& nes = Nes::HwFrame::Instance();
 
 		{
@@ -91,7 +117,9 @@ struct GuiController::Impl
 
 			m_screenOverlay.Update({
 				.screenRect = rect,
-				.modeIndex = m_modeIndex,
+				.showModeChange = not m_minimalize,
+				.clickedModeChange = [this]() { m_modeIndex = (m_modeIndex + 1) % 2; },
+				.clickedMinimalize = [this]() { clickedMinimalize(); }
 			});
 
 			if (m_top.toolbar.ShowSpriteWireframe()) Details::RenderSpriteWireframe(rect);
@@ -106,7 +134,26 @@ struct GuiController::Impl
 		}
 	}
 
-private:
+	// 最小化モード切り替え
+	void clickedMinimalize()
+	{
+		m_minimalize = not m_minimalize;
+		constexpr auto windowSize = Size{1280, 720}; // FIXME: 設定で変更可能にする
+		const bool fullscreen = Window::GetState().fullscreen;
+		if (m_minimalize)
+		{
+			Scene::Resize(Nes::Display_256x240 * adjustScale_3);
+			Window::Resize(
+				(windowSize.y) * (static_cast<double>(Nes::DisplayWidth_256) / Nes::DisplayHeight_240), windowSize.y);
+		}
+		else
+		{
+			Scene::Resize(SceneSize_1920x1080);
+			Window::Resize(1280, 720);
+		}
+		Window::SetFullscreen(fullscreen);
+	}
+
 	void updateGui(const Size& screenSize)
 	{
 		const int screenMargin = getToml<int>(U"screenMargin");
@@ -200,12 +247,12 @@ private:
 
 namespace Gui
 {
-	GuiController::GuiController() :
+	UiController::UiController() :
 		p_impl(std::make_shared<Impl>())
 	{
 	}
 
-	void GuiController::Update()
+	void UiController::Update()
 	{
 		p_impl->Update();
 	}

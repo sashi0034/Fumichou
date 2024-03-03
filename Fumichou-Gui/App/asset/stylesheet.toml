@@ -1,6 +1,10 @@
-[GuiController]
+[UiController]
 sideBg = "#161616"
 screenMargin = 16
+
+[UiScreenOverlay]
+iconSize = 48
+iconMargin = 4
 
 [GuiTrace]
 tagLeft = 96
@@ -22,10 +26,6 @@ gridThickness = 3
 
 [GuiToolbar]
 leftMargin = 8
-
-[GuiScreenOverlay]
-iconSize = 48
-iconMargin = 4
 
 [WidgetTabBar]
 plainColor = "#323232"

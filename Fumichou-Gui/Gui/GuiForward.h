@@ -2,11 +2,13 @@
 
 namespace Gui
 {
-	constexpr ColorF ColorGreen{U"#60E010"};
-	constexpr ColorF ColorPurple{U"#FF00DC"};
-	constexpr ColorF ColorOrange{U"#FF7E01"};
-	constexpr ColorF ColorBlue{U"#018AD3"};
-	constexpr ColorF ColorRed{U"#EB261F"};
+	inline constexpr Size SceneSize_1920x1080{1920, 1080};
+
+	inline constexpr ColorF ColorGreen{U"#60E010"};
+	inline constexpr ColorF ColorPurple{U"#FF00DC"};
+	inline constexpr ColorF ColorOrange{U"#FF7E01"};
+	inline constexpr ColorF ColorBlue{U"#018AD3"};
+	inline constexpr ColorF ColorRed{U"#EB261F"};
 
 	constexpr int LineHeight = 24;
 

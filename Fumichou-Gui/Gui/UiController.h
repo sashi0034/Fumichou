@@ -2,10 +2,10 @@
 
 namespace Gui
 {
-	class GuiController
+	class UiController
 	{
 	public:
-		GuiController();
+		UiController();
 
 		void Update();
 

@@ -119,7 +119,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Gui\GuiController.cpp" />
+    <ClCompile Include="Gui\UiController.cpp" />
     <ClCompile Include="Gui\GuiForward.cpp" />
     <ClCompile Include="Gui\GuiNametable.cpp" />
     <ClCompile Include="Gui\GuiPatternTable.cpp" />
@@ -129,7 +129,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClCompile Include="Gui\GuiToolbar.cpp" />
     <ClCompile Include="Gui\GuiTrace.cpp" />
     <ClCompile Include="Gui\JoyBackground.cpp" />
-    <ClCompile Include="Gui\GuiScreenOverlay.cpp" />
+    <ClCompile Include="Gui\UiScreenOverlay.cpp" />
     <ClCompile Include="Gui\WidgetButton.cpp" />
     <ClCompile Include="Gui\WidgetCheckbox.cpp" />
     <ClCompile Include="Gui\WidgetDocument.cpp" />
@@ -340,7 +340,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gui\GuiController.h" />
+    <ClInclude Include="Gui\UiController.h" />
     <ClInclude Include="Gui\GuiForward.h" />
     <ClInclude Include="Gui\GuiNametable.h" />
     <ClInclude Include="Gui\GuiPatternTable.h" />
@@ -350,7 +350,7 @@ xcopy /I /D /Y "$(ProjectDir)../Fumichou-Nes/App/shader-nes" "$(ProjectDir)App/a
     <ClInclude Include="Gui\GuiToolbar.h" />
     <ClInclude Include="Gui\GuiTrace.h" />
     <ClInclude Include="Gui\JoyBackground.h" />
-    <ClInclude Include="Gui\GuiScreenOverlay.h" />
+    <ClInclude Include="Gui\UiScreenOverlay.h" />
     <ClInclude Include="Gui\WidgetButton.h" />
     <ClInclude Include="Gui\WidgetCheckbox.h" />
     <ClInclude Include="Gui\WidgetDocument.h" />

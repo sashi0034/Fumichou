@@ -2,15 +2,17 @@
 
 namespace Gui
 {
-	class GuiScreenOverlay
+	class UiScreenOverlay
 	{
 	public:
-		GuiScreenOverlay();
+		UiScreenOverlay();
 
 		struct update_args
 		{
 			RectF screenRect;
-			std::reference_wrapper<int> modeIndex;
+			bool showModeChange;
+			std::function<void()> clickedModeChange;
+			std::function<void()> clickedMinimalize;
 		};
 
 		void Update(const update_args& args);

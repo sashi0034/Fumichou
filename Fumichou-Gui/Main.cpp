@@ -10,7 +10,7 @@
 #include "FontKeys.h"
 #include "HwFrame.h"
 #include "ShaderKeys.h"
-#include "Gui/GuiController.h"
+#include "Gui/UiController.h"
 #include "Gui/GuiForward.h"
 #include "Gui/GuiIni.h"
 #include "Util/KeyRepetition.h"
@@ -33,7 +33,7 @@ namespace
 		Scene::SetResizeMode(ResizeMode::Keep);
 		Scene::SetBackground(ColorF{0.3});
 		System::SetTerminationTriggers(UserAction::CloseButtonClicked);
-		Scene::Resize(1920, 1080);
+		Scene::Resize(Gui::SceneSize_1920x1080);
 		Window::Resize(1280, 720);
 	}
 }
@@ -79,7 +79,7 @@ void Main()
 	Nes::HwFrame nes{};
 	nes.StartRomFile(romPath);
 
-	Gui::GuiController gui{};
+	Gui::UiController gui{};
 
 	while (System::Update())
 	{
