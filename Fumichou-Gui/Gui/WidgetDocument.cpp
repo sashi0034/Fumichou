@@ -31,8 +31,26 @@ struct WidgetDocument0::Impl
 		for (int y = 0; y < availableRegion.y - LineHeight; y += LineHeight)
 		{
 			const int index = indexTail + m_headIndex;
+
+			if (y == 0 && m_data->IsEmpty(index))
+			{
+				// ページ上部分の切れ端
+				int y0{};
+				for (int i0 = index - 1; i0 >= 0; i0--)
+				{
+					y0 -= LineHeight;
+					if (m_data->IsEmpty(i0)) continue;
+					m_data->Draw(i0, Document::Drawer{
+						             .leftCenter = Vec2{leftMargin, y0 + LineHeight / 2},
+						             .rightmost = availableRegion.x,
+					             });
+					break;
+				}
+			}
+
 			if (index < m_data->Size())
 			{
+				// インデックス箇所を描画
 				m_data->Draw(index, Document::Drawer{
 					             .leftCenter = Vec2{leftMargin, y + LineHeight / 2},
 					             .rightmost = availableRegion.x,

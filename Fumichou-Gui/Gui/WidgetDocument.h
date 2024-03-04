@@ -37,6 +37,7 @@ namespace Gui
 	public:
 		virtual ~IDocumentData() = default;
 		virtual size_t Size() = 0;
+		virtual bool IsEmpty(int index) const = 0;
 		virtual void Draw(int index, const Document::Drawer& drawer) = 0;
 	};
 
@@ -57,6 +58,11 @@ namespace Gui
 
 		~DocumentData() override = default;
 		size_t Size() override { return m_data.size(); }
+
+		bool IsEmpty(int index) const override
+		{
+			return m_data[index].index() == 0;
+		}
 
 		void Draw(int index, const Document::Drawer& drawer) override
 		{

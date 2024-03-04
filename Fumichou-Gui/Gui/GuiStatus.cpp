@@ -90,7 +90,7 @@ namespace
 			drawTextLine(0, U"Frame={}"_fmt(frame.GetFrameCount()));
 			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
 			const double performance = 1000 * (frame.GetRunningTime() / frame.GetFrameCount());
-			drawTextLine(2, U"Performance={:.4f}ms / {:.4f}ms"_fmt(performance, 1000 / 60.0));
+			drawTextLine(2, U"Performance={:.4f}ms/{:.4f}ms"_fmt(performance, 1000 / 60.0));
 		}
 
 		void operator ()(CartridgeViewer& self) const
