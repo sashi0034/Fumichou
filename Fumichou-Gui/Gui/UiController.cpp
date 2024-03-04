@@ -32,7 +32,6 @@ namespace
 struct UiController::Impl
 {
 	int m_modeIndex{};
-	bool m_minimalize{};
 	UiScreenOverlay m_screenOverlay{};
 	double m_screenScaling{};
 
@@ -70,21 +69,6 @@ struct UiController::Impl
 
 	void Update()
 	{
-		if (m_minimalize)
-		{
-			// 最小化モード
-			updateMinimal();
-		}
-		else
-		{
-			// デフォルト
-			updateDefault();
-		}
-	}
-
-private:
-	void updateDefault()
-	{
 		// 周囲描画
 		if (m_modeIndex == 0) updateGui(Nes::Display_256x240 * adjustScale_3);
 		else updateJoy(Nes::Display_256x240 * adjustScale_3);
@@ -97,14 +81,17 @@ private:
 		const auto screenSize =
 			(Nes::Display_256x240 * (adjustScale_3 + 1.0 * EaseInOutBack(m_screenScaling))).asPoint();
 
+		if (0 < m_screenScaling && m_screenScaling < 1)
+		{
+			// モード移行アニメーション中は背景をぼやかす
+			Rect(Scene::Size()).draw(ColorF(0.3, 0.3));
+		}
+
+		// ゲーム画面描画
 		updateScreen(screenSize);
 	}
 
-	void updateMinimal()
-	{
-		updateScreen(Nes::Display_256x240 * adjustScale_3);
-	}
-
+private:
 	void updateScreen(const Point screenSize)
 	{
 		auto&& nes = Nes::HwFrame::Instance();
@@ -117,9 +104,7 @@ private:
 
 			m_screenOverlay.Update({
 				.screenRect = rect,
-				.showModeChange = not m_minimalize,
 				.clickedModeChange = [this]() { m_modeIndex = (m_modeIndex + 1) % 2; },
-				.clickedMinimalize = [this]() { clickedMinimalize(); }
 			});
 
 			if (m_top.toolbar.ShowSpriteWireframe()) Details::RenderSpriteWireframe(rect);
@@ -132,26 +117,6 @@ private:
 			(void)abortText.regionAt(Scene::Center()).stretched(4).rounded(2).draw(ColorF(ColorRed, 0.9));
 			(void)abortText.drawAt(Scene::Center(), Palette::White);
 		}
-	}
-
-	// 最小化モード切り替え
-	void clickedMinimalize()
-	{
-		m_minimalize = not m_minimalize;
-		constexpr auto windowSize = Size{1280, 720}; // FIXME: 設定で変更可能にする
-		const bool fullscreen = Window::GetState().fullscreen;
-		if (m_minimalize)
-		{
-			Scene::Resize(Nes::Display_256x240 * adjustScale_3);
-			Window::Resize(
-				(windowSize.y) * (static_cast<double>(Nes::DisplayWidth_256) / Nes::DisplayHeight_240), windowSize.y);
-		}
-		else
-		{
-			Scene::Resize(SceneSize_1920x1080);
-			Window::Resize(1280, 720);
-		}
-		Window::SetFullscreen(fullscreen);
 	}
 
 	void updateGui(const Size& screenSize)

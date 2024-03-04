@@ -44,7 +44,11 @@ struct UiScreenOverlay::Impl
 		// カーソルが止まっていたらフェードアウトする
 		constexpr double fadeStart = 1.5;
 		constexpr double fadeEnd = 2.0;
-		if (m_stoppingTime > fadeEnd) return;
+		if (m_stoppingTime > fadeEnd)
+		{
+			Cursor::RequestStyle(CursorStyle::Hidden);
+			return;
+		}
 		const ScopedColorMul2D colorMul2D{
 			ColorF(1, 1 - Math::Clamp(m_stoppingTime - fadeStart, 0, 1) / (fadeEnd - fadeStart))
 		};
@@ -55,19 +59,19 @@ struct UiScreenOverlay::Impl
 		auto&& iconFont = FontAsset(FontKeys::Icon_40_Msdf);
 
 		// 左上アイコン
-		if (args.showModeChange)
 		{
 			const auto tlPoint = args.screenRect.tl().movedBy(Vec2::One() * (iconMargin + iconSize / 2));
 			const auto tlRect =
 				RectF(Arg::center = tlPoint, SizeF{1.0, 0.8} * iconSize).rounded(8).draw(ColorF{0.1, 0.5});
 			const bool tlHover = tlRect.rect.intersects(Cursor::Pos());
 			if (tlHover)(void)tlRect.drawFrame(1, Palette::White);
-			(void)iconFont(U"\U000F1002").drawAt(iconSize * 0.8, tlPoint, ColorF(0.9));
+			(void)iconFont(U"\U000F0E7B").drawAt(iconSize * 0.8, tlPoint, ColorF(0.9));
 
 			// モード変更
 			if (tlHover && MouseL.down() && args.clickedModeChange) args.clickedModeChange();
 		}
 
+#if 0
 		{
 			// 右上アイコン
 			const auto trPoint = args.screenRect.tr().movedBy(Vec2{-1, 1} * (iconMargin + iconSize / 2));
@@ -76,10 +80,8 @@ struct UiScreenOverlay::Impl
 			const bool trHover = trRect.rect.intersects(Cursor::Pos());
 			if (trHover)(void)trRect.drawFrame(1, Palette::White);
 			(void)iconFont(U"\U000F0A24").drawAt(iconSize * 0.8, trPoint, ColorF(0.9));
-
-			// 縮小モード
-			if (trHover && MouseL.down() && args.clickedMinimalize) args.clickedMinimalize();
 		}
+#endif
 	}
 };
 

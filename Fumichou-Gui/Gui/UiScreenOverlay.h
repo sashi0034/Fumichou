@@ -10,9 +10,7 @@ namespace Gui
 		struct update_args
 		{
 			RectF screenRect;
-			bool showModeChange;
 			std::function<void()> clickedModeChange;
-			std::function<void()> clickedMinimalize;
 		};
 
 		void Update(const update_args& args);
