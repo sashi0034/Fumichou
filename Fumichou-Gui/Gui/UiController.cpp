@@ -7,6 +7,7 @@
 #include "GuiMapping.h"
 #include "GuiNametable.h"
 #include "GuiPatternTable.h"
+#include "GuiSetting.h"
 #include "GuiToolbar.h"
 #include "GuiTrace.h"
 #include "HwFrame.h"
@@ -47,9 +48,9 @@ struct UiController::Impl
 	{
 		WidgetTabBar tab{};
 		int tabIndex{};
-		GuiStatus generalStatus{};
+		GuiStatus status{};
 		GuiMapping mapping{};
-		// GuiScripting scripting{};
+		GuiSetting setting{};
 	} m_left;
 
 	struct
@@ -161,7 +162,7 @@ private:
 		{
 			auto available = Size{sideWidth, Scene::Size().y};
 			// (void)Rect(available).rounded(4).draw(sideBg).stretched(1).drawFrame(2, sideBg * 1.1f);
-			static const std::array tabNames = {U"Status"_s, U"Mapping"_s};
+			static const std::array tabNames = {U"Status"_s, U"Mapping"_s, U"Setting"_s};
 			m_left.tab.Update({
 				.availableRect = Rect(available.withY(tabHeight)),
 				.currentIndex = m_left.tabIndex,
@@ -175,10 +176,13 @@ private:
 			switch (m_left.tabIndex)
 			{
 			case 0:
-				m_left.generalStatus.Update(available);
+				m_left.status.Update(available);
 				break;
 			case 1:
 				m_left.mapping.Update(available);
+				break;
+			case 2:
+				m_left.setting.Update(available);
 				break;
 			default: break;
 			}
