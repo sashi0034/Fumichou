@@ -36,7 +36,7 @@ struct WidgetTabBar::Impl
 			// 描画
 			if (i != args.currentIndex)
 			{
-				(void)rect.rounded(4).draw(plainColor * (hovered ? 0.9 : 1.0));
+				(void)rect.draw(plainColor * (hovered ? 0.9 : 1.0));
 			}
 			(void)font(args.tabNames[i]).drawAt(rect.center());
 

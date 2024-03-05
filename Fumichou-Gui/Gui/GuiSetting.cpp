@@ -3,6 +3,8 @@
 
 #include "FontKeys.h"
 #include "GuiForward.h"
+#include "WidgetButton.h"
+#include "WidgetCheckbox.h"
 #include "WidgetDocument.h"
 
 using namespace Gui;
@@ -11,6 +13,12 @@ namespace
 {
 	struct SchemeSetting
 	{
+		bool isFullscreen{};
+		WidgetCheckbox fullscreenCheckbox{};
+		WidgetButton windowSizeButton{};
+		bool isAutoSave{};
+		WidgetCheckbox autosaveCheckbox{};
+		WidgetButton soundVolumeButton{};
 	};
 
 	struct ControllerSetting
@@ -21,14 +29,43 @@ namespace
 	{
 		using Drawer::operator();
 
-		void drawTextLine(int y, const String& text) const
-		{
-			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
-			font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
-		};
-
 		void operator ()(SchemeSetting& self) const
 		{
+			if (self.fullscreenCheckbox.Update({
+				.availableRect = LineRect().movedBy(0, 0 * 1.5 * LineHeight),
+				.toggle = self.isFullscreen,
+				.text = U"Fullscreen",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+			}
+
+			if (self.windowSizeButton.Update({
+				.availableRect = LineRect().movedBy(0, 1 * 1.5 * LineHeight),
+				.emojiIcon = U"🖥️"_emoji,
+				.text = U"Window Size",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+			}
+
+			if (self.autosaveCheckbox.Update({
+				.availableRect = LineRect().movedBy(0, 2 * 1.5 * LineHeight),
+				.toggle = self.isAutoSave,
+				.text = U"Auto Save on Closing",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+			}
+
+			if (self.soundVolumeButton.Update({
+				.availableRect = LineRect().movedBy(0, 3 * 1.5 * LineHeight),
+				.emojiIcon = U"📢"_emoji,
+				.text = U"Sound Volume",
+				.textColor = Palette::Darkgray,
+			}))
+			{
+			}
 		}
 
 		void operator ()(ControllerSetting& self) const
@@ -45,6 +82,10 @@ namespace
 	{
 		texts.push_back(Document::HeaderText(U"Schemes"));
 		texts.push_back(std::monostate{});
+		texts.push_back(SchemeSetting());
+		for (const auto i : step(static_cast<int>(4 * 1.5) - 1)) texts.push_back(std::monostate{});
+
+		texts.push_back(Document::SplitLine());
 
 		texts.push_back(Document::HeaderText(U"Controller"));
 		texts.push_back(std::monostate{});
