@@ -43,3 +43,4 @@ textLeft = 40
 
 [WidgetButton]
 textLeft = 40
+hoverBack = "#f0e0e040"

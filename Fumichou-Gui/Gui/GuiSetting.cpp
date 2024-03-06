@@ -15,10 +15,10 @@ namespace
 	{
 		bool isFullscreen{};
 		WidgetCheckbox fullscreenCheckbox{};
-		WidgetButton windowSizeButton{};
+		WidgetButton2 windowSizeButton{};
 		bool isAutoSave{};
 		WidgetCheckbox autosaveCheckbox{};
-		WidgetButton soundVolumeButton{};
+		WidgetButton2 soundVolumeButton{};
 	};
 
 	struct ControllerSetting
@@ -45,6 +45,7 @@ namespace
 				.emojiIcon = U"🖥️"_emoji,
 				.text = U"Window Size",
 				.textColor = Palette::Darkgray,
+				.itemName = U"1280x720"
 			}))
 			{
 			}
@@ -63,6 +64,7 @@ namespace
 				.emojiIcon = U"📢"_emoji,
 				.text = U"Sound Volume",
 				.textColor = Palette::Darkgray,
+				.itemName = U"😆😆😆😆🫥 4"
 			}))
 			{
 			}
