@@ -25,10 +25,11 @@ namespace Gui
 
 			RectF LineRect() const;
 
-			void operator()(std::monostate) const { return; }
-			void operator()(const HeaderText& text) const;
-			void operator()(const PlainText& text) const;
-			void operator()(SplitLine) const;
+			// 描画の戻り値は領域行数
+			int operator()(std::monostate) const { return 1; }
+			int operator()(const HeaderText& text) const;
+			int operator()(const PlainText& text) const;
+			int operator()(SplitLine) const;
 		};
 	}
 
@@ -38,7 +39,9 @@ namespace Gui
 		virtual ~IDocumentData() = default;
 		virtual size_t Size() = 0;
 		virtual bool IsEmpty(int index) const = 0;
-		virtual void Draw(int index, const Document::Drawer& drawer) = 0;
+		virtual void InsertEmpty(int index) = 0;
+		virtual void Remove(int index) = 0;
+		virtual int Draw(int index, const Document::Drawer& drawer) = 0;
 	};
 
 	template <typename Drawer = Document::Drawer, typename... T>
@@ -61,12 +64,23 @@ namespace Gui
 
 		bool IsEmpty(int index) const override
 		{
+			if (index >= m_data.size()) return false;
 			return m_data[index].index() == 0;
 		}
 
-		void Draw(int index, const Document::Drawer& drawer) override
+		void InsertEmpty(int index) override
 		{
-			std::visit(static_cast<const Drawer&>(drawer), m_data[index]);
+			m_data.insert(m_data.begin() + index, std::monostate());
+		}
+
+		void Remove(int index) override
+		{
+			m_data.remove_at(index);
+		}
+
+		int Draw(int index, const Document::Drawer& drawer) override
+		{
+			return std::visit(static_cast<const Drawer&>(drawer), m_data[index]);
 		}
 
 		array_type& Raw() { return m_data; }

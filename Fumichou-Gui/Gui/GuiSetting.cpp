@@ -29,7 +29,7 @@ namespace
 	{
 		using Drawer::operator();
 
-		void operator ()(SchemeSetting& self) const
+		int operator ()(SchemeSetting& self) const
 		{
 			if (self.fullscreenCheckbox.Update({
 				.availableRect = LineRect().movedBy(0, 0 * 1.5 * LineHeight),
@@ -66,10 +66,13 @@ namespace
 			}))
 			{
 			}
+
+			return static_cast<int>(4 * 1.5);
 		}
 
-		void operator ()(ControllerSetting& self) const
+		int operator ()(ControllerSetting& self) const
 		{
+			return 1;
 		}
 	};
 
@@ -81,14 +84,11 @@ namespace
 	void generateTexts(SettingDocumentData::array_type& texts)
 	{
 		texts.push_back(Document::HeaderText(U"Schemes"));
-		texts.push_back(std::monostate{});
 		texts.push_back(SchemeSetting());
-		for (const auto i : step(static_cast<int>(4 * 1.5) - 1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine());
 
 		texts.push_back(Document::HeaderText(U"Controller"));
-		texts.push_back(std::monostate{});
 	}
 }
 

@@ -28,12 +28,13 @@ namespace
 	{
 		using Drawer::operator();
 
-		void operator()(const MappingDesc& desc) const
+		int operator()(const MappingDesc& desc) const
 		{
 			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.addrRange)
 				.draw(Arg::leftCenter = leftCenter, Palette::Darkgray);
 			FontAsset(FontKeys::ZxProto_20_Bitmap)(desc.desc)
 				.draw(Arg::leftCenter = leftCenter.withX(getToml<int>(U"descLeft")), desc.descColor);
+			return 1;
 		}
 	};
 
@@ -71,19 +72,21 @@ namespace
 		texts.clear();
 
 		texts.push_back(Document::HeaderText(U"CPU Read-mapping"));
-		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuRead(), ColorBlue);
+
 		texts.push_back(Document::SplitLine());
+
 		texts.push_back(Document::HeaderText(U"CPU Write-mapping"));
-		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetCpuWrite(), ColorOrange);
+
 		texts.push_back(Document::SplitLine());
+
 		texts.push_back(Document::HeaderText(U"PPU Read-mapping"));
-		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuRead(), ColorBlue);
+
 		texts.push_back(Document::SplitLine());
+
 		texts.push_back(Document::HeaderText(U"PPU Write-mapping"));
-		texts.push_back(std::monostate{});
 		makeSingleDescs(texts, mmu.GetPpuWrite(), ColorOrange);
 	}
 }

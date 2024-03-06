@@ -52,7 +52,7 @@ namespace
 			font(text).draw(Arg::leftCenter = leftCenter.movedBy(0, y * LineHeight), Palette::Darkgray);
 		};
 
-		void operator ()(FunctionViewer& self) const
+		int operator ()(FunctionViewer& self) const
 		{
 			auto&& frame = Nes::HwFrame::Instance();
 
@@ -81,9 +81,11 @@ namespace
 				}
 				Clipboard::SetText(str);
 			}
+
+			return static_cast<int>(2 * 1.5);
 		}
 
-		void operator ()(EmulationViewer& self) const
+		int operator ()(EmulationViewer& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			auto&& frame = Nes::HwFrame::Instance();
@@ -91,9 +93,10 @@ namespace
 			drawTextLine(1, U"Cycles={}"_fmt(frame.GetCycleCount()));
 			const double performance = 1000 * (frame.GetRunningTime() / frame.GetFrameCount());
 			drawTextLine(2, U"Performance={:.4f}ms / {:.4f}ms"_fmt(performance, 1000 / 60.0));
+			return 3;
 		}
 
-		void operator ()(CartridgeViewer& self) const
+		int operator ()(CartridgeViewer& self) const
 		{
 			const auto font = FontAsset(FontKeys::ZxProto_20_Bitmap);
 			auto&& frame = Nes::HwFrame::Instance();
@@ -107,9 +110,10 @@ namespace
 
 			drawTextLine(0, U"File=\"{}\""_fmt(self.cachedName));
 			drawTextLine(1, U"Mapper={}"_fmt(static_cast<uint8>(cart.GetRomData().GetMapperNumber())));
+			return 2;
 		}
 
-		void operator ()(CpuViewer) const
+		int operator ()(CpuViewer) const
 		{
 			auto& cpu = Nes::HwFrame::Instance().GetHw().GetMos6502();
 			auto& regs = cpu.GetRegs();
@@ -123,9 +127,10 @@ namespace
 				             static_cast<uint8>(flags.d),
 				             static_cast<uint8>(flags.d),
 				             static_cast<uint8>(flags.n)));
+			return 3;
 		}
 
-		void operator ()(PpuViewer) const
+		int operator ()(PpuViewer) const
 		{
 			auto& ppu = Nes::HwFrame::Instance().GetHw().GetPpu();
 
@@ -135,9 +140,10 @@ namespace
 			drawTextLine(0, U"Scanline={} Linecycles={}"_fmt(ppu.ScanLine(), ppu.LineCycles()));
 			drawTextLine(1, U"CONTROL={:02X} STASUS={:02X}"_fmt(
 				             static_cast<uint8>(reg0.control), static_cast<uint8>(reg1.status)));
+			return 2;
 		}
 
-		void operator ()(ScriptViewer& self) const
+		int operator ()(ScriptViewer& self) const
 		{
 			self.script.Refresh();
 			auto&& lastReloaded = self.script.LastReloadedTime();
@@ -145,6 +151,7 @@ namespace
 			drawTextLine(1, U"{:02}:{:02}:{:02} {}"_fmt(
 				             lastReloaded.hour, lastReloaded.minute, lastReloaded.second,
 				             (self.script.IsSucceeded() ? U"Succeed 🎉"_sv : U"Error ❌ See Logs for Details."_sv)));
+			return 2;
 		}
 	};
 
@@ -160,44 +167,32 @@ namespace
 	void generateTexts(StatusDocumentData::array_type& texts)
 	{
 		texts.push_back(Document::HeaderText(U"Functions"));
-		texts.push_back(std::monostate{});
 		texts.push_back(FunctionViewer{});
-		for (const auto i : step(static_cast<int>(2 * 1.5) - 1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"Emulation Status"));
-		texts.push_back(std::monostate{});
 		texts.push_back(EmulationViewer());
-		for (const auto i : step(2)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"Cartridge Information"));
-		texts.push_back(std::monostate{});
 		texts.push_back(CartridgeViewer{});
-		for (const auto i : step(1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"CPU Status"));
-		texts.push_back(std::monostate{});
 		texts.push_back(CpuViewer());
-		for (const auto i : step(2)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"PPU Status"));
-		texts.push_back(std::monostate{});
 		texts.push_back(PpuViewer());
-		for (const auto i : step(1)) texts.push_back(std::monostate{});
 
 		texts.push_back(Document::SplitLine{});
 
 		texts.push_back(Document::HeaderText(U"Script Information"));
-		texts.push_back(std::monostate{});
 		texts.push_back(ScriptViewer());
-		for (const auto i : step(1)) texts.push_back(std::monostate{});
 	}
 }
 

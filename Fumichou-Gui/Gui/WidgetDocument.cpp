@@ -28,11 +28,25 @@ struct WidgetDocument0::Impl
 		const double leftMargin = getToml<int>(U"leftMargin");
 
 		int indexTail = 0;
+		int emptyStack{};
 		for (int y = 0; y < availableRegion.y - LineHeight; y += LineHeight)
 		{
 			const int index = indexTail + m_headIndex;
+			const bool emptyFlag = m_data->IsEmpty(index);
 
-			if (y == 0 && m_data->IsEmpty(index))
+			emptyStack--;
+			if (emptyStack > 0 && not emptyFlag)
+			{
+				// 空行が足りないので増やす
+				m_data->InsertEmpty(index);
+			}
+			else if (y > 0 && emptyStack < 0 && emptyFlag)
+			{
+				// 空行が多いので減らす
+				m_data->Remove(index);
+			}
+
+			if (y == 0 && emptyFlag)
 			{
 				// ページ上部分の切れ端
 				int y0{};
@@ -40,21 +54,16 @@ struct WidgetDocument0::Impl
 				{
 					y0 -= LineHeight;
 					if (m_data->IsEmpty(i0)) continue;
-					m_data->Draw(i0, Document::Drawer{
-						             .leftCenter = Vec2{leftMargin, y0 + LineHeight / 2},
-						             .rightmost = availableRegion.x,
-					             });
+					emptyStack = drawDocumentAt(availableRegion, leftMargin, y0, i0);
+					emptyStack += i0 - index;
 					break;
 				}
 			}
 
-			if (index < m_data->Size())
+			if (not emptyFlag && index < m_data->Size())
 			{
 				// インデックス箇所を描画
-				m_data->Draw(index, Document::Drawer{
-					             .leftCenter = Vec2{leftMargin, y + LineHeight / 2},
-					             .rightmost = availableRegion.x,
-				             });
+				emptyStack = drawDocumentAt(availableRegion, leftMargin, y, index);
 			}
 			indexTail++;
 		}
@@ -77,6 +86,17 @@ struct WidgetDocument0::Impl
 			.pageSize = indexTail
 		});
 	}
+
+private:
+	int drawDocumentAt(const Size& availableRegion, double leftMargin, int y, int index) const
+	{
+		return m_data->Draw(
+			index,
+			Document::Drawer{
+				.leftCenter = Vec2{leftMargin, y + LineHeight / 2},
+				.rightmost = availableRegion.x,
+			});
+	}
 };
 
 namespace Gui
@@ -86,20 +106,23 @@ namespace Gui
 		return RectF{Arg::leftCenter = leftCenter, SizeF(rightmost - leftCenter.x, LineHeight)};
 	}
 
-	void Document::Drawer::operator()(const HeaderText& text) const
+	int Document::Drawer::operator()(const HeaderText& text) const
 	{
 		FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text)
 			.draw(24, Arg::leftCenter = leftCenter.movedBy(0, LineHeight / 2));
+		return 2;
 	}
 
-	void Document::Drawer::operator()(const PlainText& text) const
+	int Document::Drawer::operator()(const PlainText& text) const
 	{
 		FontAsset(FontKeys::ZxProto_20_Bitmap)(text.text).draw(Arg::leftCenter = leftCenter);
+		return 1;
 	}
 
-	void Document::Drawer::operator()(SplitLine) const
+	int Document::Drawer::operator()(SplitLine) const
 	{
 		(void)Line(leftCenter, leftCenter.withX(rightmost)).stretched(-4).draw(1, Palette::Gray);
+		return 1;
 	}
 
 	void WidgetDocument0::Update(const Size& availableRegion)
