@@ -119,8 +119,9 @@
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
     <ClCompile Include="src\Apu.cpp" />
-    <ClCompile Include="src\Apu_In.cpp" />
-    <ClCompile Include="src\Apu_In_Io.cpp" />
+    <ClCompile Include="src\Apu_Impl.cpp" />
+    <ClCompile Include="src\Apu_Impl_Io.cpp" />
+    <ClCompile Include="src\AudioPulseChannel.cpp" />
     <ClCompile Include="src\Boards\BoardCnrom.cpp" />
     <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
@@ -168,8 +169,9 @@
     <ClInclude Include="include\Ppu.h" />
     <ClInclude Include="include\StandardController.h" />
     <ClInclude Include="include\Util.h" />
-    <ClInclude Include="src\Apu_In.h" />
-    <ClInclude Include="src\Apu_In_Io.h" />
+    <ClInclude Include="src\Apu_Impl.h" />
+    <ClInclude Include="src\Apu_Impl_Io.h" />
+    <ClInclude Include="src\AudioPulseChannel.h" />
     <ClInclude Include="src\Boards\BoardCnrom.h" />
     <ClInclude Include="src\Boards\PatternTableMemory.h" />
     <ClInclude Include="src\Cartridge_In.h" />

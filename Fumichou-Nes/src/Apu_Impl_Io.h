@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "Apu_In.h"
+#include "Apu_Impl.h"
 #include "Mmu.h"
 
 namespace Nes
 {
-	class Apu::In::Io
+	class Apu::Impl::Io
 	{
 	public:
 		// static MappedRead MapReadPrg(const Hardware& hw, addr16 addr);

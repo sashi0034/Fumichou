@@ -5,8 +5,10 @@ namespace Nes
 	class Apu
 	{
 	public:
-		class In;
+		class Impl;
+		Apu();
 
 	private:
+		std::shared_ptr<Impl> p_impl;
 	};
 }

@@ -1,18 +1,33 @@
 ﻿#include "stdafx.h"
-#include "Apu_In_Io.h"
+#include "Apu_Impl_Io.h"
+
+#include "Apu_Impl.h"
+#include "Hardware.h"
 
 namespace Nes
 {
+	// https://d1.amobbs.com/bbs_upload782111/files_28/ourdev_551332.pdf
+
 	// MappedRead Apu::In::Io::MapReadPrg(const Hardware& hw, addr16 addr)
 	// {
 	// 	return MappedRead::Invalid(MappingType::Cpu);
 	// }
 
-	MappedWrite Apu::In::Io::MapWritePrg(Hardware& hw, addr16 addr)
+	MappedWrite Apu::Impl::Io::MapWritePrg(Hardware& hw, addr16 addr)
 	{
+		auto apu = hw.GetApu().p_impl.get();
 		switch (addr)
 		{
 		case 0x4000:
+			return MappedWrite{
+				.desc = U"APU Pulse 1 Volume/Decay"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel1.WriteVolumeDecay(value);
+				}
+			};
 		case 0x4001:
 		case 0x4002:
 		case 0x4003:
