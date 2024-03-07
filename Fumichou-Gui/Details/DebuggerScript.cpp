@@ -28,6 +28,15 @@ namespace
 		};
 	}
 
+	void __cdecl watch_pc(uint16 pc, asIScriptFunction* callback)
+	{
+		Util::ScriptFunctionWrapper wrapper{callback};
+		Nes::DebugParameter::Instance().watchPc[pc] = [wrapper]()
+		{
+			wrapper.InvokeVoid();
+		};
+	}
+
 	bool s_initializedEngine{};
 
 	void checkInitializeEngine()
@@ -43,6 +52,10 @@ namespace
 		Script::GetEngine()->RegisterGlobalFunction(
 			"void watch_interrupt(CALLBACK @)",
 			asFunctionPtr(watch_interrupt),
+			asCALL_CDECL);
+		Script::GetEngine()->RegisterGlobalFunction(
+			"void watch_pc(uint16, CALLBACK @)",
+			asFunctionPtr(watch_pc),
 			asCALL_CDECL);
 	}
 }
@@ -71,6 +84,11 @@ struct DebuggerScript::Impl
 			}
 		}
 
+		// クリア
+		Nes::DebugParameter::Instance().watchInterrupt = {};
+		Nes::DebugParameter::Instance().watchPc.fill({});
+
+		// スクリプト実行
 		const auto scriptFunc = m_script.getFunction<void()>(U"setup");
 		String exception;
 		scriptFunc.tryCall(exception);

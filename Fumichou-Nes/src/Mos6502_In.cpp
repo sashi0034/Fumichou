@@ -35,6 +35,9 @@ public:
 		auto&& mos6502 = hw.GetMos6502();
 		auto&& mmu = hw.GetMmu();
 
+		// デバッグ用
+		if (auto&& watcher = DebugParameter::Instance().watchPc[mos6502.m_regs.pc]) watcher();
+
 		if (mos6502.m_pendingInterrupt == InterruptKind::NMI)
 		{
 			// マスク不可割り込み
