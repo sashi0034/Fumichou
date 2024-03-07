@@ -4,6 +4,9 @@
 Texture2D g_patternTableTexture : register(t0);
 SamplerState g_sampler0 : register(s0);
 
+Texture2D g_bgRenderBuffer : register(t1);
+SamplerState g_sampler1 : register(s1);
+
 namespace s3d
 {
     //
@@ -45,6 +48,8 @@ cbuffer CbPaletteColors : register(b1)
 float4 PS(s3d::PSInput input) : SV_TARGET
 {
     const uint paletteIdBase = input.color[0];
+    const bool behindBg = input.color[1];
+    const bool bgAlpha = g_bgRenderBuffer.Sample(g_sampler1, input.position.xy / float2(W_256, H_240)).a;
 
     const float4 tileColor = g_patternTableTexture.Sample(g_sampler0, input.uv);
     const uint paletteOffset = tileColor.r + tileColor.g * 2;
@@ -53,7 +58,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     float4 outputColor = g_paletteColors[FROM_UINT8ARRAY(g_paletteIndexes, paletteIndex)];
 
     // Pixels in palette 0 are hidden
-    outputColor.a = paletteOffset;
+    outputColor.a = paletteOffset && (!behindBg || !bgAlpha);
 
     return outputColor;
 }

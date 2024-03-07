@@ -49,6 +49,7 @@ namespace
 class Ppu::IRenderer::HleRenderer : public IRenderer
 {
 public:
+	s3d::RenderTexture m_bgRenderBuffer{Display_256x240};
 	s3d::RenderTexture m_videoTexture{Display_256x240};
 	s3d::ConstantBuffer<CbPaletteColors> m_cbPaletteColors{};
 	s3d::ConstantBuffer<CbBgData> m_cbBgData{};
@@ -87,14 +88,19 @@ public:
 		const s3d::Transformer2D transformer2D{s3d::Mat3x2::Identity(), s3d::Transformer2D::Target::SetLocal};
 		const s3d::ScopedViewport2D viewport2D{s3d::Rect(Display_256x240)};
 		const s3d::ScopedRenderStates2D renderStates2D{s3d::SamplerState::ClampNearest};
-		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(s3d::Color(16))};
 
 		// パレット登録
 		applyPalettes(ppu);
 		s3d::Graphics2D::SetPSConstantBuffer(1, m_cbPaletteColors);
 
-		// BG描画
+		// BGバッファへ描画
 		renderBg(args, ppu);
+
+		// メインターゲットへ描画設定
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(PaletteColors[ppu.m_palettes[0]])};
+
+		// BGバッファの反映
+		(void)m_bgRenderBuffer.draw();
 
 		// スプライト描画
 		renderSprites(args, ppu);
@@ -123,7 +129,17 @@ private:
 
 	void renderBg(const render_args& args, const Ppu& ppu)
 	{
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_bgRenderBuffer.clear(s3d::Color(0, 0))};
 		if (not DebugParameter::Instance().bgVisibility) return;
+
+		// アルファ上書き
+		using s3d::Blend;
+		using s3d::BlendOp;
+		const s3d::ScopedRenderStates2D rs{
+			s3d::BlendState{
+				true, Blend::One, Blend::Zero, BlendOp::Add, Blend::One, Blend::Zero, BlendOp::Max
+			}
+		};
 
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::bg_render)};
 
@@ -157,8 +173,10 @@ private:
 		if (not DebugParameter::Instance().spriteVisibility) return;
 
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
-		auto& patternTable = args.board.get().PatternTableTexture();
 
+		s3d::Graphics2D::SetPSTexture(1, m_bgRenderBuffer);
+
+		auto& patternTable = args.board.get().PatternTableTexture();
 		const uint16 sprPage = PpuControl8(ppu.m_regs.control).SecondSprPatter() * 4;
 
 		// アドレス降順から描画開始
@@ -172,6 +190,7 @@ private:
 			const bool flipH = GetBits<6>(spr.attribute);
 			const bool flipV = GetBits<7>(spr.attribute);
 			const auto tileId = ppu.m_tilePageOffsets[sprPage | (spr.tile >> 6)] | (spr.tile & 0x3F);
+			const auto colorCode = s3d::ColorF(paletteIdBase, behindBg, 0);
 
 			// RにパレットIDを渡して描画
 			if (longSprite)
@@ -180,22 +199,22 @@ private:
 				auto id0 = (tileId) & ~0b1;
 				auto id1 = (tileId | 0b1);
 				if (flipV) std::swap(id0, id1);
-				patternTable(s3d::Rect(s3d::Point(id0, 0) * tile_8, tile_8, tile_8))
-					.mirrored(flipH)
-					.flipped(flipV)
-					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
-				patternTable(s3d::Rect(s3d::Point(id1, 0) * tile_8, tile_8, tile_8))
-					.mirrored(flipH)
-					.flipped(flipV)
-					.draw(pos.movedBy(0, tile_8), s3d::ColorF(paletteIdBase, 0, 0));
+				(void)patternTable(s3d::Rect(s3d::Point(id0, 0) * tile_8, tile_8, tile_8))
+				      .mirrored(flipH)
+				      .flipped(flipV)
+				      .draw(pos, colorCode);
+				(void)patternTable(s3d::Rect(s3d::Point(id1, 0) * tile_8, tile_8, tile_8))
+				      .mirrored(flipH)
+				      .flipped(flipV)
+				      .draw(pos.movedBy(0, tile_8), colorCode);
 			}
 			else
 			{
 				// 8x8 描画
-				patternTable(s3d::Rect(s3d::Point(tileId, 0) * tile_8, tile_8, tile_8))
-					.mirrored(flipH)
-					.flipped(flipV)
-					.draw(pos, s3d::ColorF(paletteIdBase, 0, 0));
+				(void)patternTable(s3d::Rect(s3d::Point(tileId, 0) * tile_8, tile_8, tile_8))
+				      .mirrored(flipH)
+				      .flipped(flipV)
+				      .draw(pos, colorCode);
 			}
 		}
 	}

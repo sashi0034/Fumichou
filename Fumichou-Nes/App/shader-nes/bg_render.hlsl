@@ -77,9 +77,11 @@ float4 PS(s3d::PSInput input) : SV_TARGET
 
     const float2 tileUV = float2(uint2(tileId * TILE_8, 0) + tileFine) / g_patternTableSize.xy;
     const float4 tileColor = g_patternTableTexture.Sample(g_sampler0, tileUV);
-    const uint paletteIndex = paletteIdBase + (uint(tileColor.r) | (uint(tileColor.g) << 1));
+    const uint paletteOffset = (uint(tileColor.r) | (uint(tileColor.g) << 1));
+    const uint paletteIndex = paletteIdBase + paletteOffset;
 
-    const float4 outputColor = g_paletteColors[FROM_UINT8ARRAY(g_paletteIndexes, paletteIndex)];
+    float4 outputColor = g_paletteColors[FROM_UINT8ARRAY(g_paletteIndexes, paletteIndex)];
+    outputColor.a = paletteOffset;
 
     return outputColor;
 }
