@@ -35,6 +35,15 @@ namespace Nes
 		PpuMask8(uint8 value = 0) : m_value(value) { return; }
 		operator uint8() const { return m_value; }
 
+		auto Grayscale() { return BitAccess<0>(m_value); }
+		auto ShowBgLeftmost() { return BitAccess<1>(m_value); }
+		auto ShowSprLeftmost() { return BitAccess<2>(m_value); }
+		auto ShowBackground() { return BitAccess<3>(m_value); }
+		auto ShowSprite() { return BitAccess<4>(m_value); }
+		auto EmphasizeRed() { return BitAccess<5>(m_value); }
+		auto EmphasizeGreen() { return BitAccess<6>(m_value); }
+		auto EmphasizeBlue() { return BitAccess<7>(m_value); }
+
 	private:
 		uint8 m_value{};
 	};

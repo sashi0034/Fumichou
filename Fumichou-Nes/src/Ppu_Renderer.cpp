@@ -97,7 +97,9 @@ public:
 		renderBg(args, ppu);
 
 		// メインターゲットへ描画設定
-		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture.clear(PaletteColors[ppu.m_palettes[0]])};
+		if (DebugParameter::Instance().bgVisibility)m_videoTexture.clear(PaletteColors[ppu.m_palettes[0]]);
+		else m_videoTexture.clear(s3d::Color(16));
+		const s3d::ScopedRenderTarget2D renderTarget2D{m_videoTexture};
 
 		// BGバッファの反映
 		(void)m_bgRenderBuffer.draw();
@@ -131,6 +133,7 @@ private:
 	{
 		const s3d::ScopedRenderTarget2D renderTarget2D{m_bgRenderBuffer.clear(s3d::Color(0, 0))};
 		if (not DebugParameter::Instance().bgVisibility) return;
+		if (not PpuMask8(ppu.m_regs.mask).ShowBackground()) return;
 
 		// アルファ上書き
 		using s3d::Blend;
@@ -171,6 +174,7 @@ private:
 	void renderSprites(const render_args& args, const Ppu& ppu)
 	{
 		if (not DebugParameter::Instance().spriteVisibility) return;
+		if (not PpuMask8(ppu.m_regs.mask).ShowSprite()) return;
 
 		const s3d::ScopedCustomShader2D shader{s3d::PixelShaderAsset(ShaderKeys::sprite_render)};
 
