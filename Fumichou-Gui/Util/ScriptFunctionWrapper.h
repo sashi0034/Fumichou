@@ -33,6 +33,7 @@ namespace Util
 			const auto ctx = Script::GetEngine()->CreateContext();
 			ctx->Prepare(m_ptr);
 			ctx->Execute();
+			(void)ctx->Release();
 		}
 
 	private:
