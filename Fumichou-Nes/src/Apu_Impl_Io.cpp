@@ -20,21 +20,84 @@ namespace Nes
 		{
 		case 0x4000:
 			return MappedWrite{
-				.desc = U"APU Pulse 1 Volume/Decay"_sv,
+				.desc = U"APU Pulse 1 Control"_sv,
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
 					auto& apu = *static_cast<Impl*>(ctx);
-					apu.m_pulseChannel1.WriteVolumeDecay(value);
+					apu.m_pulseChannel1.WriteControl(value);
 				}
 			};
 		case 0x4001:
+			return MappedWrite{
+				.desc = U"APU Pulse 1 Sweep"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel1.WriteSweep(value);
+				}
+			};
 		case 0x4002:
+			return MappedWrite{
+				.desc = U"APU Pulse 1 Frequency"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel1.WriteFrequency(value);
+				}
+			};
 		case 0x4003:
+			return MappedWrite{
+				.desc = U"APU Pulse 1 Length"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel1.WriteLength(value);
+				}
+			};
 		case 0x4004:
+			return MappedWrite{
+				.desc = U"APU Pulse 2 Control"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel2.WriteControl(value);
+				}
+			};
 		case 0x4005:
+			return MappedWrite{
+				.desc = U"APU Pulse 2 Sweep"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel2.WriteSweep(value);
+				}
+			};
 		case 0x4006:
+			return MappedWrite{
+				.desc = U"APU Pulse 2 Frequency"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel2.WriteFrequency(value);
+				}
+			};
 		case 0x4007:
+			return MappedWrite{
+				.desc = U"APU Pulse 2 Length"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_pulseChannel2.WriteLength(value);
+				}
+			};
 		case 0x4008:
 		case 0x4009:
 		case 0x400A:

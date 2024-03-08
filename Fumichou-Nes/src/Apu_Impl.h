@@ -2,6 +2,8 @@
 #include "Apu.h"
 #include "AudioPulseChannel.h"
 
+// https://github.com/fogleman/nes/blob/master/nes/apu.go
+
 namespace Nes
 {
 	class Apu::Impl
