@@ -99,9 +99,37 @@ namespace Nes
 				}
 			};
 		case 0x4008:
+			return MappedWrite{
+				.desc = U"APU Traiangle Control"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_triangleChannel.WriteControl(value);
+				}
+			};
 		case 0x4009:
+			return MappedWrite::None();
 		case 0x400A:
+			return MappedWrite{
+				.desc = U"APU Traiangle Frequency"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_triangleChannel.WriteFrequency(value);
+				}
+			};
 		case 0x400B:
+			return MappedWrite{
+				.desc = U"APU Traiangle Length"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_triangleChannel.WriteLength(value);
+				}
+			};
 		case 0x400C:
 		case 0x400D:
 		case 0x400E:
@@ -112,13 +140,7 @@ namespace Nes
 		case 0x4013:
 		// case 0x4014: // OAM DMA
 		case 0x4015:
-			return MappedWrite{
-				.desc = U"APU (TODO)"_sv,
-				.ctx = &hw,
-				.func = [](void* ctx, addr16, uint8 value)
-				{
-				}
-			};
+			return MappedWrite::None();
 		default: break;
 		}
 		return MappedWrite::Invalid(MappingType::Cpu);

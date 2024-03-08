@@ -1,14 +1,11 @@
 ﻿#include "stdafx.h"
 #include "AudioPulseChannel.h"
+#include "AudioTable.h"
 
 using namespace Nes;
 
 namespace
 {
-	constexpr std::array<uint8, 32> lengthTable{
-		10, 254, 20, 2, 40, 4, 80, 6, 160, 8, 60, 10, 14, 12, 26, 14,
-		12, 16, 24, 18, 48, 20, 96, 22, 192, 24, 72, 26, 16, 28, 32, 30,
-	};
 }
 
 namespace Nes
@@ -41,7 +38,7 @@ namespace Nes
 	void AudioPulseChannel::WriteLength(uint8 value)
 	{
 		m_timerPeriod = SetBits<8, 15>(m_timerPeriod, value);
-		m_lengthValue = lengthTable[GetBits<3, 7>(value)];
+		m_lengthValue = LengthTable[GetBits<3, 7>(value)];
 		m_envelopeStart = true;
 		m_dutyValue = 0;
 	}
