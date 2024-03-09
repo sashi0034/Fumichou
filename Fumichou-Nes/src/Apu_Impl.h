@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Apu.h"
+#include "AudioChannelNoise.h"
 #include "AudioPulseChannel.h"
 #include "AudioTriangleChannel.h"
 
@@ -16,5 +17,6 @@ namespace Nes
 		AudioPulseChannel m_pulseChannel1{};
 		AudioPulseChannel m_pulseChannel2{};
 		AudioTriangleChannel m_triangleChannel{};
+		AudioChannelNoise m_channelNoise{};
 	};
 }

@@ -131,9 +131,37 @@ namespace Nes
 				}
 			};
 		case 0x400C:
+			return MappedWrite{
+				.desc = U"APU Noise Control"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_channelNoise.WriteLength(value);
+				}
+			};
 		case 0x400D:
+			return MappedWrite::None();
 		case 0x400E:
+			return MappedWrite{
+				.desc = U"APU Noise Frequency"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_channelNoise.WriteFrequency(value);
+				}
+			};
 		case 0x400F:
+			return MappedWrite{
+				.desc = U"APU Noise Length"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_channelNoise.WriteLength(value);
+				}
+			};
 		case 0x4010:
 		case 0x4011:
 		case 0x4012:
