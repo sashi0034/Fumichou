@@ -163,9 +163,45 @@ namespace Nes
 				}
 			};
 		case 0x4010:
+			return MappedWrite{
+				.desc = U"APU DMC Control"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_dmc.WriteControl(value);
+				}
+			};
 		case 0x4011:
+			return MappedWrite{
+				.desc = U"APU DMC Value"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_dmc.WriteValue(value);
+				}
+			};
 		case 0x4012:
+			return MappedWrite{
+				.desc = U"APU DMC Address"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_dmc.WriteAddress(value);
+				}
+			};
 		case 0x4013:
+			return MappedWrite{
+				.desc = U"APU DMC Length"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.m_dmc.WriteLength(value);
+				}
+			};
 		// case 0x4014: // OAM DMA
 		case 0x4015:
 			return MappedWrite::None();
