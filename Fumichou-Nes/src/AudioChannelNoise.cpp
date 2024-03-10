@@ -33,4 +33,13 @@ namespace Nes
 		m_lengthValue = LengthTable[GetBits<3, 7>(value)];
 		m_envelopeStart = true;
 	}
+
+	void AudioChannelNoise::Enable(uint8 enable)
+	{
+		m_enabled = enable;
+		if (not m_enabled)
+		{
+			m_lengthValue = 0;
+		}
+	}
 }

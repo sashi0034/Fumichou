@@ -14,6 +14,8 @@ namespace Nes
 	public:
 		class Io;
 
+		void WriteStatus(uint8 value);
+
 	private:
 		AudioPulseChannel m_pulseChannel1{};
 		AudioPulseChannel m_pulseChannel2{};

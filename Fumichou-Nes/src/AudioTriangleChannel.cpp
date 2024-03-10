@@ -23,4 +23,13 @@ namespace Nes
 		m_lengthValue = LengthTable[GetBits<3, 7>(value)];
 		m_counterReload = true;
 	}
+
+	void AudioTriangleChannel::Enable(uint8 enable)
+	{
+		m_enabled = enable;
+		if (not enable)
+		{
+			m_lengthValue = 0;
+		}
+	}
 }

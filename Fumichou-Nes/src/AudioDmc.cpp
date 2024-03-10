@@ -31,4 +31,21 @@ namespace Nes
 		// Sample Length = %0000LLLL.LLLL0001
 		m_sampleLength = (static_cast<uint16>(value) << 4) | 1;
 	}
+
+	void AudioDmc::Enable(uint8 enabled)
+	{
+		m_enabled = enabled;
+		if (enabled)
+		{
+			if (m_currentLength == 0)
+			{
+				m_currentAddress = m_sampleAddress;
+				m_currentLength = m_sampleLength;
+			}
+		}
+		else
+		{
+			m_currentLength = 0;
+		}
+	}
 }

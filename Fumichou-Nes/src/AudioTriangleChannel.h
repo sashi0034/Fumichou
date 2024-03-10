@@ -11,6 +11,8 @@ namespace Nes
 		void WriteFrequency(uint8 value);
 		void WriteLength(uint8 value);
 
+		void Enable(uint8 enable);
+
 	private:
 		bool m_enabled{};
 		bool m_lengthEnabled{};

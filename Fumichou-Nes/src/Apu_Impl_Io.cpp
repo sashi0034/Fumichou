@@ -204,7 +204,15 @@ namespace Nes
 			};
 		// case 0x4014: // OAM DMA
 		case 0x4015:
-			return MappedWrite::None();
+			return MappedWrite{
+				.desc = U"APU Status"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Impl*>(ctx);
+					apu.WriteStatus(value);
+				}
+			};
 		default: break;
 		}
 		return MappedWrite::Invalid(MappingType::Cpu);

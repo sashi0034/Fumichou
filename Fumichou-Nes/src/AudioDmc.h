@@ -12,6 +12,8 @@ namespace Nes
 		void WriteAddress(uint8 value);
 		void WriteLength(uint8 value);
 
+		void Enable(uint8 enabled);
+
 	private:
 		bool m_enabled{};
 		uint8 m_value{};

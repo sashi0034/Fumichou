@@ -42,4 +42,13 @@ namespace Nes
 		m_envelopeStart = true;
 		m_dutyValue = 0;
 	}
+
+	void AudioPulseChannel::Enable(bool enabled)
+	{
+		m_enabled = enabled;
+		if (not enabled)
+		{
+			m_lengthValue = 0;
+		}
+	}
 }
