@@ -121,7 +121,7 @@
     <ClCompile Include="src\Apu.cpp" />
     <ClCompile Include="src\Apu_Impl.cpp" />
     <ClCompile Include="src\Apu_Impl_Io.cpp" />
-    <ClCompile Include="src\AudioChannelNoise.cpp" />
+    <ClCompile Include="src\AudioNoiseChannel.cpp" />
     <ClCompile Include="src\AudioDmc.cpp" />
     <ClCompile Include="src\AudioPulseChannel.cpp" />
     <ClCompile Include="src\AudioTriangleChannel.cpp" />
@@ -174,7 +174,7 @@
     <ClInclude Include="include\Util.h" />
     <ClInclude Include="src\Apu_Impl.h" />
     <ClInclude Include="src\Apu_Impl_Io.h" />
-    <ClInclude Include="src\AudioChannelNoise.h" />
+    <ClInclude Include="src\AudioNoiseChannel.h" />
     <ClInclude Include="src\AudioDmc.h" />
     <ClInclude Include="src\AudioTable.h" />
     <ClInclude Include="src\AudioPulseChannel.h" />

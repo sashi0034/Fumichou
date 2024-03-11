@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Apu.h"
-#include "AudioChannelNoise.h"
+#include "AudioNoiseChannel.h"
 #include "AudioDmc.h"
 #include "AudioPulseChannel.h"
 #include "AudioTriangleChannel.h"
@@ -14,13 +14,20 @@ namespace Nes
 	public:
 		class Io;
 
+		static void Step(Hardware& hw, CpuCycle cycle);
+
 		void WriteStatus(uint8 value);
 
 	private:
+		CpuCycle m_cycleCount{};
 		AudioPulseChannel m_pulseChannel1{};
 		AudioPulseChannel m_pulseChannel2{};
 		AudioTriangleChannel m_triangleChannel{};
-		AudioChannelNoise m_channelNoise{};
+		AudioNoiseChannel m_noiseChannel{};
 		AudioDmc m_dmc{};
+
+		class Internal;
 	};
+
+	using Apu_Impl = Apu::Impl;
 }

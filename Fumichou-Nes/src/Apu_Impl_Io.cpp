@@ -24,7 +24,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel1.WriteControl(value);
 				}
 			};
@@ -34,7 +34,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel1.WriteSweep(value);
 				}
 			};
@@ -44,7 +44,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel1.WriteFrequency(value);
 				}
 			};
@@ -54,7 +54,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel1.WriteLength(value);
 				}
 			};
@@ -64,7 +64,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel2.WriteControl(value);
 				}
 			};
@@ -74,7 +74,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel2.WriteSweep(value);
 				}
 			};
@@ -84,7 +84,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel2.WriteFrequency(value);
 				}
 			};
@@ -94,7 +94,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_pulseChannel2.WriteLength(value);
 				}
 			};
@@ -104,7 +104,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_triangleChannel.WriteControl(value);
 				}
 			};
@@ -116,7 +116,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_triangleChannel.WriteFrequency(value);
 				}
 			};
@@ -126,7 +126,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_triangleChannel.WriteLength(value);
 				}
 			};
@@ -136,8 +136,8 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
-					apu.m_channelNoise.WriteLength(value);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
+					apu.m_noiseChannel.WriteLength(value);
 				}
 			};
 		case 0x400D:
@@ -148,8 +148,8 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
-					apu.m_channelNoise.WriteFrequency(value);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
+					apu.m_noiseChannel.WriteFrequency(value);
 				}
 			};
 		case 0x400F:
@@ -158,8 +158,8 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
-					apu.m_channelNoise.WriteLength(value);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
+					apu.m_noiseChannel.WriteLength(value);
 				}
 			};
 		case 0x4010:
@@ -168,7 +168,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_dmc.WriteControl(value);
 				}
 			};
@@ -178,7 +178,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_dmc.WriteValue(value);
 				}
 			};
@@ -188,7 +188,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_dmc.WriteAddress(value);
 				}
 			};
@@ -198,7 +198,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.m_dmc.WriteLength(value);
 				}
 			};
@@ -209,7 +209,7 @@ namespace Nes
 				.ctx = &apu,
 				.func = [](void* ctx, addr16, uint8 value)
 				{
-					auto& apu = *static_cast<Impl*>(ctx);
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
 					apu.WriteStatus(value);
 				}
 			};

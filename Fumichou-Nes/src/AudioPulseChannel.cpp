@@ -51,4 +51,17 @@ namespace Nes
 			m_lengthValue = 0;
 		}
 	}
+
+	void AudioPulseChannel::StepTimer()
+	{
+		if (m_timerValue == 0)
+		{
+			m_timerValue = m_timerPeriod;
+			m_dutyValue = (m_dutyValue + 1) & 0x07;
+		}
+		else
+		{
+			m_timerValue--;
+		}
+	}
 }

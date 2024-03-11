@@ -32,4 +32,20 @@ namespace Nes
 			m_lengthValue = 0;
 		}
 	}
+
+	void AudioTriangleChannel::StepTimer()
+	{
+		if (m_timerValue == 0)
+		{
+			m_timerValue = m_timerPeriod;
+			if (m_lengthValue > 0 && m_counterValue > 0)
+			{
+				m_dutyValue = (m_dutyValue + 1) & 0x1F;
+			}
+		}
+		else
+		{
+			m_timerValue--;
+		}
+	}
 }

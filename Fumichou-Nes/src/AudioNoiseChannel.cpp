@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "AudioChannelNoise.h"
+#include "AudioNoiseChannel.h"
 
 #include "AudioTable.h"
 
@@ -12,7 +12,7 @@ namespace
 
 namespace Nes
 {
-	void AudioChannelNoise::WriteControl(uint8 value)
+	void AudioNoiseChannel::WriteControl(uint8 value)
 	{
 		m_constantVolume = GetBits<0, 3>(value);
 		m_envelopePeriod = m_constantVolume;
@@ -22,24 +22,41 @@ namespace Nes
 		m_envelopeStart = true;
 	}
 
-	void AudioChannelNoise::WriteFrequency(uint8 value)
+	void AudioNoiseChannel::WriteFrequency(uint8 value)
 	{
 		m_timerPeriod = noiseTable[GetBits<0, 3>(value)];
 		m_mode = GetBits<7>(value);
 	}
 
-	void AudioChannelNoise::WriteLength(uint8 value)
+	void AudioNoiseChannel::WriteLength(uint8 value)
 	{
 		m_lengthValue = LengthTable[GetBits<3, 7>(value)];
 		m_envelopeStart = true;
 	}
 
-	void AudioChannelNoise::Enable(uint8 enable)
+	void AudioNoiseChannel::Enable(uint8 enable)
 	{
 		m_enabled = enable;
 		if (not m_enabled)
 		{
 			m_lengthValue = 0;
+		}
+	}
+
+	void AudioNoiseChannel::StepTimer()
+	{
+		if (m_timerValue == 0)
+		{
+			m_timerValue = m_timerPeriod;
+			const uint8 shift = m_mode ? 6 : 1;
+			const auto b1 = m_shiftRegister & 1;
+			const auto b2 = (m_shiftRegister >> shift) & 1;
+			m_shiftRegister >>= 1;
+			m_shiftRegister |= (b1 ^ b2) << 14;
+		}
+		else
+		{
+			m_timerValue--;
 		}
 	}
 }

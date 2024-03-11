@@ -12,6 +12,7 @@ namespace Nes
 		void WriteLength(uint8 value);
 
 		void Enable(uint8 enable);
+		void StepTimer();
 
 	private:
 		bool m_enabled{};

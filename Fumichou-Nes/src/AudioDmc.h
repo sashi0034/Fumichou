@@ -13,8 +13,11 @@ namespace Nes
 		void WriteLength(uint8 value);
 
 		void Enable(uint8 enabled);
+		void StepTimer();
 
 	private:
+		class Impl;
+
 		bool m_enabled{};
 		uint8 m_value{};
 		uint16 m_sampleAddress{};

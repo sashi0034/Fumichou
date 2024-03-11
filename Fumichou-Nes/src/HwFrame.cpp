@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "HwFrame.h"
 
+#include "Apu_Impl.h"
 #include "Cartridge.h"
 #include "Cartridge_In.h"
 #include "HardwareConstants.h"
@@ -138,6 +139,9 @@ private:
 
 		// PPU実行
 		Ppu::In::Step(m_hardware, cpuCycle * 3);
+
+		// APU実行
+		Apu::Impl::Step(m_hardware, cpuCycle);
 
 		m_cycleCount += cpuCycle;
 
