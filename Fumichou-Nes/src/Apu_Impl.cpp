@@ -14,11 +14,11 @@ namespace
 class Apu::Impl::Internal
 {
 public:
-	static void StepCycle(Apu_Impl& apu)
+	static void StepCycle(Apu_Impl& apu, Mos6502& cpu, const Mmu& mmu)
 	{
 		apu.m_cycleCount++;
 
-		stepTimer(apu);
+		stepTimer(apu, cpu, mmu);
 
 		if ((apu.m_cycleCount % frameCounterFrequency) == 0)
 		{
@@ -27,9 +27,16 @@ public:
 	}
 
 private:
-	static void stepTimer(Apu_Impl& apu)
+	static void stepTimer(Apu_Impl& apu, Mos6502& cpu, const Mmu& mmu)
 	{
-		// TODO
+		if (not(apu.m_cycleCount & 1))
+		{
+			apu.m_pulseChannel1.StepTimer();
+			apu.m_pulseChannel2.StepTimer();
+			apu.m_noiseChannel.StepTimer();
+			apu.m_dmc.StepTimer(cpu, mmu);
+		}
+		apu.m_triangleChannel.StepTimer();
 	}
 };
 
@@ -39,7 +46,7 @@ namespace Nes
 	{
 		for (int i = 0; i < cycle; ++i)
 		{
-			Internal::StepCycle(*hw.GetApu().p_impl);
+			Internal::StepCycle(*hw.GetApu().p_impl, hw.GetMos6502(), hw.GetMmu());
 		}
 	}
 

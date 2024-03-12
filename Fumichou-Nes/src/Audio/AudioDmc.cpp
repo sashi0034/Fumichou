@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
 #include "AudioDmc.h"
 
+#include "Apu.h"
 #include "Mmu.h"
+#include "Mos6502.h"
 
 using namespace Nes;
 
@@ -13,17 +15,17 @@ namespace
 class AudioDmc::Impl
 {
 public:
-	static void restart(AudioDmc& dmc)
+	static void Restart(AudioDmc& dmc)
 	{
 		dmc.m_currentAddress = dmc.m_sampleAddress;
 		dmc.m_currentLength = dmc.m_sampleLength;
 	}
 
-	static void stepReader(AudioDmc& dmc, const Mmu& mmu)
+	static void StepReader(AudioDmc& dmc, Mos6502& cpu, const Mmu& mmu)
 	{
 		if (dmc.m_currentLength > 0 && dmc.m_bitCount == 0)
 		{
-			// FIXME: CPUに遅延発生?
+			cpu.IncrementStalls(4);
 			dmc.m_shiftRegister = mmu.ReadPrg8(dmc.m_currentAddress);
 			dmc.m_bitCount = 8;
 			dmc.m_currentAddress++;
@@ -34,9 +36,30 @@ public:
 			dmc.m_currentLength--;
 			if (dmc.m_currentLength == 0 && dmc.m_loop)
 			{
-				restart(dmc);
+				Restart(dmc);
 			}
 		}
+	}
+
+	static void StepShifter(AudioDmc& dmc)
+	{
+		if (dmc.m_bitCount == 0) return;
+		if (dmc.m_shiftRegister & 1)
+		{
+			if (dmc.m_value <= 125)
+			{
+				dmc.m_value += 2;
+			}
+		}
+		else
+		{
+			if (dmc.m_value >= 2)
+			{
+				dmc.m_value -= 2;
+			}
+		}
+		dmc.m_shiftRegister >>= 1;
+		dmc.m_bitCount--;
 	}
 };
 
@@ -83,10 +106,19 @@ namespace Nes
 		}
 	}
 
-	void AudioDmc::StepTimer()
+	void AudioDmc::StepTimer(Mos6502& cpu, const Mmu& mmu)
 	{
 		if (not m_enabled) return;
 
-		// TODO
+		Impl::StepReader(*this, cpu, mmu);
+		if (m_tickValue == 0)
+		{
+			m_tickValue = m_tickPeriod;
+			Impl::StepShifter(*this);
+		}
+		else
+		{
+			m_tickValue--;
+		}
 	}
 }

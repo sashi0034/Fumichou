@@ -4,6 +4,9 @@
 
 namespace Nes
 {
+	class Mos6502;
+	class Mmu;
+
 	class AudioDmc
 	{
 	public:
@@ -13,7 +16,7 @@ namespace Nes
 		void WriteLength(uint8 value);
 
 		void Enable(uint8 enabled);
-		void StepTimer();
+		void StepTimer(Mos6502& cpu, const Mmu& mmu);
 
 	private:
 		class Impl;
