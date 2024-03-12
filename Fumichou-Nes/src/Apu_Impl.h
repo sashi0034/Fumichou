@@ -1,9 +1,9 @@
 ﻿#pragma once
 #include "Apu.h"
-#include "AudioNoiseChannel.h"
-#include "AudioDmc.h"
-#include "AudioPulseChannel.h"
-#include "AudioTriangleChannel.h"
+#include "Audio/AudioNoiseChannel.h"
+#include "Audio/AudioDmc.h"
+#include "Audio/AudioPulseChannel.h"
+#include "Audio/AudioTriangleChannel.h"
 
 // https://github.com/fogleman/nes/blob/master/nes/apu.go
 
