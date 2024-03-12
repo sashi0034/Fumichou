@@ -213,7 +213,7 @@ namespace Nes
 			{
 				auto& hw = *static_cast<Hardware*>(ctx);
 
-				Mos6502::In::StartDmaCycles(hw.GetMos6502());
+				hw.GetMos6502().IncrementStalls(513 + (hw.GetMos6502().GetCycles() & 1));
 
 				const addr16 high = value << 8;
 				const uint16 oamAddr = hw.GetPpu().m_regs.OamAddr;

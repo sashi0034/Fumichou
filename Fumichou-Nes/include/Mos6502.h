@@ -42,10 +42,14 @@ namespace Nes
 		const CpuRegs& GetRegs() const { return m_regs; }
 		const CpuFlags& GetFlags() const { return m_flags; }
 
+		CpuCycle GetCycles() const { return m_cycles; }
+		CpuCycle IncrementStalls(CpuCycle stalls) { return m_stalls += stalls; }
+
 	private:
+		CpuCycle m_cycles{};
+		CpuCycle m_stalls{};
 		InterruptKind m_pendingInterrupt{InterruptKind::None};
 		CpuRegs m_regs{};
 		CpuFlags m_flags{};
-		CpuCycle m_dmaCycles{};
 	};
 }

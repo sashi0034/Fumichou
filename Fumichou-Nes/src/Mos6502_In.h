@@ -31,7 +31,6 @@ namespace Nes
 		static CpuCycle Step(Hardware& hw);
 
 		static void RequestNmi(Mos6502& self);
-		static void StartDmaCycles(Mos6502& self);
 
 		class Op;
 

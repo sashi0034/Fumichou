@@ -43,14 +43,15 @@ public:
 			// マスク不可割り込み
 			handleInterrupt(mos6502, mmu, InterruptKind::NMI);
 			mos6502.m_pendingInterrupt = InterruptKind::None;
+			mos6502.m_cycles += 7;
 			return 7;
 		}
 
-		if (mos6502.m_dmaCycles > 0)
+		if (mos6502.m_stalls > 0)
 		{
 			// DMA転送中
-			const CpuCycle cycles = mos6502.m_dmaCycles;
-			mos6502.m_dmaCycles = 0;
+			const CpuCycle cycles = mos6502.m_stalls;
+			mos6502.m_stalls = 0;
 			return cycles;
 		}
 
@@ -80,6 +81,7 @@ public:
 			.pageBoundary = pageBoundary,
 		});
 
+		mos6502.m_cycles += consumedCycles;
 		return consumedCycles;
 	}
 };
@@ -99,11 +101,6 @@ namespace Nes
 	void Mos6502::In::RequestNmi(Mos6502& self)
 	{
 		self.m_pendingInterrupt = InterruptKind::NMI;
-	}
-
-	void Mos6502::In::StartDmaCycles(Mos6502& self)
-	{
-		self.m_dmaCycles += 513; // FIXME: 514のときもある
 	}
 
 	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)
