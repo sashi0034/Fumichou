@@ -119,12 +119,12 @@
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
     <ClCompile Include="src\Apu.cpp" />
+    <ClCompile Include="src\Audio\Apu_Impl.cpp" />
+    <ClCompile Include="src\Audio\Apu_Impl_Io.cpp" />
     <ClCompile Include="src\Audio\AudioDmc.cpp" />
     <ClCompile Include="src\Audio\AudioNoiseChannel.cpp" />
     <ClCompile Include="src\Audio\AudioPulseChannel.cpp" />
     <ClCompile Include="src\Audio\AudioTriangleChannel.cpp" />
-    <ClCompile Include="src\Apu_Impl.cpp" />
-    <ClCompile Include="src\Apu_Impl_Io.cpp" />
     <ClCompile Include="src\Boards\BoardCnrom.cpp" />
     <ClCompile Include="src\Boards\PatternTableMemory.cpp" />
     <ClCompile Include="src\Cartridge.cpp" />
@@ -172,13 +172,13 @@
     <ClInclude Include="include\Ppu.h" />
     <ClInclude Include="include\StandardController.h" />
     <ClInclude Include="include\Util.h" />
+    <ClInclude Include="src\Audio\Apu_Impl.h" />
+    <ClInclude Include="src\Audio\Apu_Impl_Io.h" />
     <ClInclude Include="src\Audio\AudioDmc.h" />
     <ClInclude Include="src\Audio\AudioNoiseChannel.h" />
     <ClInclude Include="src\Audio\AudioPulseChannel.h" />
     <ClInclude Include="src\Audio\AudioTable.h" />
     <ClInclude Include="src\Audio\AudioTriangleChannel.h" />
-    <ClInclude Include="src\Apu_Impl.h" />
-    <ClInclude Include="src\Apu_Impl_Io.h" />
     <ClInclude Include="src\Boards\BoardCnrom.h" />
     <ClInclude Include="src\Boards\PatternTableMemory.h" />
     <ClInclude Include="src\Cartridge_In.h" />

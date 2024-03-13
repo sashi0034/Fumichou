@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Apu.h"
 
-#include "Apu_Impl.h"
+#include "Audio/Apu_Impl.h"
 
 namespace Nes
 {
