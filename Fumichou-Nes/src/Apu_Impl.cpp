@@ -8,7 +8,7 @@ using namespace Nes;
 
 namespace
 {
-	constexpr uint32 frameCounterFrequency = CpuFrequency_1789773 / 240;
+	constexpr uint32 frameCounterFrequency_7457 = CpuFrequency_1789773 / 240;
 }
 
 class Apu::Impl::Internal
@@ -20,10 +20,25 @@ public:
 
 		stepTimer(apu, cpu, mmu);
 
-		if ((apu.m_cycleCount % frameCounterFrequency) == 0)
+		if ((apu.m_cycleCount % frameCounterFrequency_7457) == 0)
 		{
 			// TODO
 		}
+	}
+
+	static void StepEnvelop(Apu_Impl& apu)
+	{
+		// TODO
+	}
+
+	static void StepSweep(Apu_Impl& apu)
+	{
+		// TODO
+	}
+
+	static void StepLength(Apu_Impl& apu)
+	{
+		// TODO
 	}
 
 private:
@@ -57,5 +72,17 @@ namespace Nes
 		m_triangleChannel.Enable(GetBits<2>(value));
 		m_noiseChannel.Enable(GetBits<3>(value));
 		m_dmc.Enable(GetBits<4>(value));
+	}
+
+	void Apu::Impl::WriteFrameCounter(uint8 value)
+	{
+		m_framePeriod = 4 + GetBits<7>(value);
+		m_frameIrq = GetBits<6>(value);
+		if (m_framePeriod == 5)
+		{
+			Internal::StepEnvelop(*this);
+			Internal::StepSweep(*this);
+			Internal::StepLength(*this);
+		}
 	}
 }

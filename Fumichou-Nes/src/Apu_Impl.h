@@ -17,6 +17,7 @@ namespace Nes
 		static void Step(Hardware& hw, CpuCycle cycle);
 
 		void WriteStatus(uint8 value);
+		void WriteFrameCounter(uint8 value);
 
 	private:
 		CpuCycle m_cycleCount{};
@@ -25,6 +26,9 @@ namespace Nes
 		AudioTriangleChannel m_triangleChannel{};
 		AudioNoiseChannel m_noiseChannel{};
 		AudioDmc m_dmc{};
+		uint8 m_framePeriod{};
+		uint8 m_frameValue{};
+		uint8 m_frameIrq{};
 
 		class Internal;
 	};

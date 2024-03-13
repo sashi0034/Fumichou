@@ -120,7 +120,7 @@ private:
 		{
 			if (addr == 0x4014)
 				cpuWrite[addr] = Ppu::In::Io::MapWritePrg_0x4014(hw);
-			else if (addr == 0x4016 || addr == 0x4017)
+			else if (addr == 0x4016)
 				cpuWrite[addr] = StandardController::In::MapWritePrg_0x4016(hw.GetController());
 			else
 				cpuWrite[addr] = Apu::Impl::Io::MapWritePrg(hw, addr);

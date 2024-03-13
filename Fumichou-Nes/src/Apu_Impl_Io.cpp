@@ -213,6 +213,17 @@ namespace Nes
 					apu.WriteStatus(value);
 				}
 			};
+		// case 0x4016: // Standard Controller Input
+		case 0x4017:
+			return MappedWrite{
+				.desc = U"APU Status"_sv,
+				.ctx = &apu,
+				.func = [](void* ctx, addr16, uint8 value)
+				{
+					auto& apu = *static_cast<Apu_Impl*>(ctx);
+					apu.WriteFrameCounter(value);
+				}
+			};
 		default: break;
 		}
 		return MappedWrite::Invalid(MappingType::Cpu);
