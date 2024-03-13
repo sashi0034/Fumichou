@@ -61,16 +61,16 @@ private:
 
 namespace Nes
 {
-	void Apu::Impl::Reset(Apu& apu)
+	void Apu::Impl::Reset()
 	{
-		apu.p_impl->m_framePeriod = 4;
+		m_framePeriod = 4;
 	}
 
-	void Apu::Impl::Step(Hardware& hw, CpuCycle cycle)
+	void Apu::Impl::Step(Mos6502& cpu, const Mmu& mmu, CpuCycle cycle)
 	{
 		for (int i = 0; i < cycle; ++i)
 		{
-			Internal::StepCycle(*hw.GetApu().p_impl, hw.GetMos6502(), hw.GetMmu());
+			Internal::StepCycle(*this, cpu, mmu);
 		}
 	}
 

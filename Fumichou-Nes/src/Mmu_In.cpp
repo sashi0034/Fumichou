@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Mmu_In.h"
 
-#include "Audio/Apu_Impl_Io.h"
+#include "Apu_In.h"
 #include "Hardware.h"
 #include "Ppu_In.h"
 #include "Ppu_In_Io.h"
@@ -123,7 +123,7 @@ private:
 			else if (addr == 0x4016)
 				cpuWrite[addr] = StandardController::In::MapWritePrg_0x4016(hw.GetController());
 			else
-				cpuWrite[addr] = Apu::Impl::Io::MapWritePrg(hw, addr);
+				cpuWrite[addr] = Apu::In::MapWritePrg(hw, addr);
 		}
 
 		for (const auto addr : Range(0x6000, 0x7FFF))

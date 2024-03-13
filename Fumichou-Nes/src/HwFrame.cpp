@@ -1,13 +1,13 @@
 ﻿#include "stdafx.h"
 #include "HwFrame.h"
 
+#include "Apu_In.h"
 #include "Cartridge.h"
 #include "Cartridge_In.h"
 #include "HardwareConstants.h"
 #include "Mmu_In.h"
 #include "Mos6502_In.h"
 #include "Ppu_In.h"
-#include "Audio/Apu_Impl.h"
 
 using namespace Nes;
 
@@ -113,7 +113,7 @@ private:
 		Mmu::In::MapWholeAddr(m_hardware);
 
 		Mos6502::In::Reset(m_hardware.GetMos6502(), m_hardware.GetMmu());
-		Apu::Impl::Reset(m_hardware.GetApu());
+		Apu::In::Reset(m_hardware.GetApu());
 
 		m_abort = s3d::none;
 		m_frameCount = 0;
@@ -142,7 +142,7 @@ private:
 		Ppu::In::Step(m_hardware, cpuCycle * 3);
 
 		// APU実行
-		Apu::Impl::Step(m_hardware, cpuCycle);
+		Apu::In::Step(m_hardware, cpuCycle);
 
 		m_cycleCount += cpuCycle;
 

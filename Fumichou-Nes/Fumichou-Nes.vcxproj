@@ -119,6 +119,7 @@
   <ItemGroup>
     <ClCompile Include="App\shader-nes\empty.hlsl" />
     <ClCompile Include="src\Apu.cpp" />
+    <ClCompile Include="src\Apu_In.cpp" />
     <ClCompile Include="src\Audio\Apu_Impl.cpp" />
     <ClCompile Include="src\Audio\Apu_Impl_Io.cpp" />
     <ClCompile Include="src\Audio\AudioDmc.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="include\Ppu.h" />
     <ClInclude Include="include\StandardController.h" />
     <ClInclude Include="include\Util.h" />
+    <ClInclude Include="src\Apu_In.h" />
     <ClInclude Include="src\Audio\Apu_Impl.h" />
     <ClInclude Include="src\Audio\Apu_Impl_Io.h" />
     <ClInclude Include="src\Audio\AudioDmc.h" />

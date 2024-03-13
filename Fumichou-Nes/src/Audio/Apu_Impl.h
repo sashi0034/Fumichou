@@ -12,10 +12,11 @@ namespace Nes
 	class Apu::Impl
 	{
 	public:
+		using Apu_Impl = Apu::Impl;
 		class Io;
 
-		static void Reset(Apu& apu);
-		static void Step(Hardware& hw, CpuCycle cycle);
+		void Reset();
+		void Step(Mos6502& cpu, const Mmu& mmu, CpuCycle cycle);
 
 		void WriteStatus(uint8 value);
 		void WriteFrameCounter(uint8 value);
@@ -33,6 +34,4 @@ namespace Nes
 
 		class Internal;
 	};
-
-	using Apu_Impl = Apu::Impl;
 }
