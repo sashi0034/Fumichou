@@ -19,17 +19,6 @@ namespace
 class Mos6502::In::Impl
 {
 public:
-	static void Reset(Hardware& hw)
-	{
-		auto&& mos6502 = hw.GetMos6502();
-
-		mos6502.m_regs = {};
-		mos6502.m_regs.pc = hw.GetMmu().ReadPrg16(ResetVector_0xFFFC);
-		mos6502.m_regs.sp = 0xFD;
-
-		mos6502.m_flags = {};
-	}
-
 	static CpuCycle Step(Hardware& hw)
 	{
 		auto&& mos6502 = hw.GetMos6502();
@@ -88,9 +77,13 @@ public:
 
 namespace Nes
 {
-	void Mos6502::In::Reset(Hardware& hw)
+	void Mos6502::In::Reset(Mos6502& mos6502, const Mmu& mmu)
 	{
-		Impl::Reset(hw);
+		mos6502.m_regs = {};
+		mos6502.m_regs.pc = mmu.ReadPrg16(ResetVector_0xFFFC);
+		mos6502.m_regs.sp = 0xFD;
+
+		mos6502.m_flags = {};
 	}
 
 	CpuCycle Mos6502::In::Step(Hardware& hw)

@@ -27,7 +27,7 @@ namespace Nes
 	class Mos6502::In
 	{
 	public:
-		static void Reset(Hardware& hw);
+		static void Reset(Mos6502& mos6502, const Mmu& mmu);
 		static CpuCycle Step(Hardware& hw);
 
 		static void RequestNmi(Mos6502& self);

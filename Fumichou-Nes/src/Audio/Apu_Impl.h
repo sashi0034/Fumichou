@@ -14,6 +14,7 @@ namespace Nes
 	public:
 		class Io;
 
+		static void Reset(Apu& apu);
 		static void Step(Hardware& hw, CpuCycle cycle);
 
 		void WriteStatus(uint8 value);

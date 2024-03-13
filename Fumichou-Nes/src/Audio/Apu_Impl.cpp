@@ -53,10 +53,19 @@ private:
 		}
 		apu.m_triangleChannel.StepTimer();
 	}
+
+	static void StepFrameCounter(Apu_Impl& apu, Mos6502& cpu)
+	{
+	}
 };
 
 namespace Nes
 {
+	void Apu::Impl::Reset(Apu& apu)
+	{
+		apu.p_impl->m_framePeriod = 4;
+	}
+
 	void Apu::Impl::Step(Hardware& hw, CpuCycle cycle)
 	{
 		for (int i = 0; i < cycle; ++i)
