@@ -30,7 +30,9 @@ namespace Nes
 		static void Reset(Mos6502& mos6502, const Mmu& mmu);
 		static CpuCycle Step(Hardware& hw);
 
-		static void RequestNmi(Mos6502& self);
+		static void IncrementStalls(Mos6502& self, CpuCycle stalls);
+		static void FireNmi(Mos6502& self);
+		static void FireIrq(Mos6502& self);
 
 		class Op;
 

@@ -4,6 +4,7 @@
 #include "Apu.h"
 #include "Mmu.h"
 #include "Mos6502.h"
+#include "Mos6502_In.h"
 
 using namespace Nes;
 
@@ -25,7 +26,7 @@ public:
 	{
 		if (dmc.m_currentLength > 0 && dmc.m_bitCount == 0)
 		{
-			cpu.IncrementStalls(4);
+			Mos6502::In::IncrementStalls(cpu, 4);
 			dmc.m_shiftRegister = mmu.ReadPrg8(dmc.m_currentAddress);
 			dmc.m_bitCount = 8;
 			dmc.m_currentAddress++;

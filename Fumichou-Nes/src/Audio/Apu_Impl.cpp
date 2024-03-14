@@ -3,6 +3,7 @@
 
 #include "Hardware.h"
 #include "HardwareConstants.h"
+#include "Mos6502_In.h"
 
 using namespace Nes;
 
@@ -56,6 +57,32 @@ private:
 
 	static void StepFrameCounter(Apu_Impl& apu, Mos6502& cpu)
 	{
+		if (apu.m_framePeriod == 4)
+		{
+			apu.m_frameValue = (apu.m_frameValue + 1) & 3;
+			switch (apu.m_frameValue & 4)
+			{
+			case 0: [[fallthrough]];
+			case 2:
+				StepEnvelop(apu);
+				break;
+			case 1:
+				StepEnvelop(apu);
+				StepSweep(apu);
+				StepLength(apu);
+				break;
+			case 3:
+				StepEnvelop(apu);
+				StepSweep(apu);
+				StepLength(apu);
+				if (apu.m_frameIrq) Mos6502::In::FireIrq(cpu);
+				break;
+			default: assert(false);
+			}
+		}
+		else // 5
+		{
+		}
 	}
 };
 

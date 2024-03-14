@@ -91,9 +91,19 @@ namespace Nes
 		return Impl::Step(hw);
 	}
 
-	void Mos6502::In::RequestNmi(Mos6502& self)
+	void Mos6502::In::IncrementStalls(Mos6502& self, CpuCycle stalls)
+	{
+		self.m_stalls += stalls;
+	}
+
+	void Mos6502::In::FireNmi(Mos6502& self)
 	{
 		self.m_pendingInterrupt = InterruptKind::NMI;
+	}
+
+	void Mos6502::In::FireIrq(Mos6502& self)
+	{
+		if (not self.m_flags.i) self.m_pendingInterrupt = InterruptKind::IRQ;
 	}
 
 	void Mos6502::In::handleInterrupt(Mos6502& self, const Mmu& mmu, InterruptKind interrupt)
