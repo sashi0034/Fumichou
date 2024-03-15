@@ -48,4 +48,21 @@ namespace Nes
 			m_timerValue--;
 		}
 	}
+
+	void AudioTriangleChannel::StepCounter()
+	{
+		if (m_counterReload)
+		{
+			m_counterValue = m_counterPeriod;
+		}
+		else if (m_counterValue > 0)
+		{
+			m_counterValue--;
+		}
+
+		if (m_lengthEnabled)
+		{
+			m_counterReload = false;
+		}
+	}
 }

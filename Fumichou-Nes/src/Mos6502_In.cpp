@@ -96,12 +96,12 @@ namespace Nes
 		self.m_stalls += stalls;
 	}
 
-	void Mos6502::In::FireNmi(Mos6502& self)
+	void Mos6502::In::InvokeNmi(Mos6502& self)
 	{
 		self.m_pendingInterrupt = InterruptKind::NMI;
 	}
 
-	void Mos6502::In::FireIrq(Mos6502& self)
+	void Mos6502::In::InvokeIrq(Mos6502& self)
 	{
 		if (not self.m_flags.i) self.m_pendingInterrupt = InterruptKind::IRQ;
 	}

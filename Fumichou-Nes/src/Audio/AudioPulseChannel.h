@@ -13,8 +13,12 @@ namespace Nes
 
 		void Enable(bool enabled);
 		void StepTimer();
+		void StepEnvelope();
+		void StepSweep();
 
 	private:
+		void sweep();
+
 		bool m_enabled{};
 		uint8 m_channel{};
 		bool m_lengthEnabled{};

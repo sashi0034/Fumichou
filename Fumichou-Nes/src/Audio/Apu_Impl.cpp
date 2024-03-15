@@ -23,18 +23,22 @@ public:
 
 		if ((apu.m_cycleCount % frameCounterFrequency_7457) == 0)
 		{
-			// TODO
+			StepFrameCounter(apu, cpu);
 		}
 	}
 
 	static void StepEnvelop(Apu_Impl& apu)
 	{
-		// TODO
+		apu.m_pulseChannel1.StepEnvelope();
+		apu.m_pulseChannel2.StepEnvelope();
+		apu.m_triangleChannel.StepCounter();
+		apu.m_noiseChannel.StepEnvelop();
 	}
 
 	static void StepSweep(Apu_Impl& apu)
 	{
-		// TODO
+		apu.m_pulseChannel1.StepSweep();
+		apu.m_pulseChannel2.StepSweep();
 	}
 
 	static void StepLength(Apu_Impl& apu)
@@ -60,7 +64,7 @@ private:
 		if (apu.m_framePeriod == 4)
 		{
 			apu.m_frameValue = (apu.m_frameValue + 1) & 3;
-			switch (apu.m_frameValue & 4)
+			switch (apu.m_frameValue)
 			{
 			case 0: [[fallthrough]];
 			case 2:
@@ -75,13 +79,28 @@ private:
 				StepEnvelop(apu);
 				StepSweep(apu);
 				StepLength(apu);
-				if (apu.m_frameIrq) Mos6502::In::FireIrq(cpu);
+				if (apu.m_frameIrq) Mos6502::In::InvokeIrq(cpu);
 				break;
 			default: assert(false);
 			}
 		}
 		else // 5
 		{
+			apu.m_frameValue = (apu.m_frameValue + 1) % 5;
+			switch (apu.m_frameValue)
+			{
+			case 0: [[fallthrough]];
+			case 2:
+				StepEnvelop(apu);
+				break;
+			case 1: [[fallthrough]];
+			case 3:
+				StepEnvelop(apu);
+				StepSweep(apu);
+				StepLength(apu);
+				break;
+			default: break;
+			}
 		}
 	}
 };

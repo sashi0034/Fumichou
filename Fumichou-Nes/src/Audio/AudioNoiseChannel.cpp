@@ -59,4 +59,30 @@ namespace Nes
 			m_timerValue--;
 		}
 	}
+
+	void AudioNoiseChannel::StepEnvelop()
+	{
+		if (m_envelopeStart)
+		{
+			m_envelopeVolume = 15;
+			m_envelopeValue = m_envelopePeriod;
+			m_envelopeStart = false;
+		}
+		else if (m_envelopeValue > 0)
+		{
+			m_envelopeValue--;
+		}
+		else
+		{
+			if (m_envelopeVolume > 0)
+			{
+				m_envelopeVolume--;
+			}
+			else if (m_envelopeLoop)
+			{
+				m_envelopeVolume = 15;
+			}
+			m_envelopeValue = m_envelopePeriod;
+		}
+	}
 }

@@ -13,6 +13,7 @@ namespace Nes
 
 		void Enable(uint8 enable);
 		void StepTimer();
+		void StepEnvelop();
 
 	private:
 		bool m_enabled{};

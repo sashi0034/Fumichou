@@ -31,8 +31,8 @@ namespace Nes
 		static CpuCycle Step(Hardware& hw);
 
 		static void IncrementStalls(Mos6502& self, CpuCycle stalls);
-		static void FireNmi(Mos6502& self);
-		static void FireIrq(Mos6502& self);
+		static void InvokeNmi(Mos6502& self);
+		static void InvokeIrq(Mos6502& self);
 
 		class Op;
 

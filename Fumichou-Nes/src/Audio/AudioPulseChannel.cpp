@@ -64,4 +64,72 @@ namespace Nes
 			m_timerValue--;
 		}
 	}
+
+	void AudioPulseChannel::StepEnvelope()
+	{
+		if (m_envelopeStart)
+		{
+			m_envelopeVolume = 15;
+			m_envelopeValue = m_envelopePeriod;
+			m_envelopeStart = false;
+		}
+		else if (m_envelopeValue > 0)
+		{
+			m_envelopeValue--;
+		}
+		else
+		{
+			if (m_envelopeVolume > 0)
+			{
+				m_envelopeVolume--;
+			}
+			else if (m_envelopeLoop)
+			{
+				m_envelopeVolume = 15;
+			}
+			m_envelopeValue = m_envelopePeriod;
+		}
+	}
+
+	void AudioPulseChannel::StepSweep()
+	{
+		if (m_sweepReload)
+		{
+			if (m_sweepEnabled && m_sweepValue == 0)
+			{
+				sweep();
+			}
+			m_sweepValue = m_sweepPeriod;
+			m_sweepReload = false;
+		}
+		else if (m_sweepValue > 0)
+		{
+			m_sweepValue--;
+		}
+		else
+		{
+			if (m_sweepEnabled)
+			{
+				sweep();
+			}
+			m_sweepValue = m_sweepPeriod;
+		}
+	}
+
+	void AudioPulseChannel::sweep()
+	{
+		const auto delta = m_timerPeriod >> m_sweepShift;
+		if (m_sweepNegate)
+		{
+			m_timerPeriod -= delta;
+			if (m_channel == 1)
+			{
+				m_timerPeriod--;
+			}
+		}
+		else
+		{
+			m_timerPeriod += delta;
+		}
+	}
 }

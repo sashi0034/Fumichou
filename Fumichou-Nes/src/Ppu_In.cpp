@@ -98,7 +98,7 @@ private:
 			if (ppu.m_regs.control.NmiEnabled())
 			{
 				// NMI割り込み
-				Mos6502::In::FireNmi(hw.GetMos6502());
+				Mos6502::In::InvokeNmi(hw.GetMos6502());
 			}
 		}
 		else if (line == 260)
