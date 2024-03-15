@@ -85,4 +85,12 @@ namespace Nes
 			m_envelopeValue = m_envelopePeriod;
 		}
 	}
+
+	void AudioNoiseChannel::StepLength()
+	{
+		if (m_lengthEnabled && m_lengthValue > 0)
+		{
+			m_lengthValue--;
+		}
+	}
 }

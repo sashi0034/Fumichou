@@ -116,6 +116,14 @@ namespace Nes
 		}
 	}
 
+	void AudioPulseChannel::StepLength()
+	{
+		if (m_lengthEnabled && m_lengthValue > 0)
+		{
+			m_lengthValue--;
+		}
+	}
+
 	void AudioPulseChannel::sweep()
 	{
 		const auto delta = m_timerPeriod >> m_sweepShift;

@@ -65,4 +65,12 @@ namespace Nes
 			m_counterReload = false;
 		}
 	}
+
+	void AudioTriangleChannel::StepLength()
+	{
+		if (m_lengthEnabled && m_lengthValue > 0)
+		{
+			m_lengthValue--;
+		}
+	}
 }

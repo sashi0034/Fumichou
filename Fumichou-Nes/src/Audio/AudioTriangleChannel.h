@@ -14,6 +14,7 @@ namespace Nes
 		void Enable(uint8 enable);
 		void StepTimer();
 		void StepCounter();
+		void StepLength();
 
 	private:
 		bool m_enabled{};

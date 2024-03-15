@@ -15,6 +15,7 @@ namespace Nes
 		void StepTimer();
 		void StepEnvelope();
 		void StepSweep();
+		void StepLength();
 
 	private:
 		void sweep();

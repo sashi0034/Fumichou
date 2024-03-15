@@ -25,6 +25,8 @@ public:
 		{
 			StepFrameCounter(apu, cpu);
 		}
+
+		// TODO サンプリング
 	}
 
 	static void StepEnvelop(Apu_Impl& apu)
@@ -43,7 +45,10 @@ public:
 
 	static void StepLength(Apu_Impl& apu)
 	{
-		// TODO
+		apu.m_pulseChannel1.StepLength();
+		apu.m_pulseChannel2.StepLength();
+		apu.m_triangleChannel.StepLength();
+		apu.m_noiseChannel.StepLength();
 	}
 
 private:
