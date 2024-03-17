@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "Apu_Impl.h"
 
+#include "AudioContants.h"
 #include "Hardware.h"
 #include "HardwareConstants.h"
 #include "Mos6502_In.h"
@@ -9,7 +10,9 @@ using namespace Nes;
 
 namespace
 {
-	constexpr uint32 frameCounterFrequency_7457 = CpuFrequency_1789773 / 240;
+	constexpr uint32 frameCounterPeriod_7457 = CpuFrequency_1789773 / 240;
+
+	constexpr uint32 samplingPeriod_41 = 1 + CpuFrequency_1789773 / SampleRate_43653; // 41
 }
 
 class Apu::Impl::Internal
@@ -21,12 +24,15 @@ public:
 
 		stepTimer(apu, cpu, mmu);
 
-		if ((apu.m_cycleCount % frameCounterFrequency_7457) == 0)
+		if ((apu.m_cycleCount % frameCounterPeriod_7457) == 0)
 		{
 			StepFrameCounter(apu, cpu);
 		}
 
-		// TODO サンプリング
+		if ((apu.m_cycleCount % samplingPeriod_41) == 0)
+		{
+			// TODO
+		}
 	}
 
 	static void StepEnvelop(Apu_Impl& apu)
@@ -112,6 +118,10 @@ private:
 
 namespace Nes
 {
+	Apu::Impl::Impl() : m_stream(std::make_shared<ApuStream>())
+	{
+	}
+
 	void Apu::Impl::Reset()
 	{
 		m_framePeriod = 4;

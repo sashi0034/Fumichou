@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "AudioTriangleChannel.h"
 
-#include "AudioTable.h"
+#include "AudioContants.h"
 
 namespace Nes
 {

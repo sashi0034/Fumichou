@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "AudioPulseChannel.h"
-#include "AudioTable.h"
+#include "AudioContants.h"
 
 using namespace Nes;
 

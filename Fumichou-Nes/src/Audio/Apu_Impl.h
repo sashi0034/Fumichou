@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Apu.h"
+#include "ApuStream.h"
 #include "Audio/AudioNoiseChannel.h"
 #include "Audio/AudioDmc.h"
 #include "Audio/AudioPulseChannel.h"
@@ -15,6 +16,7 @@ namespace Nes
 		using Apu_Impl = Apu::Impl;
 		class Io;
 
+		Impl();
 		void Reset();
 		void Step(Mos6502& cpu, const Mmu& mmu, CpuCycle cycle);
 
@@ -22,6 +24,7 @@ namespace Nes
 		void WriteFrameCounter(uint8 value);
 
 	private:
+		std::shared_ptr<ApuStream> m_stream{};
 		CpuCycle m_cycleCount{};
 		AudioPulseChannel m_pulseChannel1{};
 		AudioPulseChannel m_pulseChannel2{};
