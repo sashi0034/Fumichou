@@ -122,4 +122,9 @@ namespace Nes
 			m_tickValue--;
 		}
 	}
+
+	uint8 AudioDmc::Output() const
+	{
+		return m_value;
+	}
 }

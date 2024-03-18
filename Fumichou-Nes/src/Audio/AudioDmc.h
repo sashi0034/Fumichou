@@ -18,6 +18,8 @@ namespace Nes
 		void Enable(uint8 enabled);
 		void StepTimer(Mos6502& cpu, const Mmu& mmu);
 
+		uint8 Output() const;
+
 	private:
 		class Impl;
 

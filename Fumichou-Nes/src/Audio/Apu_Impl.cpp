@@ -13,6 +13,26 @@ namespace
 	constexpr uint32 frameCounterPeriod_7457 = CpuFrequency_1789773 / 240;
 
 	constexpr uint32 samplingPeriod_41 = 1 + CpuFrequency_1789773 / SampleRate_43653; // 41
+
+	constexpr std::array<float, 31> pulseTable = []() consteval
+	{
+		std::array<float, 31> table{};
+		for (int i = 0; i < 31; ++i)
+		{
+			table[i] = i == 0 ? 0 : 95.52f / (8128.0f / static_cast<float>(i) + 100);
+		}
+		return table;
+	}();
+
+	constexpr std::array<float, 203> tndTable = []() consteval
+	{
+		std::array<float, 203> table{};
+		for (int i = 0; i < 203; ++i)
+		{
+			table[i] = i == 0 ? 0 : 163.67f / (24329.0f / static_cast<float>(i) + 100);
+		}
+		return table;
+	}();
 }
 
 class Apu::Impl::Internal
@@ -31,7 +51,7 @@ public:
 
 		if ((apu.m_cycleCount % samplingPeriod_41) == 0)
 		{
-			// TODO
+			pushSample(apu);
 		}
 	}
 
@@ -113,6 +133,24 @@ private:
 			default: break;
 			}
 		}
+	}
+
+	static void pushSample(Apu_Impl& apu)
+	{
+		const float value = makeOutput(apu);
+		apu.m_stream->PushSample(value, value);
+	}
+
+	static float makeOutput(const Apu_Impl& apu)
+	{
+		const uint8 p1 = apu.m_pulseChannel1.Output();
+		const uint8 p2 = apu.m_pulseChannel2.Output();
+		const uint8 t = apu.m_triangleChannel.Output();
+		const uint8 n = apu.m_noiseChannel.Output();
+		const uint8 d = apu.m_dmc.Output();
+		const float pulseOut = pulseTable[p1 + p2];
+		const float tndOut = tndTable[3 * t + 2 * n + d];
+		return pulseOut + tndOut;
 	}
 };
 

@@ -17,6 +17,8 @@ namespace Nes
 		void StepSweep();
 		void StepLength();
 
+		uint8 Output() const;
+
 	private:
 		void sweep();
 

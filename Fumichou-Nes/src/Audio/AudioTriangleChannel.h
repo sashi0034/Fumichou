@@ -16,6 +16,8 @@ namespace Nes
 		void StepCounter();
 		void StepLength();
 
+		uint8 Output() const;
+
 	private:
 		bool m_enabled{};
 		bool m_lengthEnabled{};

@@ -25,7 +25,7 @@ namespace Nes
 			m_headIndex = (m_headIndex + 1) % m_wave.size();
 		}
 
-		// samplesToWriteの空いている部分は0でパディング
+		// samplesToWrite の空いている部分はゼロでパディング
 		for (int i = writable; i < samplesToWrite; ++i)
 		{
 			*left = 0;
@@ -46,9 +46,9 @@ namespace Nes
 	int ApuStream::BufferRemaining() const
 	{
 		return m_headIndex <= m_tailIndex
-			       // tailもheadも折り返していないとき
+			       // tail も head も折り返していないとき
 			       ? m_tailIndex - m_headIndex
-			       // tailだけ折り返している状態のとき
+			       // tail だけ折り返している状態のとき
 			       : m_tailIndex + (m_wave.size() - m_headIndex);
 	}
 

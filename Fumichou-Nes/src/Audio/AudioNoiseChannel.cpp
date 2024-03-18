@@ -93,4 +93,13 @@ namespace Nes
 			m_lengthValue--;
 		}
 	}
+
+	uint8 AudioNoiseChannel::Output() const
+	{
+		if (not m_enabled) return 0;
+		if (m_lengthValue == 0) return 0;
+		if (m_shiftRegister & 1) return 0;
+		if (m_envelopeEnabled) return m_envelopeVolume;
+		return m_constantVolume;
+	}
 }

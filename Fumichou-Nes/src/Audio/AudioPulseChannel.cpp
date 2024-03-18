@@ -6,6 +6,15 @@ using namespace Nes;
 
 namespace
 {
+	constexpr std::array<std::array<uint8, 8>, 4> dutyTable
+	{
+		{
+			{0, 1, 0, 0, 0, 0, 0, 0},
+			{0, 1, 1, 0, 0, 0, 0, 0},
+			{0, 1, 1, 1, 1, 0, 0, 0},
+			{1, 0, 0, 1, 1, 1, 1, 1},
+		}
+	};
 }
 
 namespace Nes
@@ -122,6 +131,17 @@ namespace Nes
 		{
 			m_lengthValue--;
 		}
+	}
+
+	uint8 AudioPulseChannel::Output() const
+	{
+		if (not m_enabled) return 0;
+		if (m_lengthValue == 0) return 0;
+		if (dutyTable[m_dutyMode][m_dutyValue] == 0) return 0;
+		if (m_timerPeriod < 8 || m_timerPeriod > 0x7FF) return 0;
+
+		if (m_envelopeEnabled) return m_envelopeVolume;
+		else return m_constantVolume;
 	}
 
 	void AudioPulseChannel::sweep()
