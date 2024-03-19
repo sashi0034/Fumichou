@@ -25,7 +25,7 @@ namespace Nes
 		m_constantVolume = m_envelopePeriod;
 		m_envelopeEnabled = not GetBits<4>(value);
 		m_envelopeLoop = GetBits<5>(value);
-		m_lengthEnabled = not GetBits<5>(value);
+		m_lengthEnabled = not m_envelopeLoop;
 		m_dutyMode = GetBits<6, 7>(value);
 		m_envelopeStart = true;
 	}
@@ -66,7 +66,7 @@ namespace Nes
 		if (m_timerValue == 0)
 		{
 			m_timerValue = m_timerPeriod;
-			m_dutyValue = (m_dutyValue + 1) & 0x07;
+			m_dutyValue = (m_dutyValue + 1) & 7;
 		}
 		else
 		{
