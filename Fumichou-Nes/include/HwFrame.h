@@ -14,6 +14,7 @@ namespace Nes
 
 		friend class HwFrameView;
 		static HwFrameView Instance();
+		HwFrameView View();
 
 	private:
 		struct Impl;

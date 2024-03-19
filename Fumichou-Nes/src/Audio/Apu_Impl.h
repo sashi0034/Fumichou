@@ -20,6 +20,8 @@ namespace Nes
 		void Reset();
 		void Step(Mos6502& cpu, const Mmu& mmu, CpuCycle cycle);
 
+		const std::shared_ptr<ApuStream>& GetStream() const { return m_stream; }
+
 		void WriteStatus(uint8 value);
 		void WriteFrameCounter(uint8 value);
 

@@ -9,4 +9,9 @@ namespace Nes
 		p_impl(std::make_shared<Impl>())
 	{
 	}
+
+	const std::shared_ptr<s3d::IAudioStream>& Apu::GetStream() const
+	{
+		return p_impl->GetStream();
+	}
 }

@@ -178,6 +178,11 @@ namespace Nes
 		return Impl::s_instance;
 	}
 
+	HwFrameView HwFrame::View()
+	{
+		return HwFrameView(p_impl.get());
+	}
+
 	HwFrameView::HwFrameView(HwFrame::Impl* impl) :
 		p_impl(impl)
 	{
