@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "ApuStream.h"
 
-#include "AudioContants.h"
+#include "AudioForward.h"
 
 namespace Nes
 {

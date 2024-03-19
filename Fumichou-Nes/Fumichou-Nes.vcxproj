@@ -181,7 +181,7 @@
     <ClInclude Include="src\Audio\AudioDmc.h" />
     <ClInclude Include="src\Audio\AudioNoiseChannel.h" />
     <ClInclude Include="src\Audio\AudioPulseChannel.h" />
-    <ClInclude Include="src\Audio\AudioContants.h" />
+    <ClInclude Include="src\Audio\AudioForward.h" />
     <ClInclude Include="src\Audio\AudioTriangleChannel.h" />
     <ClInclude Include="src\Boards\BoardCnrom.h" />
     <ClInclude Include="src\Boards\PatternTableMemory.h" />

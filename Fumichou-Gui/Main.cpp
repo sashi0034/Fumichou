@@ -77,7 +77,8 @@ void Main()
 	Console.writeln(U"[Info] Start with {}"_fmt(romPath.empty() ? U"no ROM file." : romPath));
 
 	Nes::HwFrame nes{};
-	const Audio nesAudio{nes.View().GetHw().GetApu().GetStream()};
+	auto& apu = nes.View().GetHw().GetApu();
+	const Audio nesAudio{apu.GetStream(), Arg::sampleRate = Nes::SampleRate_43653};
 	nesAudio.play();
 	nes.StartRomFile(romPath);
 

@@ -35,6 +35,8 @@ namespace Nes
 	constexpr uint32 DisplayHeight_240 = 240;
 	constexpr s3d::Size Display_256x240{DisplayWidth_256, DisplayHeight_240};
 
+	constexpr uint32_t SampleRate_43653 = 43653;
+
 	// https://www.nesdev.org/wiki/Mirroring#Nametable_Mirroring
 	enum class NameTableMirror
 	{
