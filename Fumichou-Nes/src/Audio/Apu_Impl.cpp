@@ -12,7 +12,7 @@ namespace
 {
 	constexpr uint32 frameCounterPeriod_7457 = CpuFrequency_1789773 / 240;
 
-	constexpr uint32 samplingPeriod_41 = 1 + CpuFrequency_1789773 / SampleRate_43653; // 41
+	constexpr uint32 samplingPeriod_41 = CpuFrequency_1789773 / SampleRate_43653; // 41
 
 	constexpr std::array<float, 31> pulseTable = []() consteval
 	{
@@ -80,7 +80,7 @@ public:
 private:
 	static void stepTimer(Apu_Impl& apu, Mos6502& cpu, const Mmu& mmu)
 	{
-		if (not(apu.m_cycleCount & 1))
+		if (not (apu.m_cycleCount & 1))
 		{
 			apu.m_pulseChannel1.StepTimer();
 			apu.m_pulseChannel2.StepTimer();
