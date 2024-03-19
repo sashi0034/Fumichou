@@ -15,7 +15,7 @@ namespace Nes
 
 	MappedWrite Apu::Impl::Io::MapWritePrg(Hardware& hw, addr16 addr)
 	{
-		auto apu = hw.GetApu().p_impl.get();
+		auto& apu = *hw.GetApu().p_impl;
 		switch (addr)
 		{
 		case 0x4000:
