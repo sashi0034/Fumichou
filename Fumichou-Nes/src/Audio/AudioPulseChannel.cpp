@@ -51,7 +51,7 @@ namespace Nes
 
 	void AudioPulseChannel::WriteLength(uint8 value)
 	{
-		m_timerPeriod = SetBits<8, 15>(m_timerPeriod, value);
+		m_timerPeriod = SetBits<8, 15>(m_timerPeriod, value & 7);
 		m_lengthValue = LengthTable[GetBits<3, 7>(value)];
 		m_envelopeStart = true;
 		m_dutyValue = 0;
