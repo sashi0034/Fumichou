@@ -185,7 +185,7 @@ namespace Nes
 	void Apu::Impl::WriteFrameCounter(uint8 value)
 	{
 		m_framePeriod = 4 + GetBits<7>(value);
-		m_frameIrq = GetBits<6>(value);
+		m_frameIrq = not GetBits<6>(value);
 		if (m_framePeriod == 5)
 		{
 			Internal::StepEnvelop(*this);
