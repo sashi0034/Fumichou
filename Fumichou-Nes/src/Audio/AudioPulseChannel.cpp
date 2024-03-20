@@ -19,6 +19,11 @@ namespace
 
 namespace Nes
 {
+	AudioPulseChannel::AudioPulseChannel(uint8 channel) :
+		m_channel(channel)
+	{
+	}
+
 	void AudioPulseChannel::WriteControl(uint8 value)
 	{
 		m_envelopePeriod = GetBits<0, 3>(value);

@@ -6,6 +6,9 @@ namespace Nes
 	class AudioPulseChannel
 	{
 	public:
+		AudioPulseChannel() = default;
+		AudioPulseChannel(uint8 channel);
+
 		void WriteControl(uint8 value);
 		void WriteSweep(uint8 value);
 		void WriteFrequency(uint8 value);

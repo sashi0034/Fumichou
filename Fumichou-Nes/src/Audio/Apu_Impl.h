@@ -28,8 +28,8 @@ namespace Nes
 	private:
 		std::shared_ptr<ApuStream> m_stream{};
 		CpuCycle m_cycleCount{};
-		AudioPulseChannel m_pulseChannel1{};
-		AudioPulseChannel m_pulseChannel2{};
+		AudioPulseChannel m_pulseChannel1{1};
+		AudioPulseChannel m_pulseChannel2{2};
 		AudioTriangleChannel m_triangleChannel{};
 		AudioNoiseChannel m_noiseChannel{};
 		AudioDmc m_dmc{};

@@ -80,7 +80,7 @@ public:
 private:
 	static void stepTimer(Apu_Impl& apu, Mos6502& cpu, const Mmu& mmu)
 	{
-		if (not (apu.m_cycleCount & 1))
+		if (not(apu.m_cycleCount & 1))
 		{
 			apu.m_pulseChannel1.StepTimer();
 			apu.m_pulseChannel2.StepTimer();
