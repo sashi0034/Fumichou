@@ -137,6 +137,10 @@ private:
 
 	static void pushSample(Apu_Impl& apu)
 	{
+		// バッファが十分あるなら追加しない
+		constexpr int enoughBuffer = SampleRate_43653 / 2;
+		if (apu.m_stream->BufferRemaining() > enoughBuffer) return;
+
 		const float value = makeOutput(apu);
 		apu.m_stream->PushSample(value, value);
 	}
